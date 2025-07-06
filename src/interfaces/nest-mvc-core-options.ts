@@ -5,6 +5,7 @@ export interface NestMvcCoreOptions {
     cache: boolean;
   };
   vite: {
+    mode: "development" | "production";
     buildOutDir: string;
     developServerUrl: string;
   };
