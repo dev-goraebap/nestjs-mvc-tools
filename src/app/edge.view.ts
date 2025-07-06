@@ -78,52 +78,56 @@ export class EdgeView extends BaseLogger {
   private init() {
     // EdgeJsRegistry에서 기본 Edge 인스턴스를 가져와,
     // 이로부터 요청별로 독립적인 새 렌더러 인스턴스를 생성합니다.
-    // 기본 인스턴스의 모든 설정 (마운트 경로 등) 은 상속됨
     this.requestScopedEdge = this.edgeJsRegistry.getInstance().createRenderer();
 
     this.debug("EdgeView 인스턴스 생성됨");
 
-    this.initCsrfToken();
+    // GET 요청(페이지 렌더링)일 때만 템플릿 관련 초기화 수행
+    if (this.request.method === "GET") {
+      this.initCsrfToken();
+      this.initFlashMessages();
+      this.initHelpers();
+      this.debug("페이지 렌더링용 초기화 완료");
+    } else {
+      this.debug(`${this.request.method} 요청이므로 기본 초기화만 수행`);
+    }
+  }
 
-    // 요청별 데이터를 이 독립적인 렌더러 인스턴스에 share 합니다.
-    // 이 데이터는 현재 요청 내에서 이 렌더러를 통해 렌더링되는 모든 템플릿에
-    // 전역적으로 (이 요청 내에서만) 사용 가능합니다.
+  // 플래시 메시지 공유 (GET 요청에서만)
+  private initFlashMessages() {
     const flash = this.getFlash();
     if (flash) {
       this.requestScopedEdge.share({ flash });
     }
+  }
 
-    // 현재 요청 URL을 기반으로 링크 활성화 여부를 판단하는 헬퍼 함수 등록
+  // 헬퍼 함수들 등록 (GET 요청에서만)
+  private initHelpers() {
     this.requestScopedEdge.share({
       isActiveLink: EdgeHelpers.createIsActiveLinkHelper(this.request),
     });
   }
 
+  // CSRF Token 등록 (GET 요청에서만)
   private initCsrfToken() {
     if (!this.request.session) {
-      throw new Error(
-        "Session middleware must be registered before EdgeMiddleware"
-      );
+      const errMsg = "express-session이 누락되었습니다. 설정 필요.";
+      this.logger.warn(errMsg);
+      throw new Error(errMsg);
     }
 
-    const isTurboRequest = !!this.request.headers["x-turbo-request-id"];
-
-    // 1. 세션에 CSRF 토큰이 없으면 생성 (터보 요청이 아닐 경우에만)
-    if (!this.request.session["csrfToken"] && !isTurboRequest) {
+    // 1. 세션에 CSRF 토큰이 없으면 생성
+    if (!this.request.session?.csrfToken) {
       const csrfToken = randomBytes(32).toString("hex");
       this.debug("새로운 csrfToken 토큰 발급: " + csrfToken);
-      this.request.session["csrfToken"] = csrfToken;
+      this.request.session.csrfToken = csrfToken;
     }
 
     // 2. 뷰에 CSRF 토큰 공유
-    const csrfToken = this.request.session["csrfToken"];
+    const csrfToken = this.request.session.csrfToken;
     if (csrfToken) {
-      this.debug(`CSRF 토큰 사용: ${csrfToken}`);
+      this.debug(`CSRF 토큰 템플릿에 공유: ${csrfToken}`);
       this.requestScopedEdge.share({ csrfToken });
-    } else if (isTurboRequest) {
-      this.debug(
-        "CSRF 토큰이 세션에 없지만, 터보 요청이므로 새로 발급하지 않습니다."
-      );
     }
   }
 }
