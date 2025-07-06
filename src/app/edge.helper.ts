@@ -28,12 +28,13 @@ export class EdgeHelpers {
   static createAssetHelper(options: {
     developServerUrl: string;
     buildOutDir: string;
+    mode: "development" | "production";
   }) {
     let manifest: Record<string, any> | null = null;
 
     return function asset(path: string): string {
       // 개발 환경에서는 Vite 개발 서버 URL을 반환
-      if (process.env.NODE_ENV === "development") {
+      if (options.mode === "development") {
         return `${options.developServerUrl}/${path}`;
       }
 
