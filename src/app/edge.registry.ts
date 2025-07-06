@@ -18,6 +18,15 @@ export class EdgeRegistry extends BaseLogger {
     private readonly options: NestMvcCoreOptions
   ) {
     super(EdgeRegistry.name, options);
+    this.debug(`
+    ---------------------------------------------------
+    | Init EdgeRegistry
+    ---------------------------------------------------
+    | Note. 
+    | - EdgeJs 라이브러리를 CommonJs 환경에 맞게 Setup
+    | - 싱글톤 템플릿 엔진 제공
+    ---------------------------------------------------
+    `);
     this.init();
   }
 
@@ -37,7 +46,6 @@ export class EdgeRegistry extends BaseLogger {
     }
 
     try {
-      this.debug("Edge.js 초기화 시작");
       const { Edge: EdgeConstructor } = await import("edge.js");
 
       this.edge = EdgeConstructor.create({
@@ -52,13 +60,8 @@ export class EdgeRegistry extends BaseLogger {
         this.edge.mount(disk, join(this.options.edgeTemplate.rootDir, disk));
       }
 
-      // Asset helper를 vite 설정을 사용하여 생성
-      const assetHelper = EdgeHelpers.createAssetHelper({
-        developServerUrl: this.options.vite.developServerUrl,
-        buildOutDir: this.options.vite.buildOutDir,
-      });
+      const assetHelper = EdgeHelpers.createAssetHelper(this.options.vite);
       this.edge.global("asset", assetHelper);
-      this.debug("에셋 헬퍼 등록 완료");
 
       this.debug(`Edge.js 초기화 완료: ${this.options.edgeTemplate.rootDir}`);
     } catch (err: unknown) {
