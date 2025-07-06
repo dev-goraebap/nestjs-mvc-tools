@@ -28,6 +28,17 @@ export class EdgeView extends BaseLogger {
     private readonly edgeJsRegistry: EdgeRegistry
   ) {
     super(EdgeView.name, options);
+    this.debug(`
+    ---------------------------------------------------
+    | Init EdgeView
+    ---------------------------------------------------
+    | Note. 
+    | - EdgeRegistry에서 템플릿엔진을 가져와 요청별로 렌더러
+    | 인스턴스 제공 (해당 요청에 한하여 공유되어야하는 상태를 
+    | 다루기위함)
+    | - 외부에서 사용할 수 있는 화면에 관련된 여러 인터페이스 제공
+    ---------------------------------------------------
+    `);
     this.init();
   }
 
@@ -54,8 +65,7 @@ export class EdgeView extends BaseLogger {
     message: string,
     old: Record<string, any> = {}
   ) {
-    if (!this.request.session) {
-      this.logger.warn("세션이 활성화되지 않았습니다.");
+    if (!this.isSessionAvailable()) {
       return;
     }
 
@@ -63,7 +73,7 @@ export class EdgeView extends BaseLogger {
   }
 
   getFlash() {
-    if (!this.request.session) {
+    if (!this.isSessionAvailable()) {
       return null;
     }
 
@@ -80,20 +90,30 @@ export class EdgeView extends BaseLogger {
     // 이로부터 요청별로 독립적인 새 렌더러 인스턴스를 생성합니다.
     this.requestScopedEdge = this.edgeJsRegistry.getInstance().createRenderer();
 
-    this.debug("EdgeView 인스턴스 생성됨");
+    // GET 요청이 아니면 기본 초기화만 수행
+    if (this.request.method !== "GET") {
+      this.debug(
+        `${this.request.method} 요청이므로 기본 초기화만 수행 (${this.request.path})`
+      );
+      return;
+    }
 
-    // GET 요청(페이지 렌더링)일 때만 템플릿 관련 초기화 수행
-    if (this.request.method === "GET") {
+    // GET 요청일 때만 템플릿 관련 초기화 수행
+    const hasSession = this.isSessionAvailable();
+
+    // 세션이 있으면 CSRF 토큰과 플래시 메시지 초기화
+    if (hasSession) {
       this.initCsrfToken();
       this.initFlashMessages();
-      this.initHelpers();
-      this.debug("페이지 렌더링용 초기화 완료");
-    } else {
-      this.debug(`${this.request.method} 요청이므로 기본 초기화만 수행`);
     }
+
+    this.initHelpers();
+    this.debug(
+      `페이지 렌더링용 초기화 완료 (${this.request.method} ${this.request.path})`
+    );
   }
 
-  // 플래시 메시지 공유 (GET 요청에서만)
+  // 플래시 메시지 공유 (GET 요청에서만, 세션 있을 때만)
   private initFlashMessages() {
     const flash = this.getFlash();
     if (flash) {
@@ -108,26 +128,43 @@ export class EdgeView extends BaseLogger {
     });
   }
 
-  // CSRF Token 등록 (GET 요청에서만)
+  // CSRF Token 등록 (GET 요청에서만, 세션 있을 때만)
   private initCsrfToken() {
-    if (!this.request.session) {
-      const errMsg = "express-session이 누락되었습니다. 설정 필요.";
-      this.logger.warn(errMsg);
-      throw new Error(errMsg);
-    }
-
     // 1. 세션에 CSRF 토큰이 없으면 생성
     if (!this.request.session?.csrfToken) {
       const csrfToken = randomBytes(32).toString("hex");
-      this.debug("새로운 csrfToken 토큰 발급: " + csrfToken);
+      this.debug(
+        `새로운 csrfToken 토큰 발급: ${csrfToken} (${this.request.method} ${this.request.path})`
+      );
       this.request.session.csrfToken = csrfToken;
     }
 
     // 2. 뷰에 CSRF 토큰 공유
     const csrfToken = this.request.session.csrfToken;
     if (csrfToken) {
-      this.debug(`CSRF 토큰 템플릿에 공유: ${csrfToken}`);
+      this.debug(
+        `CSRF 토큰 템플릿에 공유: ${csrfToken} (${this.request.method} ${this.request.path})`
+      );
       this.requestScopedEdge.share({ csrfToken });
     }
+  }
+
+  /**
+   * express-session 설정 여부를 확인합니다.
+   *
+   * @description 세션이 설정되지 않으면 다음 기능들이 제한됩니다:
+   * - CSRF 토큰 생성 및 검증
+   * - 플래시 메시지 (setFlash, getFlash)
+   * - 세션 기반 상태 관리
+   */
+  private isSessionAvailable(): boolean {
+    if (!this.request.session) {
+      this.logger.warn(`
+      ⚠️ express-session이 설정되지 않아 일부 기능이 제한됩니다. (CSRF 토큰, 플래시 메시지 등)
+      설정 방법: https://github.com/dev-goraebap
+      `);
+      return false;
+    }
+    return true;
   }
 }
