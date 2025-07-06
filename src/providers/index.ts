@@ -1,14 +1,15 @@
 import { Provider, Type } from "@nestjs/common";
 import { join } from "path";
 
-import { APP_FILTER, APP_GUARD } from "@nestjs/core";
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { CsrfGuard } from "../framework/csrf.guard";
+import { EdgeViewInitInterceptor } from "../framework/edge-view-init.interceptor";
 import { MvcExceptionFilter } from "../framework/mvc-exception.filter";
 import {
   NEST_MVC_CORE_OPTIONS,
   NestMvcCoreOptions,
   NestMvcCoreOptionsFactory,
 } from "../interfaces/nest-mvc-core-options";
-import { CsrfGuard } from "../framework/csrf.guard";
 
 export function provideCoreOptionsSync(
   options?: Partial<NestMvcCoreOptions>
@@ -32,6 +33,10 @@ export function provideCoreOptionsAsync(
   };
 }
 
+export function provideInitEdgeViewInterceptor(): Provider {
+  return { provide: APP_INTERCEPTOR, useClass: EdgeViewInitInterceptor };
+}
+
 export function provideCsrfGuard(): Provider {
   return { provide: APP_GUARD, useClass: CsrfGuard };
 }
@@ -39,6 +44,7 @@ export function provideCsrfGuard(): Provider {
 export function provideExceptionFilter(): Provider {
   return { provide: APP_FILTER, useClass: MvcExceptionFilter };
 }
+
 
 /**
  * 사용자 옵션과 기본값을 병합하여 완전한 설정 객체를 생성합니다.
@@ -50,9 +56,10 @@ function mergeWithDefaults(
     edgeTemplate: {
       rootDir: join(process.cwd(), "resources", "views"),
       disks: [],
-      cache: process.env.NODE_ENV !== "production",
+      cache: false,
     },
     vite: {
+      mode: 'development',
       buildOutDir: join(process.cwd(), "resources", "public", "builds"),
       developServerUrl: "http://localhost:5173",
     },
