@@ -1,14 +1,11 @@
 import {
   DynamicModule,
-  MiddlewareConsumer,
   Module,
-  NestModule,
   Type,
 } from "@nestjs/common";
 
 import { EdgeRegistry } from "./app/edge.registry";
 import { EdgeView } from "./app/edge.view";
-import { EdgeViewInitMiddleware } from "./framework/edge-view-init.middleware";
 import {
   NestMvcCoreOptions,
   NestMvcCoreOptionsFactory
@@ -18,19 +15,17 @@ import {
   provideCoreOptionsSync,
   provideCsrfGuard,
   provideExceptionFilter,
+  provideInitEdgeViewInterceptor,
 } from "./providers";
 
 @Module({})
-export class NestMvcCoreModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(EdgeViewInitMiddleware).exclude("/api/*path").forRoutes("*");
-  }
-
+export class NestMvcCoreModule {
   static forRoot(options?: Partial<NestMvcCoreOptions>): DynamicModule {
     return {
       module: NestMvcCoreModule,
       providers: [
         provideCoreOptionsSync(options),
+        provideInitEdgeViewInterceptor(),
         provideCsrfGuard(),
         provideExceptionFilter(),
         EdgeRegistry,
@@ -48,6 +43,7 @@ export class NestMvcCoreModule implements NestModule {
       providers: [
         options.useClass,
         provideCoreOptionsAsync(options.useClass),
+        provideInitEdgeViewInterceptor(),
         provideCsrfGuard(),
         provideExceptionFilter(),
         EdgeRegistry,
