@@ -8,7 +8,7 @@ import {
 
 import { EdgeRegistry } from "./app/edge.registry";
 import { EdgeView } from "./app/edge.view";
-import { EdgeInitMiddleware } from "./framework/edge-init.middleware";
+import { EdgeViewInitMiddleware } from "./framework/edge-view-init.middleware";
 import {
   NestMvcCoreOptions,
   NestMvcCoreOptionsFactory
@@ -23,7 +23,7 @@ import {
 @Module({})
 export class NestMvcCoreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(EdgeInitMiddleware).exclude("/api/*path").forRoutes("*");
+    consumer.apply(EdgeViewInitMiddleware).exclude("/api/*path").forRoutes("*");
   }
 
   static forRoot(options?: Partial<NestMvcCoreOptions>): DynamicModule {
