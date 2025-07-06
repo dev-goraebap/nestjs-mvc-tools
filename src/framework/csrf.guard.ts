@@ -21,6 +21,18 @@ export class CsrfGuard extends BaseLogger implements CanActivate {
     private readonly options: NestMvcCoreOptions
   ) {
     super(CsrfGuard.name, options);
+    this.debug(`
+    ---------------------------------------------------
+    | Init CsrfGuard
+    ---------------------------------------------------
+    | Note. 
+    | CSRF 공격에 대응
+    | - /api/ 로 시작하는 요청은 제외
+    | - GET, HEAD, OPTIONS 등 안전한 요청은 CSRF 검증 제외
+    | - session에 저장되어있는 csrf-token과 요청 헤더, 본문,
+    | 쿼리중에 전달받은 토큰을 검증
+    ---------------------------------------------------
+    `);
   }
 
   canActivate(
