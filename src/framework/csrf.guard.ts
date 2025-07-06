@@ -46,7 +46,7 @@ export class CsrfGuard extends BaseLogger implements CanActivate {
     // body 파싱 전에 CSRF 검증이 필요한 경우 임시 해결책으로 사용
     const tokenFromQuery = request.query._csrft;
     const token = tokenFromHeader || tokenFromBody || tokenFromQuery;
-    const sessionToken = request.session?.["csrfToken"];
+    const sessionToken = request.session?.csrfToken;
 
     this.debug(`CSRF Token from header: ${tokenFromHeader}`);
     this.debug(`CSRF Token from body: ${tokenFromBody}`);
@@ -56,9 +56,7 @@ export class CsrfGuard extends BaseLogger implements CanActivate {
     if (!token || token !== sessionToken) {
       this.debug("Invalid CSRF token");
       throw new MvcRedirectException(
-        request.headers.referer ||
-          request.originalUrl.replace(/\?.*$/, "") ||
-          "/",
+        request.headers.referer || "/",
         "보안 토큰이 만료되었습니다. 페이지를 새로고침 후 다시 시도해주세요.",
         "alert"
       );
