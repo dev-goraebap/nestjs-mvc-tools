@@ -59,9 +59,8 @@ program
       console.log(`${colors.dim}You can now start building with NestJS MVC Tools.${colors.reset}\n`);
       
       log.info('Next steps:');
-      console.log(`   ${colors.cyan}1.${colors.reset} Import ${colors.bright}NestMvcCoreModule${colors.reset} in your app.module.ts`);
-      console.log(`   ${colors.cyan}2.${colors.reset} Start the Vite dev server: ${colors.bright}cd resources && npm run dev${colors.reset}`);
-      console.log(`   ${colors.cyan}3.${colors.reset} Create your first controller and templates\n`);
+      console.log(`   ${colors.cyan}1.${colors.reset} Please visit the link below to continue with the setup.`);
+      console.log(`   ${colors.bright}https://github.com/dev-goraebap/nestjs-mvc-tools?tab=readme-ov-file#quick-start${colors.reset}\n`);
 
     } catch (err) {
       log.error('Error during initialization:');
