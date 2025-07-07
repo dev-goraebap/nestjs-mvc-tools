@@ -6,6 +6,7 @@ import {
   NestMvcCoreOptions,
 } from "../interfaces/nest-mvc-core-options";
 import { BaseLogger } from "../shared/base-logger";
+
 import { MvcException } from "./exceptions/base-mvc.exception";
 import { MvcRedirectException } from "./exceptions/mvc-redirect.exception";
 import { MvcValidationException } from "./exceptions/mvc-validation.exception";
@@ -17,17 +18,7 @@ export class MvcExceptionFilter extends BaseLogger implements ExceptionFilter {
     private readonly options: NestMvcCoreOptions
   ) {
     super(MvcExceptionFilter.name, options);
-    this.debug(`
-    ---------------------------------------------------
-    | Init MvcExceptionFilter
-    ---------------------------------------------------
-    | Note. 
-    | MvcException 에 반응하는 예외처리 필터
-    | - Nestjs에서 제공하는 Exception필터는 json 반환처리가
-    | 기본이기 때문에 에러를 적절하게 처리하고 view를 랜더링
-    | 또는 리다이렉트 처리
-    ---------------------------------------------------
-    `);
+    this.debug("Init MvcExceptionFilter");
   }
 
   async catch(exception: MvcException, host: ArgumentsHost) {

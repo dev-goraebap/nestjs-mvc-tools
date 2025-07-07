@@ -1,7 +1,7 @@
 import { Provider, Type } from "@nestjs/common";
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { join } from "path";
 
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { CsrfGuard } from "../framework/csrf.guard";
 import { EdgeViewInitInterceptor } from "../framework/edge-view-init.interceptor";
 import { MvcExceptionFilter } from "../framework/mvc-exception.filter";

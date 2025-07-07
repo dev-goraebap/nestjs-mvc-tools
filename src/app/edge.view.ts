@@ -1,13 +1,14 @@
 import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
+import { randomBytes } from "crypto";
 import { Request } from "express";
 
-import { randomBytes } from "crypto";
 import {
   NEST_MVC_CORE_OPTIONS,
   NestMvcCoreOptions,
 } from "../interfaces/nest-mvc-core-options";
 import { BaseLogger } from "../shared/base-logger";
+
 import { EdgeHelpers } from "./edge.helper";
 import { EdgeRegistry } from "./edge.registry";
 
@@ -28,17 +29,7 @@ export class EdgeView extends BaseLogger {
     private readonly edgeJsRegistry: EdgeRegistry
   ) {
     super(EdgeView.name, options);
-    this.debug(`
-    ---------------------------------------------------
-    | Init EdgeView
-    ---------------------------------------------------
-    | Note. 
-    | - EdgeRegistry에서 템플릿엔진을 가져와 요청별로 렌더러
-    | 인스턴스 제공 (해당 요청에 한하여 공유되어야하는 상태를 
-    | 다루기위함)
-    | - 외부에서 사용할 수 있는 화면에 관련된 여러 인터페이스 제공
-    ---------------------------------------------------
-    `);
+    this.debug("Init EdgeView");
     this.init();
   }
 

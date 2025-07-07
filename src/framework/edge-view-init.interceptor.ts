@@ -8,6 +8,7 @@ import {
 } from "@nestjs/common";
 import { Request } from "express";
 import { Observable } from "rxjs";
+
 import { EdgeView } from "../app/edge.view";
 import {
   NEST_MVC_CORE_OPTIONS,
@@ -28,23 +29,13 @@ export class EdgeViewInitInterceptor
     private readonly options: NestMvcCoreOptions
   ) {
     super(EdgeViewInitInterceptor.name, options);
-    this.debug(`
-    ----------------------------------------
-    | Init EdgeViewInitInterceptor
-    ----------------------------------------
-    | Note. 
-    | - Request마다 생성됨
-    | - EdgeView 인스턴스를 Request객체에 view
-    | 로 주입
-    ----------------------------------------
-    `);
+    this.debug('Init EdgeViewInitInterceptor');
   }
 
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>
   ): Observable<any> | Promise<Observable<any>> {
-    console.log("hello world");
     const req: Request = context.switchToHttp().getRequest();
     req.view = this.edgeView;
     return next.handle();

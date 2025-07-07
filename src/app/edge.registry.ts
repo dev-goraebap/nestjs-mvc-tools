@@ -7,6 +7,7 @@ import {
   NestMvcCoreOptions,
 } from "../interfaces/nest-mvc-core-options";
 import { BaseLogger } from "../shared/base-logger";
+
 import { EdgeHelpers } from "./edge.helper";
 
 @Injectable()
@@ -18,15 +19,7 @@ export class EdgeRegistry extends BaseLogger {
     private readonly options: NestMvcCoreOptions
   ) {
     super(EdgeRegistry.name, options);
-    this.debug(`
-    ---------------------------------------------------
-    | Init EdgeRegistry
-    ---------------------------------------------------
-    | Note. 
-    | - EdgeJs 라이브러리를 CommonJs 환경에 맞게 Setup
-    | - 싱글톤 템플릿 엔진 제공
-    ---------------------------------------------------
-    `);
+    this.debug("Init EdgeRegistry");
     this.init();
   }
 
