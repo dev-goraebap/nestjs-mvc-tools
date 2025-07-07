@@ -58,7 +58,7 @@ This guide helps you with the basic setup for using the MVC pattern in NestJS.
 
 ```bash
 # Setup MVC templates and resources
-nestjs-mvc-tools init
+npx nestjs-mvc-tools init
 ```
 
 This creates a `resources` directory in your project root and downloads the necessary dependencies for the internal Vite development environment.

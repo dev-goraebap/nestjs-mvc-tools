@@ -56,7 +56,7 @@ NestJS에서 MVC 패턴을 사용하기 위한 기본 설정을 도와드립니�
 
 ```bash
 # MVC 템플릿 및 리소스 설정
-nestjs-mvc-tools init
+npx nestjs-mvc-tools init
 ```
 
 프로젝트 root 경로에 resources 디렉토리를 생성하고 내부 vite 개발환경의 필요한 의존성을 다운로드합니다.
