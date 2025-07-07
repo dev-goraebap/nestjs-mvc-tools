@@ -4,7 +4,7 @@
 
 **NestJS MVC Tools** is a small toolkit to help you get started with traditional web development in NestJS more easily.
 
-It combines the Edge.js template engine from AdonisJS with Hotwired from Ruby on Rails to build modern web applications. In addition, you can use front-end libraries like TailwindCSS through an asset pipeline using Vite.
+It combines the [Edge.js](https://edgejs.dev/docs/introduction) template engine from AdonisJS with [Hotwired](https://hotwired.dev/) from Ruby on Rails to build modern web applications. In addition, you can use front-end libraries like TailwindCSS through an asset pipeline using [Vite](https://vite.dev/).
 
 A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
 

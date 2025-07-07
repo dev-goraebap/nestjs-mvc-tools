@@ -2,7 +2,7 @@
 
 **NestJS MVC Tools**는 NestJS에서 전통적인 웹 개발 방식을 좀 더 편하게 시작할 수 있도록 도움을 드리는 작은 도구입니다.
 
-AdonisJS의 Edge.js 템플릿 엔진에 Ruby on Rails의 Hotwired를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 Vite를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
+AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진에 Ruby on Rails의 [Hotwired](https://hotwired.dev/)를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
 
 완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
 
