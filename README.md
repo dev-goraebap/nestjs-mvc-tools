@@ -4,7 +4,7 @@
 
 AdonisJS의 Edge.js 템플릿 엔진에 Ruby on Rails의 Hotwired를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 Vite를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
 
-완전한 예제는 [nestjs-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
 
 ## 개발자의 말
 
@@ -280,7 +280,7 @@ AdonisJS는 ESM(ECMAScript Modules) 환경을 기반으로 설계되어 프론�
 
 ## 🌟 예제 프로젝트
 
-완전한 예제는 [nestjs-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
 
 ## 📝 라이선스
 
