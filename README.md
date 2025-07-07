@@ -1,4 +1,4 @@
-[View Korean version](./README_KR.md)
+[View Korean version](./README_KO.md)
 
 # NestJS MVC Tools
 
@@ -142,7 +142,7 @@ If you use the `concurrently` library, you can configure it as follows:
 // package.json
 "scripts": {
   "start:resource": "cd resources && npm run dev",
-  "start:dev": "cross-env NODE_ENV=development concurrently "nest start --watch" "npm run start:resource"",
+  "start:dev": "concurrently "nest start --watch" "npm run start:resource"",
 }
 ```
 

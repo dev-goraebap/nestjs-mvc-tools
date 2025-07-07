@@ -140,7 +140,7 @@ concurrently 라이브러리를 사용하면 다음과 같이 구성할 수 있�
 // package.json
 "scripts": {
   "start:resource": "cd resources && npm run dev",
-  "start:dev": "cross-env NODE_ENV=development concurrently \"nest start --watch\" \"npm run start:resource\"",
+  "start:dev": "concurrently \"nest start --watch\" \"npm run start:resource\"",
 }
 ```
 
