@@ -36,6 +36,21 @@
     "@types/express-session": "^1.18.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.10",
+    "@nestjs/platform-express": "^11.0.1",
     "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0 || ^11.0.0",
+    "@nestjs/core": "^10.0.0 || ^11.0.0",
+    "@nestjs/platform-express": "^10.0.0 || ^11.0.0",
+    "express-session": "^1.18.1"
+  },
+  "peerDependenciesMeta": {
+    "express-session": {
+      "optional": true
+    },
+    "@nestjs/platform-express": {
+      "optional": true
+    }
   }
 }
