@@ -258,7 +258,7 @@ This project's front-end environment installs the @hotwired series and @tailwind
 
 There is currently a difficult issue to resolve between the Multer library and CSRF (Cross-Site Request Forgery) handling.
 
-Problem: When using a multipart form for file uploads with a file upload interceptor in the controller, the globally executed `CsrfGuard` fails to receive the `_csrf` value from the request body. A temporary workaround is to use a query string for the `_csrf` value, but this is not recommended.
+Problem: When using a multipart form for file uploads with a file upload interceptor in the controller, the globally executed `CsrfGuard` fails to receive the `_csrft` value from the request body. A temporary workaround is to use a query string for the `_csrft` value, but this is not recommended.
 
 Solution: Using `@hotwired/turbo` can solve this problem cleanly. Set the CSRF token value in an HTML meta tag as follows:
 
