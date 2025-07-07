@@ -1,67 +1,69 @@
+[View Korean version](./README_KR.md)
+
 # NestJS MVC Tools
 
-**NestJS MVC Tools**는 NestJS에서 전통적인 웹 개발 방식을 좀 더 편하게 시작할 수 있도록 도움을 드리는 작은 도구입니다.
+**NestJS MVC Tools** is a small toolkit to help you get started with traditional web development in NestJS more easily.
 
-AdonisJS의 Edge.js 템플릿 엔진에 Ruby on Rails의 Hotwired를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 Vite를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
+It combines the Edge.js template engine from AdonisJS with Hotwired from Ruby on Rails to build modern web applications. In addition, you can use front-end libraries like TailwindCSS through an asset pipeline using Vite.
 
-완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
 
-## 개발자의 말
+## Developer's Note
 
-NestJS의 강력한 DI 시스템을 좋아하지만, 때로는 AdonisJS나 Laravel, Ruby on Rails와 같은 풀스택 환경이 부러울 때가 있습니다. NestJS 생태계에서 프론트엔드 구성을 위한 라이브러리를 찾아봤지만 마땅한 것을 찾지 못해, 결국 저의 입맛대로 만들게 되었습니다.
+I love NestJS's powerful DI system, but sometimes I envy full-stack environments like AdonisJS, Laravel, or Ruby on Rails. I couldn't find a suitable library for front-end configuration in the NestJS ecosystem, so I ended up creating one to my own taste.
 
-이 라이브러리는 다른 훌륭한 개발자분들이 만들어놓은 작품들을 조립하여 NestJS에 맞게 패키징한 것에 불과합니다. 지속적으로 잘 관리할 자신도 없기 때문에, 비슷한 생각을 가진 분이 계시다면 더 나은 라이브러리를 출시해주시길 바랍니다. ~~(제가 편하게 쓰기 위해서요)~~
+This library is merely a package of works created by other great developers, assembled and adapted for NestJS. I'm not confident in my ability to maintain it continuously, so if someone with similar ideas exists, I hope they will release a better library. ~~(So I can use it comfortably)~~
 
-## 주요 기능
+## Main Features
 
-### Edge.js 템플릿 엔진 모듈화
+### Edge.js Template Engine Modularization
 
-AdonisJS의 Edge.js 템플릿 엔진을 NestJS에서도 활용할 수 있도록 모듈화하여 제공합니다. 이를 통해 두 프레임워크 간의 템플릿 공유 및 재사용성을 높일 수 있습니다.
+It provides the Edge.js template engine from AdonisJS as a module for use in NestJS. This increases template sharing and reusability between the two frameworks.
 
-### 프론트엔드 디렉토리 자동 구성
+### Automatic Front-end Directory Configuration
 
-내장된 CLI를 통해 프론트엔드 리소스 폴더를 자동으로 생성하고 구성하여, 빠르게 프로젝트를 시작하고 개발 환경을 설정할 수 있도록 돕습니다.
+The built-in CLI helps you quickly start your project and set up the development environment by automatically creating and configuring the front-end resource folder.
 
-### Vite 기반 에셋 파이프라인 구축
+### Vite-based Asset Pipeline
 
-Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파이프라인을 통해 프로덕션 환경에서 최적화된 에셋을 제공합니다.
+It utilizes Vite to support a front-end development server and provides optimized assets for the production environment through an asset pipeline.
 
-### CSRF 보호
+### CSRF Protection
 
-기본적인 토큰 기반의 CSRF(Cross-Site Request Forgery) 보호 기능을 제공하여 애플리케이션의 보안을 강화합니다. (이 기능은 추후 변경될 수 있습니다.)
+Provides basic token-based CSRF (Cross-Site Request Forgery) protection to enhance application security. (This feature may change in the future.)
 
-### 플래시 메시지
+### Flash Messages
 
-세션을 기반으로 한 임시 메시지 및 데이터 기능을 제공하여 사용자에게 필요한 정보를 효과적으로 전달하고, UI/UX를 개선할 수 있습니다.
+Provides session-based temporary message and data functionality to effectively deliver necessary information to users and improve UI/UX.
 
-### MVC 예외 처리
+### MVC Exception Handling
 
-템플릿 엔진과 연동되는 MVC(Model-View-Controller) 기반의 예외 처리 메커니즘을 제공하여, 개발자가 애플리케이션의 오류를 효율적으로 관리하고 사용자에게 친화적인 오류 화면을 제공할 수 있도록 돕습니다.
+Provides an MVC (Model-View-Controller) based exception handling mechanism that integrates with the template engine, helping developers efficiently manage application errors and provide user-friendly error screens.
 
-### 모던 웹 호환성
+### Modern Web Compatibility
 
-Hotwired/Turbo와 같은 최신 웹 기술들과의 호환성을 지원하여, SPA(Single Page Application)와 유사한 사용자 경험을 제공하면서도 서버 사이드 렌더링의 장점을 유지할 수 있습니다.
+Supports compatibility with modern web technologies like Hotwired/Turbo, allowing for a user experience similar to a SPA (Single Page Application) while retaining the benefits of server-side rendering.
 
-## 설치
+## Installation
 
 ```bash
 npm install nestjs-mvc-tools
 ```
 
-## 빠른 시작
+## Quick Start
 
-NestJS에서 MVC 패턴을 사용하기 위한 기본 설정을 도와드립니다.
+This guide helps you with the basic setup for using the MVC pattern in NestJS.
 
-### 1. 프로젝트 초기화
+### 1. Initialize Project
 
 ```bash
-# MVC 템플릿 및 리소스 설정
+# Setup MVC templates and resources
 nestjs-mvc-tools init
 ```
 
-프로젝트 root 경로에 resources 디렉토리를 생성하고 내부 vite 개발환경의 필요한 의존성을 다운로드합니다.
+This creates a `resources` directory in your project root and downloads the necessary dependencies for the internal Vite development environment.
 
-### 2. 정적 파일 경로 설정
+### 2. Configure Static Assets Path
 
 ```ts
 // main.ts
@@ -73,7 +75,7 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // 추가
+  // Add this line
   app.useStaticAssets(join(process.cwd(), "resources", "public"), {
     prefix: "/public",
   });
@@ -82,7 +84,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-### 3. NestMvcCoreModule 모듈 등록
+### 3. Register NestMvcCoreModule
 
 ```typescript
 // app.module.ts
@@ -95,7 +97,7 @@ import { NestMvcCoreModule } from "nestjs-mvc-tools";
 export class AppModule {}
 ```
 
-### 4. 컨트롤러 작성
+### 4. Create a Controller
 
 ```typescript
 // app.controller.ts
@@ -115,69 +117,69 @@ export class AppController {
 }
 ```
 
-#### 연결된 템플릿 확인
+#### Check the linked template
 
 ```html
-// resources/views/pages/hello_world/index.edge @layout.app({ title:
-'Helloworld'})
+// resources/views/pages/hello_world/index.edge
+@layout('components/layout/app', { title: 'Helloworld' })
 <h1 data-controller="hello" class="text-3xl">{{ message ?? 'hello world' }}</h1>
 @end
 ```
 
-### 5. 프로젝트 실행
+### 5. Run the Project
 
 ```bash
-# 1. vite 개발 서버 실행
+# 1. Run the Vite development server
 cd resources && npm run dev
 
-# 2. nestjs 서버 실행
+# 2. Run the NestJS server
 npm run start:dev
 ```
 
-concurrently 라이브러리를 사용하면 다음과 같이 구성할 수 있습니다.
+If you use the `concurrently` library, you can configure it as follows:
 
 ```json
 // package.json
 "scripts": {
   "start:resource": "cd resources && npm run dev",
-  "start:dev": "cross-env NODE_ENV=development concurrently \"nest start --watch\" \"npm run start:resource\"",
+  "start:dev": "cross-env NODE_ENV=development concurrently "nest start --watch" "npm run start:resource"",
 }
 ```
 
-그리고 `npm run start:dev` 하나로 실행 가능
+And run it with a single command: `npm run start:dev`
 
-## CLI 명령어
+## CLI Commands
 
 ### `nestjs-mvc-tools init`
 
-프로젝트에 기본적인 MVC 템플릿과 리소스 구조를 생성합니다.
+Creates a basic MVC template and resource structure in your project.
 
 ```bash
 nestjs-mvc-tools init
 ```
 
-**생성되는 구조:**
+**Generated Structure:**
 
 ```
 resources/
-├── package.json        # Vite 개발 환경
-├── vite.config.js      # Vite 설정
+├── package.json        # Vite development environment
+├── vite.config.js      # Vite configuration
 ├── src/
-│   ├── app.js         # 프론트엔드 엔트리
-│   └── tailwind.css   # 스타일
+│   ├── app.js         # Front-end entry point
+│   └── tailwind.css   # Styles
 ├── views/
-│   ├── components/    # 재사용 컴포넌트
-│   └── pages/         # 페이지 템플릿
+│   ├── components/    # Reusable components
+│   └── pages/         # Page templates
 └── public/
-    └── builds/        # 빌드된 에셋
+    └── builds/        # Built assets
 ```
 
-## 설정
+## Configuration
 
-### 기본 설정
+### Default Configuration
 
 ```typescript
-// 설정을 포함하지 않으면 기본으로 제공하는 값
+// Default values are provided if no configuration is included.
 NestMvcCoreModule.forRoot({
   edgeTemplate: {
     rootDir: join(process.cwd(), "resources", "views"),
@@ -193,10 +195,10 @@ NestMvcCoreModule.forRoot({
 });
 ```
 
-### 비동기 설정
+### Asynchronous Configuration
 
-configService와 같은 설정값을 가져오거나, 더욱 세부적인 관리가 필요하다면 옵션 팩토리를 활용하여 비동기 설정을 구성할 수 있습니다.
-아래 코드는 NestMvcCoreOptionsFactory를 구현하여 NestMvcCoreModule에 비동기 설정을 제공하는 예시입니다.
+If you need to fetch configuration values from a service like `ConfigService` or require more detailed management, you can use an options factory to configure asynchronously.
+The code below is an example of implementing `NestMvcCoreOptionsFactory` to provide asynchronous configuration to `NestMvcCoreModule`.
 
 ```typescript
 @Injectable()
@@ -221,19 +223,19 @@ NestMvcCoreModule.forRootAsync({
 });
 ```
 
-## 선택적 의존성
+## Optional Dependencies
 
-### express-session (권장)
+### express-session (Recommended)
 
-세션 설정 없이도 기본적인 템플릿 렌더링은 문제없이 작동합니다. 
-하지만 CSRF 토큰과 플래시 메시지 같은 기능들은 express-session에 의존하고 있습니다.
-이러한 기능들을 제대로 사용하려면 express-session 설치를 권장합니다.
+Basic template rendering works fine without session setup.
+However, features like CSRF tokens and flash messages depend on `express-session`.
+To use these features properly, installing `express-session` is recommended.
 
 ```bash
 npm install express-session
 ```
 
-**main.ts 설정:**
+**main.ts setup:**
 
 ```typescript
 import * as session from "express-session";
@@ -243,22 +245,22 @@ app.use(
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 86400000 }, // 24시간
+    cookie: { maxAge: 86400000 }, // 24 hours
   })
 );
 ```
 
-## 프로젝트 기본 라이브러리 및 주요 고려 사항
+## Project Defaults and Key Considerations
 
-이 프로젝트의 프론트환경에서는 @hotwired 시리즈와 @tailwindcss 라이브러리를 기본적으로 설치합니다. 이 두 라이브러리는 필수는 아니므로 원한다면 제거할 수 있습니다. 하지만 Hotwired는 이 프로젝트에서 활용도가 높으므로 사용을 권장합니다.
+This project's front-end environment installs the @hotwired series and @tailwindcss libraries by default. These two libraries are not mandatory, so you can remove them if you wish. However, using Hotwired is highly recommended as it is very useful in this project.
 
-### Multer와 CSRF 처리 이슈 해결 방안
+### Resolving Issues with Multer and CSRF Handling
 
-현재 Multer 라이브러리와 CSRF(Cross-Site Request Forgery) 처리 간에 해결하기 어려운 이슈가 있습니다.
+There is currently a difficult issue to resolve between the Multer library and CSRF (Cross-Site Request Forgery) handling.
 
-문제점: 파일 업로드를 위한 멀티파트 폼과 컨트롤러의 파일 업로드 인터셉터를 함께 사용할 경우, 전역으로 실행되는 CsrfGuard가 요청 본문(body)에서 \_csrf 값을 받지 못하는 문제가 발생합니다. 임시 방편으로 쿼리 스트링(\_csrf 값)을 사용하는 방법도 있지만, 이는 권장되지 않습니다.
+Problem: When using a multipart form for file uploads with a file upload interceptor in the controller, the globally executed `CsrfGuard` fails to receive the `_csrf` value from the request body. A temporary workaround is to use a query string for the `_csrf` value, but this is not recommended.
 
-해결 방안: @hotwired/turbo를 사용하면 이 문제를 깔끔하게 해결할 수 있습니다. 다음과 같이 HTML meta 태그에 CSRF 토큰 값을 설정하세요.
+Solution: Using `@hotwired/turbo` can solve this problem cleanly. Set the CSRF token value in an HTML meta tag as follows:
 
 ```html
 // resources/views/components/layouts/app.edge
@@ -266,26 +268,22 @@ app.use(
 <meta name="csrf-token" content="{{ csrfToken }}" />
 ```
 
-이렇게 설정하면 Turbo가 자동으로 이 값을 요청 헤더의 X-CSRF-Token으로 설정합니다. 덕분에 Multer 라이브러리와 관계없이 CSRF 보호가 정상적으로 작동하며, 라이브러리에서 기본으로 제공하는 CsrfGuard도 이 기능을 염두에 두고 설계되었습니다.
+With this setup, Turbo automatically sets this value in the `X-CSRF-Token` request header. As a result, CSRF protection works correctly regardless of the Multer library, and the default `CsrfGuard` provided by this library is designed with this functionality in mind.
 
-### Vite HMR 지원 이슈
+### Vite HMR Support Issues
 
-현재 프로젝트에서는 Vite의 HMR(Hot Module Replacement)이 제대로 지원되지 않습니다. 이로 인해 코드를 수정해도 웹사이트에 즉시 반영되지 않고, 변경 사항을 확인하려면 수동으로 새로고침해야 합니다.
+Currently, Vite's HMR (Hot Module Replacement) is not fully supported in this project. This means that code changes are not immediately reflected on the website, and you must manually refresh to see the changes.
 
-이러한 현상은 Vite가 주로 정적 에셋 관리를 담당하고, Edge.js 템플릿 엔진은 NestJS 서버 측에서 실행되기 때문에 발생합니다. 즉, 프론트엔드와 백엔드 환경이 분리되어 있어 Vite의 HMR 기능을 온전히 활용하기 어렵습니다.
+This occurs because Vite primarily manages static assets, while the Edge.js template engine runs on the NestJS server side. In other words, the front-end and back-end environments are separate, making it difficult to fully utilize Vite's HMR capabilities.
 
-AdonisJS는 ESM(ECMAScript Modules) 환경을 기반으로 설계되어 프론트엔드 구성 자체가 하나의 프로젝트처럼 긴밀하게 작동합니다. 반면 NestJS는 CommonJS 환경에서 널리 사용되어 왔습니다. NestJS에서도 ESM 설정이 불가능한 것은 아니지만, 기존 라이브러리와의 충돌 등 예상치 못한 문제가 발생했을 때 대응하기 어렵다고 판단했습니다. 따라서 NestJS의 기존 환경 구성은 건드리지 않고, 확장하는 구조를 택했습니다. 이러한 접근 방식 때문에 프론트엔드와 백엔드를 독립적으로 빌드하고 배포하는 것이 일반적이며, HMR 통합에 제약이 발생하고 있습니다.
+AdonisJS is designed based on an ESM (ECMAScript Modules) environment, where the front-end configuration works closely together like a single project. In contrast, NestJS has been widely used in a CommonJS environment. While it's not impossible to set up ESM in NestJS, I decided it would be difficult to handle unexpected issues like conflicts with existing libraries. Therefore, I chose a structure that extends the existing NestJS environment without altering it. This approach typically involves building and deploying the front-end and back-end independently, which creates limitations for HMR integration.
 
-현재로서는 개발 편의성과 관리 효율성 사이의 적절한 타협점을 찾기 위해 노력하고 있습니다.
+Currently, we are striving to find a suitable compromise between development convenience and management efficiency.
 
-## 🌟 예제 프로젝트
+## 🌟 Example Project
 
-완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
 
-## 📝 라이선스
+## 📝 License
 
 ISC License
-
----
-
-**NestJS MVC Tools**는 NestJS에서 전통적인 웹 개발 방식을 좀 더 편하게 시작할 수 있도록 도움을 드리는 작은 도구입니다.
