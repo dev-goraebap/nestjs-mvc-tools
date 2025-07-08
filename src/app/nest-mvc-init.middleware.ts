@@ -52,7 +52,7 @@ export class NestMvcInitMiddleware implements NestMiddleware {
 
     if (!req?.session) {
       this.logger.warn(`
-      세션이 활성화되지 않았습니다. Flash, Csrf Token 기능을 사용하기 위해 세션을 설정해주세요.
+      세션이 활성화되지 않았습니다. Flash 기능을 사용하기 위해 세션을 설정해주세요.
       https://github.com/dev-goraebap/nestjs-mvc-tools?tab=readme-ov-file#express-session-recommended
       `);
       return next();
