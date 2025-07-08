@@ -23,7 +23,7 @@ export class NestMvcFlash {
   }
 
   /**
-   * 플래시 메시지 조회 (삭제하지 않음)
+   * 플래시 메시지 조회
    */
   get(key?: string): any {
     if (!this.req.session) return null;
