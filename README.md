@@ -219,13 +219,53 @@ NestMvcCoreModule.forRootAsync({
 });
 ```
 
-## Optional Dependencies
+## Flash Messages
 
-### express-session (Recommended)
+This library provides a way to display one-time messages (flash messages) to users in your web application. Flash messages are primarily useful for giving users feedback after a form submission, such as success or failure notifications, or validation errors.
 
-Basic template rendering works fine without session setup.
-However, features like CSRF tokens and flash messages depend on `express-session`.
-To use these features properly, installing `express-session` is recommended.
+You can use flash messages in two ways:
+
+### Using the @Flash() Decorator
+
+Inject a NestMvcFlash instance using the @Flash() decorator to set flash messages.
+
+
+```ts
+@Post()
+async create(@Body() dto: any, @Flash() flash: NestMvcFlash, @Res() res: Response) {
+  if (!dto) {
+    // MVC Exception Handling: Displays a "Task failed" message while preserving the data entered in the form on the screen.
+    throw new MvcValidationException('Task failed');
+  }
+  // Sets a success message.
+  flash.success('Task successful');
+  // Redirects to the specified path.
+  return res.redirect('/admin/documents');
+}
+```
+
+### Using the @Req Decorator with the NestMvcReq Object Type
+
+NestMvcReq is an extended request object that adds view and flash properties to the existing Request object. This allows you to use flash functionality via req.flash.
+
+
+```ts
+@Post()
+async create(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (!req.body) {
+    // MVC Exception Handling: Displays a "Task failed" message while preserving the data entered in the form on the screen.
+    throw new MvcValidationException('Task failed');
+  }
+  // Sets a success message.
+  req.flash.success('Task successful');
+  // Redirects to the specified path.
+  return res.redirect('/admin/documents');
+}
+```
+
+### Important: Session Dependency
+
+Flash messages internally depend on sessions. While rendering functionality itself won't throw an error if a session isn't active, you'll continuously receive warning messages. Therefore, to use flash message features reliably, sessions must be enabled. We recommend installing express-session to utilize these features.
 
 ```bash
 npm install express-session

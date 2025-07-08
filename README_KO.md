@@ -217,13 +217,49 @@ NestMvcCoreModule.forRootAsync({
 });
 ```
 
-## 선택적 의존성
+## 플래시 메시지
 
-### express-session (권장)
+이 라이브러리는 웹 애플리케이션에서 사용자에게 **일회성 메시지(플래시 메시지)**를 표시하는 기능을 제공합니다. 플래시 메시지는 주로 폼 제출 후 성공 또는 실패 알림, 유효성 검사 오류 등을 사용자에게 피드백할 때 유용합니다.
 
-세션 설정 없이도 기본적인 템플릿 렌더링은 문제없이 작동합니다. 
-하지만 CSRF 토큰과 플래시 메시지 같은 기능들은 express-session에 의존하고 있습니다.
-이러한 기능들을 제대로 사용하려면 express-session 설치를 권장합니다.
+아래 두 가지 방법으로 플래시 메시지를 사용할 수 있습니다.
+
+### @Flash() 데코레이터 사용
+
+@Flash() 데코레이터를 사용하여 NestMvcFlash 인스턴스를 주입받아 플래시 메시지를 설정합니다.
+
+```ts
+@Post()
+async create(@Body() dto: any, @Flash() flash: NestMvcFlash, @Res() res: Response) {
+  if (!dto) {
+    // MVC 예외 처리: 폼에 작성된 데이터를 화면에 유지하면서 '작업 실패' 메시지를 표시합니다.
+    throw new MvcValidationException('작업 실패');
+  }
+  // 성공 메시지를 설정합니다.
+  flash.success('작업 성공');
+  return res.redirect('/admin/documents');
+}
+```
+
+### @Req 데코레이터와 NestMvcReq 객체타입 사용
+
+NestMvcReq는 기존 Request 객체에 view와 flash 속성을 추가한 확장된 요청 객체입니다. 이를 통해 req.flash로 플래시 기능을 사용할 수 있습니다.
+
+```ts
+@Post()
+async create(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (!req.body) {
+    // MVC 예외 처리: 폼에 작성된 데이터를 화면에 유지하면서 '작업 실패' 메시지를 표시합니다.
+    throw new MvcValidationException('작업 실패');
+  }
+  // 성공 메시지를 설정합니다.
+  req.flash.success('작업 성공');
+  return res.redirect('/admin/documents');
+}
+```
+
+### 중요: 세션 의존성
+
+플래시 메시지는 내부적으로 세션(session)에 의존합니다. 세션이 활성화되어 있지 않아도 렌더링 기능 자체에는 오류가 발생하지 않지만, 지속적으로 경고 메시지가 발생합니다. 따라서 플래시 메시지 기능을 안정적으로 사용하려면 반드시 세션이 활성화되어 있어야 합니다. 이러한 기능들을 사용하려면 express-session 설치를 권장합니다.
 
 ```bash
 npm install express-session
