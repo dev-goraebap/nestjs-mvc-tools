@@ -5,21 +5,22 @@ import { join } from "path";
 import {
   NEST_MVC_CORE_OPTIONS,
   NestMvcCoreOptions,
-} from "../interfaces/nest-mvc-core-options";
-import { BaseLogger } from "../shared/base-logger";
+} from "../shared/interfaces";
 
-import { EdgeHelpers } from "./edge.helper";
+import { EdgeGlobalHelpers } from "./edge-global-helpers";
+import { NestMvcLogger } from "./nest-mvc-logger";
 
 @Injectable()
-export class EdgeRegistry extends BaseLogger {
+export class EdgeRegistry {
   private edge: Edge | null = null;
+  private readonly logger: NestMvcLogger;
 
   constructor(
     @Inject(NEST_MVC_CORE_OPTIONS)
     private readonly options: NestMvcCoreOptions
   ) {
-    super(EdgeRegistry.name, options);
-    this.debug("Init EdgeRegistry");
+    this.logger = new NestMvcLogger(EdgeRegistry.name, options.debug);
+    this.logger.debug("Init EdgeRegistry");
     this.init();
   }
 
@@ -34,7 +35,7 @@ export class EdgeRegistry extends BaseLogger {
 
   private async init() {
     if (this.edge) {
-      this.debug("Edge instance already exists, doing nothing.");
+      this.logger.debug("Edge instance already exists, doing nothing.");
       return;
     }
 
@@ -45,18 +46,16 @@ export class EdgeRegistry extends BaseLogger {
         cache: this.options.edgeTemplate.cache,
       });
 
-      this.debug(`기본 뷰 경로 마운트: ${this.options.edgeTemplate.rootDir}`);
       this.edge.mount(this.options.edgeTemplate.rootDir);
 
       for (let disk of this.options.edgeTemplate.disks) {
-        this.debug(`추가 디스크 마운트: ${disk}`);
         this.edge.mount(disk, join(this.options.edgeTemplate.rootDir, disk));
       }
 
-      const assetHelper = EdgeHelpers.createAssetHelper(this.options.vite);
+      const assetHelper = EdgeGlobalHelpers.createAssetHelper(this.options.vite);
       this.edge.global("asset", assetHelper);
 
-      this.debug(`Edge.js 초기화 완료: ${this.options.edgeTemplate.rootDir}`);
+      this.logger.debug(`Edge.js 초기화 완료: ${this.options.edgeTemplate.rootDir}`);
     } catch (err: unknown) {
       this.logger.error("Edge.js 초기화에 실패하였습니다:", err);
       if (err instanceof Error) {
