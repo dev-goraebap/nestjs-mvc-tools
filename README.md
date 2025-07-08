@@ -28,10 +28,6 @@ The built-in CLI helps you quickly start your project and set up the development
 
 It utilizes Vite to support a front-end development server and provides optimized assets for the production environment through an asset pipeline.
 
-### CSRF Protection
-
-Provides basic token-based CSRF (Cross-Site Request Forgery) protection to enhance application security. (This feature may change in the future.)
-
 ### Flash Messages
 
 Provides session-based temporary message and data functionality to effectively deliver necessary information to users and improve UI/UX.
@@ -103,14 +99,14 @@ export class AppModule {}
 // app.controller.ts
 import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { EdgeView, View } from "nestjs-mvc-tools";
+import { NestMvcView, View } from "nestjs-mvc-tools";
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(@View() view: EdgeView) {
+  async getHello(@View() view: NestMvcView) {
     const message = this.appService.getHello();
     return view.render("pages/hello_world/index", { message });
   }
@@ -242,10 +238,7 @@ import * as session from "express-session";
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 86400000 }, // 24 hours
+    secret: process.env.SESSION_SECRET || "your-secret-key"
   })
 );
 ```
@@ -253,22 +246,6 @@ app.use(
 ## Project Defaults and Key Considerations
 
 This project's front-end environment installs the @hotwired series and @tailwindcss libraries by default. These two libraries are not mandatory, so you can remove them if you wish. However, using Hotwired is highly recommended as it is very useful in this project.
-
-### Resolving Issues with Multer and CSRF Handling
-
-There is currently a difficult issue to resolve between the Multer library and CSRF (Cross-Site Request Forgery) handling.
-
-Problem: When using a multipart form for file uploads with a file upload interceptor in the controller, the globally executed `CsrfGuard` fails to receive the `_csrft` value from the request body. A temporary workaround is to use a query string for the `_csrft` value, but this is not recommended.
-
-Solution: Using `@hotwired/turbo` can solve this problem cleanly. Set the CSRF token value in an HTML meta tag as follows:
-
-```html
-// resources/views/components/layouts/app.edge
-
-<meta name="csrf-token" content="{{ csrfToken }}" />
-```
-
-With this setup, Turbo automatically sets this value in the `X-CSRF-Token` request header. As a result, CSRF protection works correctly regardless of the Multer library, and the default `CsrfGuard` provided by this library is designed with this functionality in mind.
 
 ### Vite HMR Support Issues
 

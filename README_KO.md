@@ -26,10 +26,6 @@ AdonisJS의 Edge.js 템플릿 엔진을 NestJS에서도 활용할 수 있도록 
 
 Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파이프라인을 통해 프로덕션 환경에서 최적화된 에셋을 제공합니다.
 
-### CSRF 보호
-
-기본적인 토큰 기반의 CSRF(Cross-Site Request Forgery) 보호 기능을 제공하여 애플리케이션의 보안을 강화합니다. (이 기능은 추후 변경될 수 있습니다.)
-
 ### 플래시 메시지
 
 세션을 기반으로 한 임시 메시지 및 데이터 기능을 제공하여 사용자에게 필요한 정보를 효과적으로 전달하고, UI/UX를 개선할 수 있습니다.
@@ -101,14 +97,14 @@ export class AppModule {}
 // app.controller.ts
 import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { EdgeView, View } from "nestjs-mvc-tools";
+import { NestMvcView, View } from "nestjs-mvc-tools";
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(@View() view: EdgeView) {
+  async getHello(@View() view: NestMvcView) {
     const message = this.appService.getHello();
     return view.render("pages/hello_world/index", { message });
   }
@@ -240,10 +236,7 @@ import * as session from "express-session";
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 86400000 }, // 24시간
+    secret: process.env.SESSION_SECRET || "your-secret-key"
   })
 );
 ```
@@ -251,22 +244,6 @@ app.use(
 ## 프로젝트 기본 라이브러리 및 주요 고려 사항
 
 이 프로젝트의 프론트환경에서는 @hotwired 시리즈와 @tailwindcss 라이브러리를 기본적으로 설치합니다. 이 두 라이브러리는 필수는 아니므로 원한다면 제거할 수 있습니다. 하지만 Hotwired는 이 프로젝트에서 활용도가 높으므로 사용을 권장합니다.
-
-### Multer와 CSRF 처리 이슈 해결 방안
-
-현재 Multer 라이브러리와 CSRF(Cross-Site Request Forgery) 처리 간에 해결하기 어려운 이슈가 있습니다.
-
-문제점: 파일 업로드를 위한 멀티파트 폼과 컨트롤러의 파일 업로드 인터셉터를 함께 사용할 경우, 전역으로 실행되는 CsrfGuard가 요청 본문(body)에서 `_csrft` 값을 받지 못하는 문제가 발생합니다. 임시 방편으로 쿼리 스트링(`_csrft` 값)을 사용하는 방법도 있지만, 이는 권장되지 않습니다.
-
-해결 방안: @hotwired/turbo를 사용하면 이 문제를 깔끔하게 해결할 수 있습니다. 다음과 같이 HTML meta 태그에 CSRF 토큰 값을 설정하세요.
-
-```html
-// resources/views/components/layouts/app.edge
-
-<meta name="csrf-token" content="{{ csrfToken }}" />
-```
-
-이렇게 설정하면 Turbo가 자동으로 이 값을 요청 헤더의 X-CSRF-Token으로 설정합니다. 덕분에 Multer 라이브러리와 관계없이 CSRF 보호가 정상적으로 작동하며, 라이브러리에서 기본으로 제공하는 CsrfGuard도 이 기능을 염두에 두고 설계되었습니다.
 
 ### Vite HMR 지원 이슈
 
