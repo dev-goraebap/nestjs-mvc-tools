@@ -1,4 +1,3 @@
-
 import { ArgumentsHost, Catch, ExceptionFilter, Inject } from "@nestjs/common";
 import { Response } from "express";
 
@@ -41,11 +40,15 @@ export class NestMvcExceptionFilter implements ExceptionFilter {
     if (exception instanceof MvcValidationException) {
       req.flash.error(exception.message).flashInput(["password", "_token"]);
 
-      const redirectUrl = req.headers.referer || "/";
-      this.logger.debug(
-        `유효성 검사 실패 리다이렉트: ${redirectUrl}`,
-        exception.errors
-      );
+      // 리다이렉트 URL 우선순위 적용
+      const redirectUrl = exception.redirectUrl || req.headers.referer || "/";
+
+      this.logger.debug(`유효성 검사 실패 리다이렉트: ${redirectUrl}`, {
+        exceptionRedirectUrl: exception.redirectUrl,
+        referer: req.headers.referer,
+        finalUrl: redirectUrl,
+        errors: exception.errors,
+      });
 
       return res.redirect(303, redirectUrl);
     }
