@@ -1,7 +1,7 @@
 {
   "name": "nestjs-mvc-tools",
   "version": "0.7.1",
-  "description": "A CLI tool to provide MVC features like Edge.js template engine and Vite integration for NestJS projects.",
+  "description": "NestJS MVC Tools is a small set of tools designed to help you get started more easily with traditional web development approaches in NestJS.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -27,7 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/dev-goraebap/nestjs-mvc-tools.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "commander": "^14.0.0",
     "edge.js": "^6.2.1",
