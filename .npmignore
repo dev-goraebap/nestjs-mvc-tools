@@ -1,0 +1,44 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Development files
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Environment
+.env*
+!.env.example
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build tools
+node_modules/
+.npm
+.eslintcache
+
+# Git
+.git/
+.gitignore
+
+# Development configs
+tsconfig.json
+.prettierrc*
+.eslintrc*
+jest.config.*
