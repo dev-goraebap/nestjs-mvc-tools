@@ -1,6 +1,6 @@
 {
   "name": "nestjs-mvc-tools",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A CLI tool to provide MVC features like Edge.js template engine and Vite integration for NestJS projects.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
