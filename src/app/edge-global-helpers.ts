@@ -36,7 +36,7 @@ export class EdgeGlobalHelpers {
         return "";
       }
 
-      return `/builds/${manifestEntry.file}`;
+      return `/public/builds/${manifestEntry.file}`;
     };
   }
 }
