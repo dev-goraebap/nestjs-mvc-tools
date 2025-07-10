@@ -69,12 +69,14 @@ export class MvcValidationException extends MvcException {
 
   constructor(
     message: string = "유효성 검사에 실패했습니다",
-    redirectUrl?: string,
-    errors: Record<string, string[]> = {},
-    oldData?: Record<string, any>
+    options?: {
+      redirectUrl?: string;
+      errors?: Record<string, string[]>;
+      oldData?: Record<string, any>;
+    }
   ) {
-    super(message, 400, oldData);
-    this.errors = errors;
-    this.redirectUrl = redirectUrl;
+    super(message, 400, options?.oldData);
+    this.errors = options?.errors ?? {};
+    this.redirectUrl = options?.redirectUrl;
   }
 }
