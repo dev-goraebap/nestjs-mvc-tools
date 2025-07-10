@@ -22,7 +22,11 @@
     "vite",
     "cli"
   ],
-  "author": "",
+  "author": "dev.goraebap <dev.goraebap@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-goraebap/nestjs-mvc-tools.git"
+  },
   "license": "ISC",
   "dependencies": {
     "commander": "^14.0.0",
@@ -30,13 +34,12 @@
     "fs-extra": "^11.3.0"
   },
   "devDependencies": {
-    "@nestjs/common": "^11.1.3",
-    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
     "@types/express": "^5.0.3",
     "@types/express-session": "^1.18.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.10",
-    "@nestjs/platform-express": "^11.0.1",
+    "express-session": "^1.18.1",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
@@ -47,9 +50,6 @@
   },
   "peerDependenciesMeta": {
     "express-session": {
-      "optional": true
-    },
-    "@nestjs/platform-express": {
       "optional": true
     }
   }
