@@ -300,7 +300,3 @@ Currently, we are striving to find a suitable compromise between development con
 ## 🌟 Example Project
 
 A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
-
-## 📝 License
-
-ISC License
