@@ -1,8 +1,6 @@
 import { Provider, Type } from "@nestjs/common";
-import { APP_FILTER } from "@nestjs/core";
 import { join } from "path";
 
-import { NestMvcExceptionFilter } from "./app/nest-mvc-exception.filter";
 import {
   NEST_MVC_CORE_OPTIONS,
   NestMvcCoreOptions,
@@ -29,10 +27,6 @@ export function provideCoreOptionsAsync(
     },
     inject: [useClass],
   };
-}
-
-export function provideExceptionFilter(): Provider {
-  return { provide: APP_FILTER, useClass: NestMvcExceptionFilter };
 }
 
 /**

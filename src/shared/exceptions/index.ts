@@ -1,82 +1,57 @@
-/**
- * MVC 전용 예외의 기본 클래스
- * NestJS의 HttpException과 분리하여 MVC 패턴에 특화된 예외 처리를 제공합니다.
- */
-export class MvcException extends Error {
-  public readonly statusCode: number;
-  public readonly data?: Record<string, any>;
+import { BadRequestException } from "@nestjs/common";
+import { Response } from "express";
+import { NestMvcReq } from "../interfaces";
 
-  constructor(
-    message: string,
-    statusCode: number = 500,
-    data?: Record<string, any>
+/**
+ * NestJS MVC 예외 처리 유틸 함수
+ *
+ * - BadRequestException 발생 시 flash 메시지와 input flash 처리 후 리다이렉트
+ * - 그 외 예외는 커스텀 에러 페이지를 렌더링하여 응답
+ *
+ * 프로젝트에서 직접 ExceptionFilter를 구현할 때 이 함수를 호출하거나,
+ * 아래의 추상 클래스를 상속받아 사용할 수 있습니다.
+ */
+export async function handleMvcException(
+  exception: any,
+  req: NestMvcReq,
+  res: Response
+) {
+  if (exception instanceof BadRequestException) {
+    req.flash.error(exception.message).flashInput(["password", "_token"]);
+    const redirectUrl = req.body?._redirect_to || req.headers.referer || "/";
+    return res.redirect(303, redirectUrl);
+  }
+  res.status(exception.getStatus());
+  try {
+    return res.send(
+      await req.view.render("pages/errors/index", {
+        error: exception.message,
+        status: exception.getStatus(),
+      })
+    );
+  } catch (renderError) {
+    // 에러 페이지 렌더링 실패 시 기본 텍스트 응답
+    return res.send(`Error ${exception.getStatus()}: ${exception.message}`);
+  }
+}
+
+/**
+ * NestJS MVC 예외 처리용 베이스 추상 클래스
+ *
+ * - handleMvcException 메서드는 내부적으로 위의 유틸 함수를 호출하여 중복을 제거합니다.
+ * - ExceptionFilter를 직접 구현할 때 이 클래스를 상속받아 사용하거나,
+ *   유틸 함수만 직접 호출하는 등 원하는 스타일로 활용하세요.
+ */
+export abstract class NestMvcBaseExceptionHandler {
+  /**
+   * 예외 처리 공통 로직을 실행합니다.
+   * 필요시 자식 클래스에서 이 메서드를 호출하세요.
+   */
+  protected async handleMvcException(
+    exception: any,
+    req: NestMvcReq,
+    res: Response
   ) {
-    super(message);
-    this.name = this.constructor.name;
-    this.statusCode = statusCode;
-    this.data = data;
-
-    // Error 스택 트레이스를 올바르게 설정
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-  }
-}
-
-/**
- * 페이지를 찾을 수 없을 때 사용하는 예외
- */
-export class MvcNotFoundException extends MvcException {
-  constructor(message: string = "페이지를 찾을 수 없습니다") {
-    super(message, 404);
-  }
-}
-
-/**
- * 권한이 없을 때 사용하는 예외
- */
-export class MvcForbiddenException extends MvcException {
-  constructor(message: string = "접근 권한이 없습니다") {
-    super(message, 403);
-  }
-}
-
-/**
- * 인증이 필요할 때 사용하는 예외
- */
-export class MvcUnauthorizedException extends MvcException {
-  constructor(message: string = "로그인이 필요합니다") {
-    super(message, 401);
-  }
-}
-
-/**
- * 서버에 에러시 사용하는 예외
- */
-export class MvcInternalServerException extends MvcException {
-  constructor(message: string = "무언가 잘못되었어요") {
-    super(message, 500);
-  }
-}
-
-/**
- * 유효성 검사 실패를 위한 예외
- * 폼 데이터 검증 실패 시 사용
- */
-export class MvcValidationException extends MvcException {
-  public readonly errors: Record<string, string[]>;
-  public readonly redirectUrl?: string;
-
-  constructor(
-    message: string = "유효성 검사에 실패했습니다",
-    options?: {
-      redirectUrl?: string;
-      errors?: Record<string, string[]>;
-      oldData?: Record<string, any>;
-    }
-  ) {
-    super(message, 400, options?.oldData);
-    this.errors = options?.errors ?? {};
-    this.redirectUrl = options?.redirectUrl;
+    return handleMvcException(exception, req, res);
   }
 }

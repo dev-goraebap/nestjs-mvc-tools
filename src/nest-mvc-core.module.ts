@@ -8,15 +8,12 @@ import {
 
 import { EdgeRegistry } from "./app/edge.registry";
 import { NestMvcInitMiddleware } from "./app/nest-mvc-init.middleware";
+import { provideCoreOptionsAsync, provideCoreOptionsSync } from "./providers";
 import {
+  NEST_MVC_CORE_OPTIONS,
   NestMvcCoreOptions,
   NestMvcCoreOptionsFactory,
 } from "./shared/interfaces";
-import {
-  provideCoreOptionsAsync,
-  provideCoreOptionsSync,
-  provideExceptionFilter,
-} from "./providers";
 
 @Module({})
 export class NestMvcCoreModule implements NestModule {
@@ -29,9 +26,9 @@ export class NestMvcCoreModule implements NestModule {
       module: NestMvcCoreModule,
       providers: [
         provideCoreOptionsSync(options),
-        provideExceptionFilter(),
         EdgeRegistry,
       ],
+      exports: [NEST_MVC_CORE_OPTIONS],
       global: true,
     };
   }
@@ -44,9 +41,9 @@ export class NestMvcCoreModule implements NestModule {
       providers: [
         options.useClass,
         provideCoreOptionsAsync(options.useClass),
-        provideExceptionFilter(),
         EdgeRegistry,
       ],
+      exports: [NEST_MVC_CORE_OPTIONS],
       global: true,
     };
   }
