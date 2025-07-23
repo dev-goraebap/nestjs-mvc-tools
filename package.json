@@ -9,6 +9,8 @@
   },
   "scripts": {
     "build": "tsc",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
@@ -39,6 +41,9 @@
     "@types/express-session": "^1.18.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.10",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.0.0",
     "express-session": "^1.18.1",
     "typescript": "^5.8.3"
   },
