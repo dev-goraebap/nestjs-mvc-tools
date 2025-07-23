@@ -14,7 +14,7 @@
   },
   "include": [
     "index.ts",
-    "src/**/*.ts",
+    "lib/**/*.ts",
     "cli/**/*.ts"
   ],
   "exclude": [

@@ -6,8 +6,8 @@ import {
   Type,
 } from "@nestjs/common";
 
-import { EdgeRegistry } from "./app/edge.registry";
-import { NestMvcInitMiddleware } from "./app/nest-mvc-init.middleware";
+import { EdgeRegistry } from "./core/edge.registry";
+import { NestMvcInitMiddleware } from "./core/nest-mvc-init.middleware";
 import { provideCoreOptionsAsync, provideCoreOptionsSync } from "./providers";
 import {
   NEST_MVC_CORE_OPTIONS,

@@ -2,8 +2,8 @@
   "name": "nestjs-mvc-tools",
   "version": "0.7.2",
   "description": "NestJS MVC Tools is a small set of tools designed to help you get started more easily with traditional web development approaches in NestJS.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "bin": {
     "nestjs-mvc-tools": "dist/cli/index.js"
   },
