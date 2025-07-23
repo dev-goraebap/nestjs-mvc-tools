@@ -8,7 +8,8 @@
     "nestjs-mvc-tools": "dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-resources",
+    "copy-resources": "node -e \"require('fs-extra').copySync('cli/copy-resources', 'dist/cli/copy-resources')\"",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "test": "jest",
@@ -18,7 +19,7 @@
   },
   "files": [
     "dist",
-    "templates"
+    "cli/copy-resources"
   ],
   "keywords": [
     "nestjs",

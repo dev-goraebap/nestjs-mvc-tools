@@ -27,7 +27,7 @@
 
         {{-- 카드 컴포넌트들을 반복하여 렌더링 --}}
         @each(card in cards)
-            @include('components/card', {
+            @!uikit.card({
                 title: card.title,
                 content: card.content,
                 footer: `카드 ${$loop.iteration} / ${cards.length}`

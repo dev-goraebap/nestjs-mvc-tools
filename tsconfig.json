@@ -15,12 +15,11 @@
   "include": [
     "index.ts",
     "lib/**/*.ts",
-    "cli/**/*.ts",
-    "tests/**/*.ts"
+    "cli/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "templates"
+    "cli/copy-resources"
   ]
 }
