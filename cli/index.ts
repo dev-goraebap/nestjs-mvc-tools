@@ -41,14 +41,24 @@ program
   .action(() => {
     log.title('NestJS MVC Tools Initializer');
     
-    const templateDir = path.resolve(__dirname, '../../templates');
+    const templateDir = path.resolve(__dirname, './copy-resources');
     const userProjectRoot = process.cwd();
     const destinationPath = path.join(userProjectRoot, 'resources');
+
+    // resources 폴더가 이미 존재하는지 확인
+    if (fs.existsSync(destinationPath)) {
+      log.warning('Resources directory already exists!');
+      log.info('Skipping template file copying to prevent overwriting existing files.');
+      log.info('If you want to reinitialize, please delete the resources directory first.');
+      console.log(`\n${colors.bright}${colors.yellow}⚠️  Setup Skipped${colors.reset}`);
+      console.log(`${colors.dim}Resources directory already exists at: ${destinationPath}${colors.reset}\n`);
+      return;
+    }
 
     log.step(`Copying template files to ${colors.dim}${destinationPath}${colors.reset}...`);
 
     try {
-      fs.copySync(templateDir, destinationPath, { overwrite: true });
+      fs.copySync(templateDir, destinationPath);
       log.success('Template files copied successfully!');
 
       log.step(`Installing dependencies in resources directory...`);
