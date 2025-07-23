@@ -15,7 +15,8 @@
   "include": [
     "index.ts",
     "lib/**/*.ts",
-    "cli/**/*.ts"
+    "cli/**/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules",
