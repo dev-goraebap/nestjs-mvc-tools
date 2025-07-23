@@ -48,7 +48,7 @@ export class EdgeRegistry {
 
       this.edge.mount(this.options.edgeTemplate.rootDir);
 
-      for (let disk of this.options.edgeTemplate.disks) {
+      for (const disk of this.options.edgeTemplate.disks) {
         this.edge.mount(disk, join(this.options.edgeTemplate.rootDir, disk));
       }
 
