@@ -38,7 +38,7 @@
 
     <main class="main">
         <div class="content">
-            @!section('content')
+            {{{ await $slots.main() }}}
         </div>
     </main>
 
