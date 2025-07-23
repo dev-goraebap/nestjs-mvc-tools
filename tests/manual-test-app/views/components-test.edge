@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        nav a { display: inline-block; margin-right: 15px; padding: 8px 15px; background: #007acc; color: white; text-decoration: none; border-radius: 5px; }
+        .info { background: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title }}</h1>
+        
+        <nav style="text-align: center; margin: 30px 0;">
+            <a href="/">← 홈으로</a>
+        </nav>
+
+        <div class="info">
+            <h2>🧩 컴포넌트 시스템 테스트</h2>
+            <p>아래 카드들은 <code>components/card.edge</code> 컴포넌트를 재사용하여 렌더링되었습니다.</p>
+        </div>
+
+        {{-- 카드 컴포넌트들을 반복하여 렌더링 --}}
+        @each(card in cards)
+            @include('components/card', {
+                title: card.title,
+                content: card.content,
+                footer: `카드 ${$loop.iteration} / ${cards.length}`
+            })
+        @end
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 30px 0;">
+            <h3>✅ 테스트된 Edge.js 컴포넌트 기능들</h3>
+            <ul style="margin: 15px 0; padding-left: 30px;">
+                <li>@include 지시어로 컴포넌트 삽입</li>
+                <li>컴포넌트에 데이터 전달</li>
+                <li>반복문 내에서 컴포넌트 사용</li>
+                <li>$loop 변수 활용 (iteration, total)</li>
+                <li>조건부 컴포넌트 렌더링 (@if/@end)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

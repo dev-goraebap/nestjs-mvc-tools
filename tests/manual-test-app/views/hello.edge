@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NestJS MVC Tools - Manual Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        .info { background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .timestamp { color: #666; font-size: 0.9em; }
+        nav { margin: 20px 0; }
+        nav a { display: inline-block; margin-right: 15px; padding: 8px 15px; background: #007acc; color: white; text-decoration: none; border-radius: 5px; }
+        nav a:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ message }}</h1>
+        
+        <div class="info">
+            <p>{{ description }}</p>
+            <p class="timestamp">렌더링 시간: {{ timestamp }}</p>
+        </div>
+
+        <nav>
+            <a href="/">홈</a>
+            <a href="/data-binding">데이터 바인딩 테스트</a>
+            <a href="/layout">레이아웃 테스트</a>
+            <a href="/components">컴포넌트 테스트</a>
+            <a href="/error-test">에러 테스트</a>
+        </nav>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+            <h3>✅ 확인된 기능들</h3>
+            <ul>
+                <li>NestMVC 모듈이 정상적으로 등록되었습니다</li>
+                <li>미들웨어가 req.view 객체를 주입했습니다</li>
+                <li>Edge.js 템플릿 엔진이 동작하고 있습니다</li>
+                <li>데이터 바인딩이 정상적으로 처리되었습니다</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
