@@ -5,3 +5,4 @@ templates/
 *.d.ts
 coverage/
 .nyc_output/
+tests
