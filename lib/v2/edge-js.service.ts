@@ -32,13 +32,13 @@ export class EdgeJsService {
     return this.edgeInstance;
   }
 
-  private async init() {
+  private init() {
     try {
       // EdgeJs 인스턴스 생성 및 속성 할당
-      const { Edge: EdgeConstructor } = await import("edge.js");
-      this.edgeInstance = EdgeConstructor.create();
+      this.edgeInstance = Edge.create();
 
       // 기본 경로 마운트
+      console.log(this.options.rootDir);
       this.edgeInstance.mount(this.options.rootDir);
 
       // 사용자 지정 디스크 마운트

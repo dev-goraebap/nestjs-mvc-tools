@@ -32,9 +32,9 @@ export class NestMvcModule implements NestModule {
     // 날것 그대로의 옵션 프로바이더 생성
     const nestMvcOptionsProvider: Provider = {
       provide: "NEST_MVC_OPTIONS",
-      useValue: () => options,
+      useValue: options,
     };
-    return this.getDynamicModulePlainObj(nestMvcOptionsProvider);
+    return this.getDynamicModulePlainObj([nestMvcOptionsProvider]);
   }
 
   /**
@@ -51,7 +51,17 @@ export class NestMvcModule implements NestModule {
       },
       inject: [options.useClass],
     };
-    return this.getDynamicModulePlainObj(nestMvcOptionsProvider);
+
+    // useClass에서 지정한 팩토리 클래스도 프로바이더로 등록
+    const factoryProvider: Provider = {
+      provide: "NEST_MVC_OPTIONS_FACTORY",
+      useClass: options.useClass,
+    };
+
+    return this.getDynamicModulePlainObj([
+      nestMvcOptionsProvider,
+      factoryProvider,
+    ]);
   }
 
   // --------------------------------------------------------
@@ -59,14 +69,14 @@ export class NestMvcModule implements NestModule {
   // --------------------------------------------------------
 
   private static getDynamicModulePlainObj(
-    nestMvcOptionsProvider: Provider
+    additionalProviders: Provider[] = []
   ): DynamicModule {
     return {
       global: true,
       module: NestMvcModule,
       providers: [
-        // 제공된 옵션 프로바이더
-        nestMvcOptionsProvider,
+        // 추가 프로바이더들
+        ...additionalProviders,
         // 옵션을 각 내부 클래스마다 필요한 옵션만 사용할 수 있게 제공하는 서비스
         NestMvcOptionsService,
         // EdgeJs 라이브러리를 Nestjs에서 사용할 수 있게 제공하는 서비스

@@ -15,6 +15,7 @@ export class NestMvcOptionsService {
   }
 
   private initViewOptions(options: Partial<EdgeJsViewOptions>) {
+    console.log(options);
     return {
       rootDir: options?.rootDir ?? join(process.cwd(), "resources", "views"),
       disks: options?.disks ?? [],
