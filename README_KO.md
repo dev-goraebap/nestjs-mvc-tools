@@ -4,7 +4,7 @@
 
 AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진에 Ruby on Rails의 [Hotwired](https://hotwired.dev/)를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
 
-완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+예제는 프로젝트의 [tests/manual-test-app](./tests/manual-test-app)에서 확인할 수 있습니다.
 
 ## 개발자의 말
 
@@ -32,7 +32,7 @@ Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파�
 
 ### MVC 예외 처리
 
-템플릿 엔진과 연동되는 MVC(Model-View-Controller) 기반의 예외 처리 메커니즘을 제공하여, 개발자가 애플리케이션의 오류를 효율적으로 관리하고 사용자에게 친화적인 오류 화면을 제공할 수 있도록 돕습니다.
+템플릿 엔진과 연동되는 MVC(Model-View-Controller) 기반의 간단한 예외 처리 추상 클래스를 제공하여, 개발자가 애플리케이션의 오류를 상황에 따라 처리할 수 있도록 합니다.
 
 ### 모던 웹 호환성
 
@@ -78,15 +78,23 @@ async function bootstrap() {
 bootstrap();
 ```
 
-### 3. NestMvcCoreModule 모듈 등록
+### 3. NestMvcModule 모듈 등록
 
 ```typescript
 // app.module.ts
 import { Module } from "@nestjs/common";
-import { NestMvcCoreModule } from "nestjs-mvc-tools";
+import { NestMvcModule } from "nestjs-mvc-tools";
+import { join } from "path";
 
 @Module({
-  imports: [NestMvcCoreModule.forRoot()],
+  imports: [
+    NestMvcModule.forRoot({
+      view: {
+        rootDir: join(__dirname, "..", "resources", "views"),
+        disks: [], // 추가 디스크 경로가 필요한 경우
+      },
+    }),
+  ],
 })
 export class AppModule {}
 ```
@@ -95,18 +103,18 @@ export class AppModule {}
 
 ```typescript
 // app.controller.ts
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Req } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { NestMvcView, View } from "nestjs-mvc-tools";
+import { NestMvcReq } from "nestjs-mvc-tools";
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(@View() view: NestMvcView) {
+  async getHello(@Req() req: NestMvcReq) {
     const message = this.appService.getHello();
-    return view.render("pages/hello_world/index", { message });
+    return req.view.render("pages/hello_world/index", { message });
   }
 }
 ```
@@ -174,45 +182,45 @@ resources/
 
 ```typescript
 // 설정을 포함하지 않으면 기본으로 제공하는 값
-NestMvcCoreModule.forRoot({
-  edgeTemplate: {
+NestMvcModule.forRoot({
+  view: {
     rootDir: join(process.cwd(), "resources", "views"),
-    disks: [],
-    cache: false,
+    disks: [], // 추가 템플릿 디스크 경로
   },
-  vite: {
+  asset: {
     mode: "development",
+    staticAssetPrefix: "/public",
     buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-    developServerUrl: "http://localhost:5173",
+    devServerUrl: "http://localhost:5173",
   },
-  debug: false,
 });
 ```
 
 ### 비동기 설정
 
 configService와 같은 설정값을 가져오거나, 더욱 세부적인 관리가 필요하다면 옵션 팩토리를 활용하여 비동기 설정을 구성할 수 있습니다.
-아래 코드는 NestMvcCoreOptionsFactory를 구현하여 NestMvcCoreModule에 비동기 설정을 제공하는 예시입니다.
+아래 코드는 NestMvcOptionsFactory를 구현하여 NestMvcModule에 비동기 설정을 제공하는 예시입니다.
 
 ```typescript
 @Injectable()
-export class NestMvcConfig implements NestMvcCoreOptionsFactory {
-  create(): NestMvcCoreOptions {
+export class NestMvcConfig implements NestMvcOptionsFactory {
+  create(): NestMvcOptions {
     return {
-      rootDir: join(process.cwd(), "resources", "views"),
-      disks: [],
-      cache: false,
-      vite: {
-        mode: "development",
-        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-        developServerUrl: "http://localhost:5173",
+      view: {
+        rootDir: join(process.cwd(), "resources", "views"),
+        disks: [],
       },
-      debug: false,
+      asset: {
+        mode: "development",
+        staticAssetPrefix: "/public",
+        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
+        devServerUrl: "http://localhost:5173",
+      },
     };
   }
 }
 
-NestMvcCoreModule.forRootAsync({
+NestMvcModule.forRootAsync({
   useClass: NestMvcConfig,
 });
 ```
@@ -220,25 +228,6 @@ NestMvcCoreModule.forRootAsync({
 ## 플래시 메시지
 
 이 라이브러리는 웹 애플리케이션에서 사용자에게 **일회성 메시지(플래시 메시지)**를 표시하는 기능을 제공합니다. 플래시 메시지는 주로 폼 제출 후 성공 또는 실패 알림, 유효성 검사 오류 등을 사용자에게 피드백할 때 유용합니다.
-
-아래 두 가지 방법으로 플래시 메시지를 사용할 수 있습니다.
-
-### @Flash() 데코레이터 사용
-
-@Flash() 데코레이터를 사용하여 NestMvcFlash 인스턴스를 주입받아 플래시 메시지를 설정합니다.
-
-```ts
-@Post()
-async create(@Body() dto: any, @Flash() flash: NestMvcFlash, @Res() res: Response) {
-  if (!dto) {
-    // MVC 예외 처리: 폼에 작성된 데이터를 화면에 유지하면서 '작업 실패' 메시지를 표시합니다.
-    throw new MvcValidationException('작업 실패');
-  }
-  // 성공 메시지를 설정합니다.
-  flash.success('작업 성공');
-  return res.redirect('/admin/documents');
-}
-```
 
 ### @Req 데코레이터와 NestMvcReq 객체타입 사용
 
@@ -249,11 +238,41 @@ NestMvcReq는 기존 Request 객체에 view와 flash 속성을 추가한 확장�
 async create(@Req() req: NestMvcReq, @Res() res: Response) {
   if (!req.body) {
     // MVC 예외 처리: 폼에 작성된 데이터를 화면에 유지하면서 '작업 실패' 메시지를 표시합니다.
-    throw new MvcValidationException('작업 실패');
+    throw new BadRequestException('작업 실패');
   }
   // 성공 메시지를 설정합니다.
   req.flash.success('작업 성공');
   return res.redirect('/admin/documents');
+}
+```
+
+### 예외 처리와 플래시 메시지 활용
+
+프로젝트에서는 `NestMvcBaseExceptionHandler`를 상속받아 MVC 예외 처리를 구현할 수 있습니다:
+
+```ts
+// exception.filter.ts
+import { Catch, ExceptionFilter, HttpException, ArgumentsHost } from '@nestjs/common';
+import { Response } from 'express';
+import { NestMvcBaseExceptionHandler, NestMvcReq } from 'nestjs-mvc-tools';
+
+@Catch(HttpException)
+export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const req: NestMvcReq = host.switchToHttp().getRequest();
+    const res: Response = host.switchToHttp().getResponse();
+
+    // API 요청인 경우 JSON 응답
+    if (req.url.startsWith('/api')) {
+      return res.json({
+        status: exception.getStatus(),
+        message: exception.message,
+      });
+    }
+
+    // MVC 페이지 예외 처리
+    return this.handleMvcException(exception, req, res);
+  }
 }
 ```
 
@@ -291,9 +310,28 @@ AdonisJS는 ESM(ECMAScript Modules) 환경을 기반으로 설계되어 프론�
 
 현재로서는 개발 편의성과 관리 효율성 사이의 적절한 타협점을 찾기 위해 노력하고 있습니다.
 
-## 🌟 예제 프로젝트
+## 라이브러리 테스트 이슈
 
-완전한 예제는 [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming)에서 확인할 수 있습니다.
+이 라이브러리는 Edge.js 템플릿 엔진을 사용하는데, 이는 ESM(ECMAScript Modules) 환경에서 사용되도록 만들어졌습니다. 하지만 대부분의 NestJS 프로젝트는 CommonJS 환경에서 실행되기 때문에 테스트 환경 구성에 어려움이 있습니다.
+
+### Jest E2E 테스트의 제약사항
+
+초기에는 `tests/tmp` 디렉토리에서 Jest를 활용한 E2E 테스트를 시도했으나, 다음과 같은 문제들로 인해 포기하게 되었습니다:
+
+- **모듈 시스템 충돌**: CommonJS 환경의 Jest에서 ESM 라이브러리인 Edge.js를 로드할 때 발생하는 호환성 문제
+- **복잡한 설정**: Jest의 ESM 지원을 위한 설정이 복잡하고, 다른 라이브러리들과의 충돌 가능성
+- **불안정한 테스트 환경**: 모듈 로딩 순서나 설정에 따라 테스트가 간헐적으로 실패하는 문제
+
+### 대안: 수동 테스트 환경
+
+이러한 제약사항으로 인해 현재는 `tests/manual-test-app`에서 실제 NestJS 애플리케이션을 실행하여 수동으로 기능을 테스트하고 있습니다:
+
+```bash
+# 테스트 앱 실행
+cd tests/manual-test-app
+npm install
+npm run start:dev
+```
 
 ---
 

@@ -6,7 +6,7 @@
 
 It combines the [Edge.js](https://edgejs.dev/docs/introduction) template engine from AdonisJS with [Hotwired](https://hotwired.dev/) from Ruby on Rails to build modern web applications. In addition, you can use front-end libraries like TailwindCSS through an asset pipeline using [Vite](https://vite.dev/).
 
-A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
+Examples can be found in the project's [tests/manual-test-app](./tests/manual-test-app).
 
 ## Developer's Note
 
@@ -18,7 +18,7 @@ This library is merely a package of works created by other great developers, ass
 
 ### Edge.js Template Engine Modularization
 
-It provides the Edge.js template engine from AdonisJS as a module for use in NestJS. This increases template sharing and reusability between the two frameworks.
+Provides the Edge.js template engine from AdonisJS as a module for use in NestJS. This increases template sharing and reusability between the two frameworks.
 
 ### Automatic Front-end Directory Configuration
 
@@ -26,7 +26,7 @@ The built-in CLI helps you quickly start your project and set up the development
 
 ### Vite-based Asset Pipeline
 
-It utilizes Vite to support a front-end development server and provides optimized assets for the production environment through an asset pipeline.
+Utilizes Vite to support a front-end development server and provides optimized assets for the production environment through an asset pipeline.
 
 ### Flash Messages
 
@@ -34,7 +34,7 @@ Provides session-based temporary message and data functionality to effectively d
 
 ### MVC Exception Handling
 
-Provides an MVC (Model-View-Controller) based exception handling mechanism that integrates with the template engine, helping developers efficiently manage application errors and provide user-friendly error screens.
+Provides a simple MVC (Model-View-Controller) based exception handling abstract class that integrates with the template engine, allowing developers to handle application errors based on different situations.
 
 ### Modern Web Compatibility
 
@@ -80,15 +80,23 @@ async function bootstrap() {
 bootstrap();
 ```
 
-### 3. Register NestMvcCoreModule
+### 3. Register NestMvcModule
 
 ```typescript
 // app.module.ts
 import { Module } from "@nestjs/common";
-import { NestMvcCoreModule } from "nestjs-mvc-tools";
+import { NestMvcModule } from "nestjs-mvc-tools";
+import { join } from "path";
 
 @Module({
-  imports: [NestMvcCoreModule.forRoot()],
+  imports: [
+    NestMvcModule.forRoot({
+      view: {
+        rootDir: join(__dirname, "..", "resources", "views"),
+        disks: [], // Add additional disk paths if needed
+      },
+    }),
+  ],
 })
 export class AppModule {}
 ```
@@ -97,18 +105,18 @@ export class AppModule {}
 
 ```typescript
 // app.controller.ts
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Req } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { NestMvcView, View } from "nestjs-mvc-tools";
+import { NestMvcReq } from "nestjs-mvc-tools";
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(@View() view: NestMvcView) {
+  async getHello(@Req() req: NestMvcReq) {
     const message = this.appService.getHello();
-    return view.render("pages/hello_world/index", { message });
+    return req.view.render("pages/hello_world/index", { message });
   }
 }
 ```
@@ -116,8 +124,8 @@ export class AppController {
 #### Check the linked template
 
 ```html
-// resources/views/pages/hello_world/index.edge
-@layout('components/layout/app', { title: 'Helloworld' })
+// resources/views/pages/hello_world/index.edge @layout.app({ title:
+'Helloworld'})
 <h1 data-controller="hello" class="text-3xl">{{ message ?? 'hello world' }}</h1>
 @end
 ```
@@ -138,7 +146,7 @@ If you use the `concurrently` library, you can configure it as follows:
 // package.json
 "scripts": {
   "start:resource": "cd resources && npm run dev",
-  "start:dev": "concurrently "nest start --watch" "npm run start:resource"",
+  "start:dev": "concurrently \"nest start --watch\" \"npm run start:resource\"",
 }
 ```
 
@@ -175,91 +183,98 @@ resources/
 ### Default Configuration
 
 ```typescript
-// Default values are provided if no configuration is included.
-NestMvcCoreModule.forRoot({
-  edgeTemplate: {
+// Default values are provided if no configuration is included
+NestMvcModule.forRoot({
+  view: {
     rootDir: join(process.cwd(), "resources", "views"),
-    disks: [],
-    cache: false,
+    disks: [], // Additional template disk paths
   },
-  vite: {
+  asset: {
     mode: "development",
+    staticAssetPrefix: "/public",
     buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-    developServerUrl: "http://localhost:5173",
+    devServerUrl: "http://localhost:5173",
   },
-  debug: false,
 });
 ```
 
 ### Asynchronous Configuration
 
 If you need to fetch configuration values from a service like `ConfigService` or require more detailed management, you can use an options factory to configure asynchronously.
-The code below is an example of implementing `NestMvcCoreOptionsFactory` to provide asynchronous configuration to `NestMvcCoreModule`.
+The code below is an example of implementing `NestMvcOptionsFactory` to provide asynchronous configuration to `NestMvcModule`.
 
 ```typescript
 @Injectable()
-export class NestMvcConfig implements NestMvcCoreOptionsFactory {
-  create(): NestMvcCoreOptions {
+export class NestMvcConfig implements NestMvcOptionsFactory {
+  create(): NestMvcOptions {
     return {
-      rootDir: join(process.cwd(), "resources", "views"),
-      disks: [],
-      cache: false,
-      vite: {
-        mode: "development",
-        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-        developServerUrl: "http://localhost:5173",
+      view: {
+        rootDir: join(process.cwd(), "resources", "views"),
+        disks: [],
       },
-      debug: false,
+      asset: {
+        mode: "development",
+        staticAssetPrefix: "/public",
+        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
+        devServerUrl: "http://localhost:5173",
+      },
     };
   }
 }
 
-NestMvcCoreModule.forRootAsync({
+NestMvcModule.forRootAsync({
   useClass: NestMvcConfig,
 });
 ```
 
 ## Flash Messages
 
-This library provides a way to display one-time messages (flash messages) to users in your web application. Flash messages are primarily useful for giving users feedback after a form submission, such as success or failure notifications, or validation errors.
+This library provides a way to display **one-time messages (flash messages)** to users in your web application. Flash messages are primarily useful for giving users feedback after a form submission, such as success or failure notifications, or validation errors.
 
-You can use flash messages in two ways:
-
-### Using the @Flash() Decorator
-
-Inject a NestMvcFlash instance using the @Flash() decorator to set flash messages.
-
-
-```ts
-@Post()
-async create(@Body() dto: any, @Flash() flash: NestMvcFlash, @Res() res: Response) {
-  if (!dto) {
-    // MVC Exception Handling: Displays a "Task failed" message while preserving the data entered in the form on the screen.
-    throw new MvcValidationException('Task failed');
-  }
-  // Sets a success message.
-  flash.success('Task successful');
-  // Redirects to the specified path.
-  return res.redirect('/admin/documents');
-}
-```
-
-### Using the @Req Decorator with the NestMvcReq Object Type
+### Using @Req Decorator with NestMvcReq Object Type
 
 NestMvcReq is an extended request object that adds view and flash properties to the existing Request object. This allows you to use flash functionality via req.flash.
-
 
 ```ts
 @Post()
 async create(@Req() req: NestMvcReq, @Res() res: Response) {
   if (!req.body) {
     // MVC Exception Handling: Displays a "Task failed" message while preserving the data entered in the form on the screen.
-    throw new MvcValidationException('Task failed');
+    throw new BadRequestException('Task failed');
   }
   // Sets a success message.
   req.flash.success('Task successful');
-  // Redirects to the specified path.
   return res.redirect('/admin/documents');
+}
+```
+
+### Exception Handling and Flash Message Usage
+
+Projects can implement MVC exception handling by extending `NestMvcBaseExceptionHandler`:
+
+```ts
+// exception.filter.ts
+import { Catch, ExceptionFilter, HttpException, ArgumentsHost } from '@nestjs/common';
+import { Response } from 'express';
+import { NestMvcBaseExceptionHandler, NestMvcReq } from 'nestjs-mvc-tools';
+
+@Catch(HttpException)
+export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const req: NestMvcReq = host.switchToHttp().getRequest();
+    const res: Response = host.switchToHttp().getResponse();
+
+    // Return JSON response for API requests
+    if (req.url.startsWith('/api')) {
+      return res.json({
+        status: exception.getStatus(),
+        message: exception.message,
+      });
+    }
+
+    // MVC page exception handling
+    return this.handleMvcException(exception, req, res);
+  }
 }
 ```
 
@@ -285,7 +300,7 @@ app.use(
 
 ## Project Defaults and Key Considerations
 
-This project's front-end environment installs the @hotwired series and @tailwindcss libraries by default. These two libraries are not mandatory, so you can remove them if you wish. However, using Hotwired is highly recommended as it is very useful in this project.
+This project's front-end environment installs the @hotwired series and @tailwindcss libraries by default. These two libraries are not mandatory, so you can remove them if you wish. However, using Hotwired is highly recommended as it has high utility in this project.
 
 ### Vite HMR Support Issues
 
@@ -293,10 +308,43 @@ Currently, Vite's HMR (Hot Module Replacement) is not fully supported in this pr
 
 This occurs because Vite primarily manages static assets, while the Edge.js template engine runs on the NestJS server side. In other words, the front-end and back-end environments are separate, making it difficult to fully utilize Vite's HMR capabilities.
 
-AdonisJS is designed based on an ESM (ECMAScript Modules) environment, where the front-end configuration works closely together like a single project. In contrast, NestJS has been widely used in a CommonJS environment. While it's not impossible to set up ESM in NestJS, I decided it would be difficult to handle unexpected issues like conflicts with existing libraries. Therefore, I chose a structure that extends the existing NestJS environment without altering it. This approach typically involves building and deploying the front-end and back-end independently, which creates limitations for HMR integration.
+AdonisJS is designed based on an ESM (ECMAScript Modules) environment, where the front-end configuration works closely together like a single project. In contrast, NestJS has been widely used in a CommonJS environment. While it's not impossible to set up ESM in NestJS, I judged it would be difficult to handle unexpected issues like conflicts with existing libraries when they occur. Therefore, I chose a structure that extends the existing NestJS environment configuration without altering it. This approach typically involves building and deploying the front-end and back-end independently, which creates limitations for HMR integration.
 
 Currently, we are striving to find a suitable compromise between development convenience and management efficiency.
 
-## 🌟 Example Project
+## Library Testing Issues
 
-A complete example can be found at [nestjs-mvc-is-coming](https://github.com/dev-goraebap/nestjs-mvc-is-coming).
+This library uses the Edge.js template engine, which is designed to work in an ESM (ECMAScript Modules) environment. However, most NestJS projects run in a CommonJS environment, which creates difficulties in configuring the test environment.
+
+### Jest E2E Testing Limitations
+
+Initially, we attempted E2E testing using Jest in the `tests/tmp` directory, but abandoned it due to the following issues:
+
+- **Module System Conflicts**: Compatibility issues when loading Edge.js, an ESM library, in Jest's CommonJS environment
+- **Complex Configuration**: Complex setup required for Jest's ESM support and potential conflicts with other libraries
+- **Unstable Test Environment**: Intermittent test failures depending on module loading order or configuration
+
+### Alternative: Manual Testing Environment
+
+Due to these limitations, we currently test functionality manually by running an actual NestJS application in `tests/manual-test-app`:
+
+```bash
+# Run test app
+cd tests/manual-test-app
+npm install
+npm run start:dev
+```
+
+**Testable Features:**
+- Edge.js template rendering: `http://localhost:3000/base-test/01`
+- Data passing and rendering: `http://localhost:3000/base-test/02`
+- Layout and components: `http://localhost:3000/base-test/03-04`
+- Vite asset pipeline: `http://localhost:3000/base-test/05`
+- Flash message testing: `http://localhost:3000/edgejs-template-state-test/01-02`
+- Exception handling testing: `http://localhost:3000/page-exception-test/01-03`
+
+While this approach is more cumbersome compared to automated testing, it has the advantage of verifying the library's behavior under the same conditions as the actual production environment.
+
+---
+
+**NestJS MVC Tools** is a small toolkit to help you get started with traditional web development in NestJS more easily.
