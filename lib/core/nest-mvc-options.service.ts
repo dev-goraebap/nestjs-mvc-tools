@@ -1,0 +1,52 @@
+import { Inject, Injectable } from "@nestjs/common";
+import { join } from "path";
+
+import {
+  ViteAssetsPipelineOptions,
+  EdgeJsViewOptions,
+  NestMvcOptions,
+} from "./nest-mvc.options";
+
+@Injectable()
+export class NestMvcOptionsService {
+  // --------------------------------------------------------
+  // 속성그룹
+  // --------------------------------------------------------
+
+  readonly viewOptions: EdgeJsViewOptions;
+  readonly assetOptions: ViteAssetsPipelineOptions;
+
+  // --------------------------------------------------------
+  // 기능그룹
+  // --------------------------------------------------------
+
+  constructor(
+    @Inject("NEST_MVC_OPTIONS")
+    private readonly options: NestMvcOptions
+  ) {
+    this.viewOptions = this.initViewOptions(this.options.view ?? {});
+    this.assetOptions = this.initAssetPipelineOptions(this.options.asset ?? {});
+  }
+
+  private initViewOptions(
+    options: Partial<EdgeJsViewOptions>
+  ): EdgeJsViewOptions {
+    return {
+      rootDir: options?.rootDir ?? join(process.cwd(), "resources", "views"),
+      disks: options?.disks ?? [],
+    };
+  }
+
+  private initAssetPipelineOptions(
+    options: Partial<ViteAssetsPipelineOptions>
+  ): ViteAssetsPipelineOptions {
+    return {
+      mode: options?.mode ?? "development",
+      staticAssetPrefix: options?.staticAssetPrefix ?? "/public",
+      buildOutDir:
+        options?.buildOutDir ??
+        join(process.cwd(), "resources", "public", "builds"),
+      devServerUrl: options?.devServerUrl ?? "http://localhost:5173",
+    };
+  }
+}

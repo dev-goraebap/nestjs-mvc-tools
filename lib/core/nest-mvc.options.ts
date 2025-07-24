@@ -1,10 +1,17 @@
 // --------------------------------------------------------
-// View 관련 옵션
+// 개별 옵션
 // --------------------------------------------------------
 
 export type EdgeJsViewOptions = {
   rootDir: string;
   disks: string[];
+};
+
+export type ViteAssetsPipelineOptions = {
+  mode: "development" | "production";
+  staticAssetPrefix: string;
+  buildOutDir: string;
+  devServerUrl: string;
 };
 
 // --------------------------------------------------------
@@ -13,6 +20,7 @@ export type EdgeJsViewOptions = {
 
 export type NestMvcOptions = {
   view?: Partial<EdgeJsViewOptions>;
+  asset?: Partial<ViteAssetsPipelineOptions>;
 };
 
 // --------------------------------------------------------

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { NestMvcReq } from "../interfaces";
+import { NestMvcReq } from "./nest-mvc.type";
 
 /**
  * NestJS MVC 예외 처리 유틸 함수
@@ -22,7 +22,7 @@ export async function handleMvcException(
   res: Response
 ) {
   if (exception.getStatus() === 400) {
-    req.flash.error(exception.message).flashInput();
+    // req.flash.error(exception.message).flashInput();
     const redirectUrl = req.body?._redirect_to || req.headers.referer || "/";
     return res.redirect(303, redirectUrl);
   }

@@ -1,17 +1,26 @@
+import { Injectable } from "@nestjs/common";
 import { readFileSync } from "fs";
 
-export class EdgeGlobalHelpers {
-  static createAssetHelper(options: {
-    developServerUrl: string;
-    buildOutDir: string;
-    mode: "development" | "production";
-  }) {
+import { NestMvcOptionsService } from "./nest-mvc-options.service";
+import { ViteAssetsPipelineOptions } from "./nest-mvc.options";
+
+@Injectable()
+export class ViteAssetPathHelperFactory {
+  private readonly options: ViteAssetsPipelineOptions;
+
+  constructor(private readonly optionsService: NestMvcOptionsService) {
+    this.options = this.optionsService.assetOptions;
+  }
+
+  create(): (path: string) => string {
     let manifest: Record<string, any> | null = null;
 
-    return function asset(path: string): string {
+    const options = this.options;
+
+    return function viteAssetPath(path: string): string {
       // 개발 환경에서는 Vite 개발 서버 URL을 반환
       if (options.mode === "development") {
-        return `${options.developServerUrl}/${path}`;
+        return `${options.devServerUrl}/${path}`;
       }
 
       // 프로덕션 환경에서는 매니페스트 파일을 통해 해시된 에셋 경로를 반환
@@ -36,7 +45,7 @@ export class EdgeGlobalHelpers {
         return "";
       }
 
-      return `/public/builds/${manifestEntry.file}`;
+      return `${options.staticAssetPrefix}/builds/${manifestEntry.file}`;
     };
   }
 }
