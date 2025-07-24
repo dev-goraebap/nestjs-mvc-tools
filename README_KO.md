@@ -186,6 +186,7 @@ NestMvcModule.forRoot({
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // 추가 템플릿 디스크 경로
+    cache: true,
   },
   asset: {
     mode: "development",
@@ -209,6 +210,7 @@ export class NestMvcConfig implements NestMvcOptionsFactory {
       view: {
         rootDir: join(process.cwd(), "resources", "views"),
         disks: [],
+        cache: true,
       },
       asset: {
         mode: "development",
@@ -252,18 +254,26 @@ async create(@Req() req: NestMvcReq, @Res() res: Response) {
 
 ```ts
 // exception.filter.ts
-import { Catch, ExceptionFilter, HttpException, ArgumentsHost } from '@nestjs/common';
-import { Response } from 'express';
-import { NestMvcBaseExceptionHandler, NestMvcReq } from 'nestjs-mvc-tools';
+import {
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  ArgumentsHost,
+} from "@nestjs/common";
+import { Response } from "express";
+import { NestMvcBaseExceptionHandler, NestMvcReq } from "nestjs-mvc-tools";
 
 @Catch(HttpException)
-export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements ExceptionFilter {
+export class AppExceptionFilter
+  extends NestMvcBaseExceptionHandler
+  implements ExceptionFilter
+{
   catch(exception: HttpException, host: ArgumentsHost) {
     const req: NestMvcReq = host.switchToHttp().getRequest();
     const res: Response = host.switchToHttp().getResponse();
 
     // API 요청인 경우 JSON 응답
-    if (req.url.startsWith('/api')) {
+    if (req.url.startsWith("/api")) {
       return res.json({
         status: exception.getStatus(),
         message: exception.message,
@@ -291,7 +301,7 @@ import * as session from "express-session";
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key"
+    secret: process.env.SESSION_SECRET || "your-secret-key",
   })
 );
 ```

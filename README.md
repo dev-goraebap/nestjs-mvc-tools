@@ -94,6 +94,7 @@ import { join } from "path";
       view: {
         rootDir: join(__dirname, "..", "resources", "views"),
         disks: [], // Add additional disk paths if needed
+        cache: true,
       },
     }),
   ],
@@ -188,6 +189,7 @@ NestMvcModule.forRoot({
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // Additional template disk paths
+    cache: true,
   },
   asset: {
     mode: "development",
@@ -211,6 +213,7 @@ export class NestMvcConfig implements NestMvcOptionsFactory {
       view: {
         rootDir: join(process.cwd(), "resources", "views"),
         disks: [],
+        cache: true,
       },
       asset: {
         mode: "development",
