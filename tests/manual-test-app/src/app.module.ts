@@ -1,17 +1,19 @@
 import { Module } from "@nestjs/common";
+import { NestMvcModule } from "nestjs-mvc-tools";
 import { join } from "path";
-import { NestMvcModule } from "../../../lib/v2/nest-mvc.module";
-import { TestController } from "./test.controller";
+
+import { Test01Controller } from "./controllers/test01.controller";
+import { Test02Controller } from "./controllers/test02.controller";
 
 @Module({
   imports: [
     NestMvcModule.forRoot({
       view: {
         rootDir: join(__dirname, "..", "resources", "views"),
-        disks: [], // 컴포넌트 디스크 추가
+        disks: ["test-disk"],
       },
     }),
   ],
-  controllers: [TestController],
+  controllers: [Test01Controller, Test02Controller],
 })
 export class AppModule {}
