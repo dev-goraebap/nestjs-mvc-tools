@@ -1,4 +1,4 @@
-export * from './src';
+export * from './lib';
 
 /**
  * options 설정 옵셔널로 하고 개별적인 설정 먹이기

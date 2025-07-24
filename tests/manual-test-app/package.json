@@ -1,0 +1,23 @@
+{
+  "name": "nestjs-mvc-tools-manual-test",
+  "version": "1.0.0",
+  "description": "Manual testing app for NestJS MVC Tools",
+  "private": true,
+  "scripts": {
+    "start": "node dist/main.js",
+    "start:dev": "ts-node src/main.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "edge.js": "^6.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "nestjs-mvc-tools": "file:../..",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.8.3"
+  }
+}
