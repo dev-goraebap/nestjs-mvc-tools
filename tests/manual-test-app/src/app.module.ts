@@ -15,6 +15,7 @@ import { PageExceptionTestController } from "./controllers/page-exception-test.c
       view: {
         rootDir: join(__dirname, "..", "resources", "views"),
         disks: ["test-disk"],
+        cache: true,
       },
       asset: {
         buildOutDir: join(__dirname, "..", "resources", "public", "builds"),
