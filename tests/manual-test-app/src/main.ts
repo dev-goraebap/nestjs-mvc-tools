@@ -1,10 +1,13 @@
 import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import session from "express-session";
 import { EdgeJsService } from "nestjs-mvc-tools";
 
+import { join } from "path";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   console.debug(`
   -----------------------------------------------------------------------
@@ -23,6 +26,25 @@ async function bootstrap() {
   const service = app.get(EdgeJsService);
   const edge = service.getEdgeInstance();
   edge.global("hello", "world");
+
+  app.use(
+    session({
+      name: "connect.sid",
+      secret: "session-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: "auto",
+        sameSite: "lax",
+      },
+    })
+  );
+
+  app.useStaticAssets(join(__dirname, "..", "resources", "views"), {
+    prefix: "/public",
+  });
 
   await app.listen(3000);
 }

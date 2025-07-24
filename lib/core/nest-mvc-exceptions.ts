@@ -21,6 +21,7 @@ export async function handleMvcException(
   req: NestMvcReq,
   res: Response
 ) {
+  console.log(exception.getStatus());
   if (exception.getStatus() === 400) {
     if (req?.session) {
       req.flash.error(exception.message).flashInput();
