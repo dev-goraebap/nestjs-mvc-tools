@@ -22,7 +22,10 @@ export async function handleMvcException(
   res: Response
 ) {
   if (exception.getStatus() === 400) {
-    // req.flash.error(exception.message).flashInput();
+    if (req?.session) {
+      req.flash.error(exception.message).flashInput();
+    }
+
     const redirectUrl = req.body?._redirect_to || req.headers.referer || "/";
     return res.redirect(303, redirectUrl);
   }
