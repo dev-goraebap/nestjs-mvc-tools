@@ -35,5 +35,6 @@ export class NestMvcMiddleware implements NestMiddleware {
     req.view.share({
       flash: req.flash.getAndClear(),
     });
+    return next();
   }
 }
