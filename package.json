@@ -14,8 +14,7 @@
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:manual": "cd tests/manual-test-app && npm install && npm run start:dev",
-    "test:manual:setup": "cd tests/manual-test-app && npm install"
+    "test:manual": "cd tests/manual-test-app && npm install && npm run start:dev"
   },
   "files": [
     "dist",
