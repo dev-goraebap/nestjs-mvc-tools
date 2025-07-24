@@ -5,6 +5,7 @@
 export type EdgeJsViewOptions = {
   rootDir: string;
   disks: string[];
+  cache: boolean;
 };
 
 export type ViteAssetsPipelineOptions = {

@@ -39,7 +39,9 @@ export class EdgeJsService {
   private init() {
     try {
       // EdgeJs 인스턴스 생성 및 속성 할당
-      this.edgeInstance = Edge.create();
+      this.edgeInstance = Edge.create({
+        cache: this.options.cache,
+      });
 
       // 기본 경로 마운트
       console.log(this.options.rootDir);
