@@ -34,7 +34,7 @@ export class BaseTestController {
 
   /**
    * @test EdgeJs 컴포넌트: 재사용 컴포넌트 사용
-   * http://localhost:3000/base-test/03
+   * http://localhost:3000/base-test/04
    */
   @Get("/04")
   async test04(@Req() req: NestMvcReq) {
