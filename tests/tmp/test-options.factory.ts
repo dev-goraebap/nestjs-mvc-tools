@@ -1,9 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { join } from "path";
-import {
-  NestMvcOptionsFactory,
-  NestMvcOptions,
-} from "../../lib/v2/nest-mvc.options";
+import { NestMvcOptionsFactory, NestMvcOptions } from "../../lib";
 
 @Injectable()
 export class TestOptionsFactory implements NestMvcOptionsFactory {

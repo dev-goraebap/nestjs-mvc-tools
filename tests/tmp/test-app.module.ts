@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { join } from "path";
-import { NestMvcModule } from "../../lib/v2/nest-mvc.module";
+import { NestMvcModule } from '../../lib';
 import { TestController } from "./test.controller";
 
 @Module({

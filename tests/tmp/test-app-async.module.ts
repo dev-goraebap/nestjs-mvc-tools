@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NestMvcModule } from '../../lib/v2/nest-mvc.module';
+import { NestMvcModule } from '../../lib';
 import { TestOptionsFactory } from './test-options.factory';
 import { TestController } from './test.controller';
 

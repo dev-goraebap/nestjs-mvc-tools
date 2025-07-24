@@ -1,5 +1,5 @@
 import { Controller, Get, Req } from "@nestjs/common";
-import { NestMvcReq } from "../../lib/v2/nest-mvc.type";
+import { NestMvcReq } from "../../lib";
 
 @Controller()
 export class TestController {
