@@ -14,6 +14,7 @@ export class NestMvcOptionsService {
   // 속성그룹
   // --------------------------------------------------------
 
+  readonly excludePaths: string[];
   readonly viewOptions: EdgeJsViewOptions;
   readonly assetOptions: ViteAssetsPipelineOptions;
   readonly csrfOptions: CsrfTokenOptions;
@@ -26,6 +27,11 @@ export class NestMvcOptionsService {
     @Inject("NEST_MVC_OPTIONS")
     private readonly options: NestMvcOptions
   ) {
+    this.excludePaths = this.options.excludePaths ?? [
+      "/api",
+      "/favicon.ico",
+      "/.well-known/appspecific/com.chrome.devtools.json",
+    ];
     this.viewOptions = this.initViewOptions(this.options.view ?? {});
     this.assetOptions = this.initAssetPipelineOptions(this.options.asset ?? {});
     this.csrfOptions = this.initCsrfTokenOptions(this.options.csrf ?? {});
@@ -61,7 +67,7 @@ export class NestMvcOptionsService {
       enabled: options?.enabled ?? false,
       ignoredMethods: options?.ignoredMethods ?? ["GET", "HEAD", "OPTIONS"],
       saltLength: options?.saltLength ?? 8,
-      secretLength: options?.secretLength ?? 18
+      secretLength: options?.secretLength ?? 18,
     };
   }
 }
