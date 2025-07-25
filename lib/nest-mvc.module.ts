@@ -28,6 +28,7 @@ export class NestMvcModule implements NestModule {
         NestMvcFlashMiddleware, // 플래시 메시지를 렌더러의 상태로 제공하는 미들웨어
         NestMvcCsrfMiddleware // CSRF 토큰을 생성하고 검증하는 미들웨어
       )
+      // .exclude("/api/*path") <- is not working... what the xx
       .forRoutes("*");
   }
 
