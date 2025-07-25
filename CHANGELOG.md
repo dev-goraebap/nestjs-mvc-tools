@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.1] - 2025-07-26
+
+### Changed
+- Added Korean version link to README file: <del>Oh, I forgot this while updating the documentation..</del>
+
 ## [0.9.0] - 2025-07-26
 
 ### Added
