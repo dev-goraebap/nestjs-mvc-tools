@@ -16,6 +16,7 @@ export class ShareInterceptor implements NestInterceptor {
     const req: NestMvcReq = context.switchToHttp().getRequest();
     
     /**
+     * Registered as global state for this request only
      * 해당 요청에 한해서 전역 상태로 등록됨
     */
     const categories = ["apple", "banana", "orange"];

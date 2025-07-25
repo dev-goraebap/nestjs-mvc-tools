@@ -14,11 +14,17 @@ async function bootstrap() {
   🚀 NestJS MVC Tools Manual Test App Starting...
   
   Server is running on http://localhost:3000
+  
+      en:
+      Due to Edge.js ES Module issues, manual testing is performed
+      by running the actual NestJS app instead of Jest unit tests.\      
+      Please verify that all v2 module features work correctly
+      by checking each route in the browser.
 
-    💡 Edge.js ES Module 이슈로 인해 Jest 단위 테스트 대신
+      ko: 
+      Edge.js ES Module 이슈로 인해 Jest 단위 테스트 대신
       실제 NestJS 앱을 실행하여 수동 테스트를 진행합니다.
-
-    🔍 각 경로를 브라우저에서 확인하여 v2 모듈의
+      각 경로를 브라우저에서 확인하여 v2 모듈의
       모든 기능이 정상 동작하는지 검증해주세요.
   -----------------------------------------------------------------------
   `);

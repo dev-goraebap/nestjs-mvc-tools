@@ -4,7 +4,8 @@ import { NestMvcReq } from "nestjs-mvc-tools";
 @Controller({ path: "base-test" })
 export class BaseTestController {
   /**
-   * @test edgejs renderer 정상 작동 확인
+   * @test en: Verify edgejs renderer normal operation
+   * @test ko: edgejs renderer 정상 작동 확인
    * http://localhost:3000/base-test/01
    */
   @Get("/01")
@@ -13,7 +14,8 @@ export class BaseTestController {
   }
 
   /**
-   * @test 렌더러에 데이터 전달 정상 작동 확인
+   * @test en: Verify normal operation of data passing to renderer
+   * @test ko: 렌더러에 데이터 전달 정상 작동 확인
    * http://localhost:3000/base-test/02
    */
   @Get("/02")
@@ -24,7 +26,8 @@ export class BaseTestController {
   }
 
   /**
-   * @test EdgeJs 컴포넌트: 레이아웃 사용
+   * @test en: EdgeJs component: Layout usage
+   * @test ko: EdgeJs 컴포넌트: 레이아웃 사용
    * http://localhost:3000/base-test/03
    */
   @Get("/03")
@@ -33,7 +36,8 @@ export class BaseTestController {
   }
 
   /**
-   * @test EdgeJs 컴포넌트: 재사용 컴포넌트 사용
+   * @test en: EdgeJs component: Reusable component usage
+   * @test ko: EdgeJs 컴포넌트: 재사용 컴포넌트 사용
    * http://localhost:3000/base-test/04
    */
   @Get("/04")
@@ -42,7 +46,8 @@ export class BaseTestController {
   }
 
   /**
-   * @test vite assets pipeline 정상 작동 확인
+   * @test en: Verify vite assets pipeline normal operation
+   * @test ko: vite assets pipeline 정상 작동 확인
    * http://localhost:3000/base-test/05
    */
   @Get("/05")

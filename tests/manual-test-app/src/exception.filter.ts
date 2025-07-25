@@ -22,7 +22,8 @@ export class AppExceptionFilter
     this.logger.warn(exception.message);
 
     // ---------------------------------------------------------
-    // api가 아닌 모든 경로는 페이지 관련 예외 처리
+    // en: All routes except API routes are handled by page-related exception processing
+    // ko: API가 아닌 모든 경로는 페이지 관련 예외 처리
     // ---------------------------------------------------------
 
     if (!req.originalUrl.startsWith("/api")) {
@@ -30,7 +31,7 @@ export class AppExceptionFilter
     }
 
     // ---------------------------------------------------------
-    // API 예외처리
+    // API exception handling
     // ---------------------------------------------------------
 
     if (exception instanceof HttpException) {
