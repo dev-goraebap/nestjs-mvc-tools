@@ -25,7 +25,7 @@ export class AppExceptionFilter
     // api가 아닌 모든 경로는 페이지 관련 예외 처리
     // ---------------------------------------------------------
 
-    if (!req.url.startsWith("/api")) {
+    if (!req.originalUrl.startsWith("/api")) {
       return this.handleMvcException(exception, req, res);
     }
 
