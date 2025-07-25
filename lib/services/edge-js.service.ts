@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Edge } from "edge.js";
 import { join } from "path";
+
+import { EdgeJsViewOptions } from "../nest-mvc.options";
 import { NestMvcOptionsService } from "./nest-mvc-options.service";
-import { EdgeJsViewOptions } from "./nest-mvc.options";
-import { ViteAssetPathHelperFactory } from "./vite-asset-path-helper.factory";
+import { ViteAssetPathHelperFactoryService } from "./vite-asset-path-helper-factory.service";
 
 /**
  * EdgeJs 템플릿 엔진을 N
@@ -23,7 +24,7 @@ export class EdgeJsService {
 
   constructor(
     private readonly optionsService: NestMvcOptionsService,
-    private readonly viteAssetPathHelperFactory: ViteAssetPathHelperFactory
+    private readonly viteAssetPathHelperFactory: ViteAssetPathHelperFactoryService
   ) {
     this.options = this.optionsService.viewOptions;
     this.init();

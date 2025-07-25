@@ -7,11 +7,14 @@ import {
   Type,
 } from "@nestjs/common";
 
-import { EdgeJsService } from "./edge-js.service";
-import { NestMvcOptionsService } from "./nest-mvc-options.service";
-import { NestMvcMiddleware } from "./nest-mvc.middleware";
+import { NestMvcFlashMiddleware } from "./middlewares/nest-mvc-flash.middleware";
+import { NestMvcViewMiddleware } from "./middlewares/nest-mvc-view.middleware";
 import { NestMvcOptions, NestMvcOptionsFactory } from "./nest-mvc.options";
-import { ViteAssetPathHelperFactory } from "./vite-asset-path-helper.factory";
+import { EdgeJsService } from "./services/edge-js.service";
+import { NestMvcCsrfService } from "./services/nest-mvc-csrf.service";
+import { NestMvcOptionsService } from "./services/nest-mvc-options.service";
+import { ViteAssetPathHelperFactoryService } from "./services/vite-asset-path-helper-factory.service";
+import { NestMvcCsrfMiddleware } from "./middlewares/nest-mvc-csrf.middleware";
 
 @Module({})
 export class NestMvcModule implements NestModule {
@@ -19,7 +22,13 @@ export class NestMvcModule implements NestModule {
    * @description 전용 미들웨어 등록
    */
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(NestMvcMiddleware).forRoutes("*");
+    consumer
+      .apply(
+        NestMvcViewMiddleware, // 요청마다 렌더러를 생성하는 미들웨어
+        NestMvcFlashMiddleware, // 플래시 메시지를 렌더러의 상태로 제공하는 미들웨어
+        NestMvcCsrfMiddleware // CSRF 토큰을 생성하고 검증하는 미들웨어
+      )
+      .forRoutes("*");
   }
 
   // --------------------------------------------------------
@@ -83,7 +92,9 @@ export class NestMvcModule implements NestModule {
         // EdgeJs 라이브러리를 Nestjs에서 사용할 수 있게 제공하는 서비스
         EdgeJsService,
         // (Vite 에셋 경로를 관리하기 쉽게 생성해 주는) 헬퍼 함수를 제공하는 서비스
-        ViteAssetPathHelperFactory,
+        ViteAssetPathHelperFactoryService,
+        // CSRF 토큰 생성, 검증을 제공하는 서비스
+        NestMvcCsrfService,
       ],
     };
   }

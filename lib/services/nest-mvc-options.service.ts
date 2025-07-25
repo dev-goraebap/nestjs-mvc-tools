@@ -2,10 +2,11 @@ import { Inject, Injectable } from "@nestjs/common";
 import { join } from "path";
 
 import {
-  ViteAssetsPipelineOptions,
+  CsrfTokenOptions,
   EdgeJsViewOptions,
   NestMvcOptions,
-} from "./nest-mvc.options";
+  ViteAssetsPipelineOptions,
+} from "../nest-mvc.options";
 
 @Injectable()
 export class NestMvcOptionsService {
@@ -15,6 +16,7 @@ export class NestMvcOptionsService {
 
   readonly viewOptions: EdgeJsViewOptions;
   readonly assetOptions: ViteAssetsPipelineOptions;
+  readonly csrfOptions: CsrfTokenOptions;
 
   // --------------------------------------------------------
   // 기능그룹
@@ -26,6 +28,7 @@ export class NestMvcOptionsService {
   ) {
     this.viewOptions = this.initViewOptions(this.options.view ?? {});
     this.assetOptions = this.initAssetPipelineOptions(this.options.asset ?? {});
+    this.csrfOptions = this.initCsrfTokenOptions(this.options.csrf ?? {});
   }
 
   private initViewOptions(
@@ -48,6 +51,17 @@ export class NestMvcOptionsService {
         options?.buildOutDir ??
         join(process.cwd(), "resources", "public", "builds"),
       devServerUrl: options?.devServerUrl ?? "http://localhost:5173",
+    };
+  }
+
+  private initCsrfTokenOptions(
+    options: Partial<CsrfTokenOptions>
+  ): CsrfTokenOptions {
+    return {
+      enabled: options?.enabled ?? false,
+      ignoredMethods: options?.ignoredMethods ?? ["GET", "HEAD", "OPTIONS"],
+      saltLength: options?.saltLength ?? 8,
+      secretLength: options?.secretLength ?? 18
     };
   }
 }

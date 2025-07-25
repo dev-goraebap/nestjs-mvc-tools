@@ -15,6 +15,13 @@ export type ViteAssetsPipelineOptions = {
   devServerUrl: string;
 };
 
+export type CsrfTokenOptions = {
+  enabled: boolean;
+  ignoredMethods: string[];
+  saltLength: number;
+  secretLength: number;
+};
+
 // --------------------------------------------------------
 // 모듈에서 제공받을 통합 옵션
 // --------------------------------------------------------
@@ -22,6 +29,7 @@ export type ViteAssetsPipelineOptions = {
 export type NestMvcOptions = {
   view?: Partial<EdgeJsViewOptions>;
   asset?: Partial<ViteAssetsPipelineOptions>;
+  csrf?: Partial<CsrfTokenOptions>;
 };
 
 // --------------------------------------------------------

@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { readFileSync } from "fs";
 
+import { ViteAssetsPipelineOptions } from "../nest-mvc.options";
 import { NestMvcOptionsService } from "./nest-mvc-options.service";
-import { ViteAssetsPipelineOptions } from "./nest-mvc.options";
+
 
 @Injectable()
-export class ViteAssetPathHelperFactory {
+export class ViteAssetPathHelperFactoryService {
   private readonly options: ViteAssetsPipelineOptions;
 
   constructor(private readonly optionsService: NestMvcOptionsService) {
