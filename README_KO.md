@@ -16,7 +16,7 @@ NestJS의 강력한 DI 시스템을 좋아하지만, 때로는 AdonisJS나 Larav
 
 ### Edge.js 템플릿 엔진 모듈화
 
-AdonisJS의 Edge.js 템플릿 엔진을 NestJS에서도 활용할 수 있도록 모듈화하여 제공합니다. 이를 통해 두 프레임워크 간의 템플릿 공유 및 재사용성을 높일 수 있습니다.
+AdonisJS의 Edge.js 템플릿 엔진을 NestJS에서도 활용할 수 있도록 모듈화하여 제공합니다. 굳이 Edge.js 를 사용하는 이유가 뭐냐구요? 그냥 쉽고 강력합니다.. 그게 다에요!
 
 ### 프론트엔드 디렉토리 자동 구성
 
@@ -25,6 +25,10 @@ AdonisJS의 Edge.js 템플릿 엔진을 NestJS에서도 활용할 수 있도록 
 ### Vite 기반 에셋 파이프라인 구축
 
 Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파이프라인을 통해 프로덕션 환경에서 최적화된 에셋을 제공합니다.
+
+### CSRF 보호
+
+세션 기반 CSRF(Cross-Site Request Forgery) 보호 기능을 제공하여 악의적인 요청으로부터 애플리케이션을 안전하게 보호합니다. 다양한 토큰 전달 방식(헤더, 폼 데이터, 쿼리)을 지원합니다.
 
 ### 플래시 메시지
 
@@ -93,6 +97,9 @@ import { join } from "path";
         rootDir: join(__dirname, "..", "resources", "views"),
         disks: [], // 추가 디스크 경로가 필요한 경우
       },
+      csrf: {
+        enabled: true, // CSRF 보호 활성화
+      },
     }),
   ],
 })
@@ -122,8 +129,9 @@ export class AppController {
 #### 연결된 템플릿 확인
 
 ```html
-// resources/views/pages/hello_world/index.edge @layout.app({ title:
-'Helloworld'})
+// resources/views/pages/hello_world/index.edge 
+
+@layout.app({ title: 'Helloworld'})
 <h1 data-controller="hello" class="text-3xl">{{ message ?? 'hello world' }}</h1>
 @end
 ```
@@ -183,6 +191,7 @@ resources/
 ```typescript
 // 설정을 포함하지 않으면 기본으로 제공하는 값
 NestMvcModule.forRoot({
+  excludePaths: ["/api", "/favicon.ico"], // 미들웨어 처리 제외 경로
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // 추가 템플릿 디스크 경로
@@ -193,6 +202,12 @@ NestMvcModule.forRoot({
     staticAssetPrefix: "/public",
     buildOutDir: join(process.cwd(), "resources", "public", "builds"),
     devServerUrl: "http://localhost:5173",
+  },
+  csrf: {
+    enabled: false, // CSRF 보호 비활성화 (기본값)
+    ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+    saltLength: 8,
+    secretLength: 18,
   },
 });
 ```
@@ -207,6 +222,7 @@ configService와 같은 설정값을 가져오거나, 더욱 세부적인 관리
 export class NestMvcConfig implements NestMvcOptionsFactory {
   create(): NestMvcOptions {
     return {
+      excludePaths: ["/api", "/favicon.ico"],
       view: {
         rootDir: join(process.cwd(), "resources", "views"),
         disks: [],
@@ -218,6 +234,12 @@ export class NestMvcConfig implements NestMvcOptionsFactory {
         buildOutDir: join(process.cwd(), "resources", "public", "builds"),
         devServerUrl: "http://localhost:5173",
       },
+      csrf: {
+        enabled: true, // 프로덕션에서는 활성화 권장
+        ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+        saltLength: 8,
+        secretLength: 18,
+      },
     };
   }
 }
@@ -227,71 +249,15 @@ NestMvcModule.forRootAsync({
 });
 ```
 
-## 플래시 메시지
+## 중요: 세션 의존성
 
-이 라이브러리는 웹 애플리케이션에서 사용자에게 **일회성 메시지(플래시 메시지)**를 표시하는 기능을 제공합니다. 플래시 메시지는 주로 폼 제출 후 성공 또는 실패 알림, 유효성 검사 오류 등을 사용자에게 피드백할 때 유용합니다.
+**CSRF 보호**와 **플래시 메시지** 기능은 내부적으로 세션(session)에 의존합니다. 세션이 활성화되어 있지 않아도 기본적인 렌더링 기능에는 오류가 발생하지 않지만, 지속적으로 경고 메시지가 발생하며 해당 기능들이 정상적으로 작동하지 않습니다. 
 
-### @Req 데코레이터와 NestMvcReq 객체타입 사용
-
-NestMvcReq는 기존 Request 객체에 view와 flash 속성을 추가한 확장된 요청 객체입니다. 이를 통해 req.flash로 플래시 기능을 사용할 수 있습니다.
-
-```ts
-@Post()
-async create(@Req() req: NestMvcReq, @Res() res: Response) {
-  if (!req.body) {
-    // MVC 예외 처리: 폼에 작성된 데이터를 화면에 유지하면서 '작업 실패' 메시지를 표시합니다.
-    throw new BadRequestException('작업 실패');
-  }
-  // 성공 메시지를 설정합니다.
-  req.flash.success('작업 성공');
-  return res.redirect('/admin/documents');
-}
-```
-
-### 예외 처리와 플래시 메시지 활용
-
-프로젝트에서는 `NestMvcBaseExceptionHandler`를 상속받아 MVC 예외 처리를 구현할 수 있습니다:
-
-```ts
-// exception.filter.ts
-import {
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  ArgumentsHost,
-} from "@nestjs/common";
-import { Response } from "express";
-import { NestMvcBaseExceptionHandler, NestMvcReq } from "nestjs-mvc-tools";
-
-@Catch(HttpException)
-export class AppExceptionFilter
-  extends NestMvcBaseExceptionHandler
-  implements ExceptionFilter
-{
-  catch(exception: HttpException, host: ArgumentsHost) {
-    const req: NestMvcReq = host.switchToHttp().getRequest();
-    const res: Response = host.switchToHttp().getResponse();
-
-    // API 요청인 경우 JSON 응답
-    if (req.url.startsWith("/api")) {
-      return res.json({
-        status: exception.getStatus(),
-        message: exception.message,
-      });
-    }
-
-    // MVC 페이지 예외 처리
-    return this.handleMvcException(exception, req, res);
-  }
-}
-```
-
-### 중요: 세션 의존성
-
-플래시 메시지는 내부적으로 세션(session)에 의존합니다. 세션이 활성화되어 있지 않아도 렌더링 기능 자체에는 오류가 발생하지 않지만, 지속적으로 경고 메시지가 발생합니다. 따라서 플래시 메시지 기능을 안정적으로 사용하려면 반드시 세션이 활성화되어 있어야 합니다. 이러한 기능들을 사용하려면 express-session 설치를 권장합니다.
+따라서 이러한 기능들을 안정적으로 사용하려면 반드시 세션이 활성화되어 있어야 합니다.
 
 ```bash
 npm install express-session
+npm install @types/express-session # 타입이 필요한 경우
 ```
 
 **main.ts 설정:**
@@ -299,12 +265,197 @@ npm install express-session
 ```typescript
 import * as session from "express-session";
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
-  })
-);
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
+  // 세션 미들웨어 설정 (CSRF 및 플래시 메시지 사용을 위해 필수)
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || "your-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 24시간
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // HTTPS에서만 전송
+        sameSite: 'lax'
+      }
+    })
+  );
+  
+  await app.listen(process.env.PORT ?? 3000);
+}
 ```
+
+## CSRF 보호
+
+CSRF(Cross-Site Request Forgery) 보호 기능은 악의적인 웹사이트가 사용자의 브라우저를 통해 인증된 요청을 보내는 공격을 방지합니다.
+
+### CSRF 보호 활성화
+
+```typescript
+// app.module.ts
+NestMvcModule.forRoot({
+  csrf: {
+    enabled: true, // CSRF 보호 활성화
+    ignoredMethods: ["GET", "HEAD", "OPTIONS"], // 검증하지 않을 HTTP 메서드
+    saltLength: 8, // 토큰 생성용 솔트 길이
+    secretLength: 18, // 토큰 생성용 시크릿 길이
+  },
+});
+```
+
+### 템플릿에서 CSRF 토큰 사용
+
+모든 뷰 템플릿에서 `csrfToken` 변수를 사용할 수 있습니다:
+
+```html
+<!-- 폼에 hidden 필드로 토큰 추가 -->
+<form method="POST" action="/users">
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  <input type="text" name="name" />
+  <button type="submit">Submit</button>
+</form>
+
+<!-- Hotwired/Turbo와 함께 사용 (meta 태그) -->
+<meta name="csrf-token" content="{{ csrfToken }}" />
+```
+
+### 토큰 전달 방식
+
+CSRF 토큰은 다음과 같은 방식으로 전달할 수 있습니다:
+
+1. **폼 데이터**: `_csrf` 필드
+2. **쿼리 파라미터**: `?_csrf=token`
+3. **HTTP 헤더**: 
+   - `x-csrf-token`
+   - `csrf-token`
+   - `xsrf-token`
+
+### Hotwired/Turbo와의 통합
+
+Hotwired/Turbo를 사용하는 경우, meta 태그를 설정하면 자동으로 AJAX 요청에 CSRF 토큰이 포함됩니다:
+
+```html
+<head>
+  <meta name="csrf-token" content="{{ csrfToken }}" />
+</head>
+```
+
+## 플래시 메시지
+
+플래시 메시지는 사용자에게 일회성 알림을 제공하는 기능입니다. 주로 폼 제출 후 성공/실패 메시지나 유효성 검사 오류를 표시할 때 사용됩니다.
+
+### 기본 사용법
+
+```typescript
+@Post('/users')
+async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
+  try {
+    // 사용자 생성 로직
+    await this.userService.create(req.body);
+    
+    // 성공 메시지 설정
+    req.flash.success('사용자가 성공적으로 생성되었습니다.');
+    return res.redirect('/users');
+  } catch (error) {
+    // 에러 메시지 설정 및 입력값 유지
+    req.flash.error('사용자 생성에 실패했습니다.').flashInput();
+    return res.redirect('/users/new');
+  }
+}
+```
+
+### 플래시 메시지 타입
+
+```typescript
+// 성공 메시지
+req.flash.success('작업이 완료되었습니다.');
+
+// 에러 메시지
+req.flash.error('오류가 발생했습니다.');
+
+// 정보 메시지
+req.flash.info('참고 사항입니다.');
+
+// 경고 메시지  
+req.flash.warning('주의가 필요합니다.');
+
+// 사용자 정의 키
+req.flash.flash('custom_key', '사용자 정의 메시지');
+```
+
+### 폼 입력값 유지
+
+유효성 검사 실패 시 사용자가 입력한 데이터를 유지할 수 있습니다:
+
+```typescript
+@Post('/users')
+async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (!req.body.name) {
+    // 에러 메시지와 함께 입력값 유지
+    req.flash.error('이름을 입력해주세요.').flashInput();
+    return res.redirect('/users/new');
+  }
+  
+  // 성공 처리...
+}
+```
+
+### 템플릿에서 플래시 메시지 표시
+
+```html
+<!-- 성공 메시지 -->
+@if(flash.success)
+<div class="alert alert-success">
+  {{ flash.success }}
+</div>
+@end
+
+<!-- 에러 메시지 -->
+@if(flash.error)
+<div class="alert alert-error">
+  {{ flash.error }}
+</div>
+@end
+
+<!-- 이전 입력값 복원 -->
+<input 
+  type="text" 
+  name="name" 
+  value="{{ flash.input.name || '' }}" 
+/>
+```
+
+### MVC 예외 처리와의 통합
+
+`BadRequestException`을 발생시키면 자동으로 플래시 메시지와 입력값 유지가 처리됩니다:
+
+```typescript
+@Post('/users')
+async createUser(@Body() createUserDto: CreateUserDto) {
+  if (!createUserDto.name) {
+    // 자동으로 플래시 메시지 처리됨
+    throw new BadRequestException('이름을 입력해주세요.');
+  }
+  
+  // 성공 처리...
+}
+```
+
+## 경로 제외 설정
+
+라이브러리에서 제공하는 view, csrf, flash 등의 기능들은 미들웨어 레벨에서 작동합니다.
+특정 경로를 미들웨어 처리에서 제외할 수 있습니다:
+
+```typescript
+NestMvcModule.forRoot({
+  excludePaths: ["/api", "/favicon.ico", "/health"], // 제외할 경로들
+  ...
+});
+```
+
+기본적으로 `/api`와 `/favicon.ico` 경로는 제외됩니다.
 
 ## 프로젝트 기본 라이브러리 및 주요 고려 사항
 
