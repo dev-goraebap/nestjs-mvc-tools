@@ -3,12 +3,20 @@ import { Response } from "express";
 
 import { NestMvcFlash } from "../nest-mvc-flash";
 import { NestMvcReq } from "../nest-mvc.type";
+import { NestMvcOptionsService } from "../services/nest-mvc-options.service";
 
 @Injectable()
 export class NestMvcFlashMiddleware implements NestMiddleware {
   private readonly logger = new Logger(NestMvcFlashMiddleware.name);
 
+  constructor(private readonly optionsService: NestMvcOptionsService) {}
+
   use(req: NestMvcReq, res: Response, next: (error?: any) => void) {
+    // 제외 경로 체크
+    if (this.optionsService.excludePaths.some(path => req.originalUrl.startsWith(path))) {
+      return next();
+    }
+
     // request 객체 flash 속성에 플래시 기능 참조
     // 플래시 메시지 인스턴스 자체는 세션과 상관없이 생성.
     // 어차피 세션이 활성화 되지 않으면 기능이 작동하지 않음
@@ -20,6 +28,8 @@ export class NestMvcFlashMiddleware implements NestMiddleware {
         flash: req.flash.getAndClear(),
       });
     }
+
+    this.logger.debug("Create NestMvcFlash");
 
     // 세션이 활성화되어있지 않으면 경고 로그 출력
     if (!req?.session) {
