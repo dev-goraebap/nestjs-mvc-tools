@@ -4,10 +4,11 @@ import { NestMvcModule } from "nestjs-mvc-tools";
 import { join } from "path";
 
 import { BaseTestController } from "./controllers/base-test.controller";
+import { CsrfTestController } from "./controllers/csrf-test.controller";
 import { EdgeJsTemplateStateTestController } from "./controllers/edge-js-template-state-test.controller";
+import { PageExceptionTestController } from "./controllers/page-exception-test.controller";
 import { AppExceptionFilter } from "./exception.filter";
 import { ShareInterceptor } from "./share.interceptor";
-import { PageExceptionTestController } from "./controllers/page-exception-test.controller";
 
 @Module({
   imports: [
@@ -20,12 +21,16 @@ import { PageExceptionTestController } from "./controllers/page-exception-test.c
       asset: {
         buildOutDir: join(__dirname, "..", "resources", "public", "builds"),
       },
+      csrf: {
+        enabled: true,
+      },
     }),
   ],
   controllers: [
     BaseTestController,
     EdgeJsTemplateStateTestController,
     PageExceptionTestController,
+    CsrfTestController
   ],
   providers: [
     { provide: APP_FILTER, useClass: AppExceptionFilter },

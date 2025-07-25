@@ -1,0 +1,69 @@
+import { Controller, Get, Post, Req, Res } from "@nestjs/common";
+import { Response } from "express";
+import { NestMvcReq } from "nestjs-mvc-tools";
+
+@Controller({ path: "csrf-test" })
+export class CsrfTestController {
+  /**
+   * @test csrf 실패 테스트를 위한 폼 페이지 랜더링
+   * http://localhost:3000/csrf-test/01
+   */
+  @Get("01")
+  test01Index(@Req() req: NestMvcReq) {
+    return req.view.render("pages/csrf_test/01");
+  }
+
+  /**
+   * @test 실패 테스트: csrf로 보호되는지 테스트
+   * 실제 해당 컨트롤러가 실행되기 전에 에러처리되어야함
+   */
+  @Post("01")
+  test01Do() {
+    console.log("console is not execute");
+    return;
+  }
+
+  /**
+   * @test csrf 성공 테스트를 위한 폼 페이지 랜더링
+   * http://localhost:3000/csrf-test/02
+   */
+  @Get("02")
+  test02Index(@Req() req: NestMvcReq) {
+    return req.view.render("pages/csrf_test/02");
+  }
+
+  /**
+   * @test 성공 테스트: csrf 인증이 잘 되는지 테스트
+   * 실제 해당 컨트롤러가 실행되기 전에 에러처리되어야함
+   */
+  @Post("02")
+  test02Do(@Req() req: NestMvcReq, @Res() res: Response) {
+    console.log("csrf verify success");
+    return res.redirect(req.headers.referer || "/csrf-test/02");
+  }
+
+  // ---------------------------------------------------------------------
+  // Hotwired/turbo가 제공하는 방법 사용.
+  // <meta name="csrf-token" content="{{ csrfToken }}"> 을 사용하면
+  // 터보가 request headers에 x-csrf-token 설정해줌
+  // ---------------------------------------------------------------------
+
+  /**
+   * @test csrf 성공 테스트를 위한 폼 페이지 랜더링
+   * http://localhost:3000/csrf-test/03
+   */
+  @Get("03")
+  test03Index(@Req() req: NestMvcReq) {
+    return req.view.render("pages/csrf_test/03");
+  }
+
+  /**
+   * @test 성공 테스트: csrf 인증이 잘 되는지 테스트
+   * 실제 해당 컨트롤러가 실행되기 전에 에러처리되어야함
+   */
+  @Post("03")
+  test03Do(@Req() req: NestMvcReq, @Res() res: Response) {
+    console.log("csrf verify success");
+    return res.redirect(req.headers.referer || "/csrf-test/03");
+  }
+}

@@ -1,0 +1,8 @@
+@layout.app()
+  <!-- csrf setup in to app.edge headers (Hotwired/Turbo Skill 😊) -->
+  <form method="post" action="/csrf-test/02" class="p-10">
+    {{ inspect(csrfToken) }}
+    <input type="text">
+    <button>CSRF Test</button>
+  </form>
+@end
