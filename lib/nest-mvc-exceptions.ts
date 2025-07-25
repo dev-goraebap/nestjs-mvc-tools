@@ -17,35 +17,42 @@ export abstract class NestMvcBaseExceptionHandler {
     req: NestMvcReq,
     res: Response
   ) {
-    // ---------------------------------------------------------------------
-    // 유효성을 제외한 모든 에러처리. 에러페이지 랜더링
-    // ---------------------------------------------------------------------
-
-    // 일반 에러일 경우 에러페이지 랜더링
-    if (exception instanceof Error) {
-      const errMsg = exception.message;
-      const statusCode = 500;
-      return this.renderErrorPage(errMsg, statusCode, req, res);
-    }
-
-    // HttpException 에러이면서 BadRequest가 아닌 모든 경우 에러페이지 랜더링
-    if (exception.getStatus() !== 400) {
-      const errMsg = exception.message;
+    // HttpException 체크 (getStatus 메서드 존재 여부로 판별)
+    // 
+    // instanceof HttpException 체크가 자꾸 실패함,, Claude 왈 다음과 같음
+    // 1. 라이브러리와 사용자 애플리케이션 간의 @nestjs/common 버전 차이
+    // 2. npm/yarn의 중복 패키지 설치로 인한 서로 다른 HttpException 클래스 참조
+    // 3. TypeScript 컴파일 시점과 런타임 시점의 타입 정보 불일치
+    // 4. 패키지 호이스팅 문제로 인한 다른 모듈 경로의 HttpException 사용
+    //
+    // 일단 버전차이는 아닌데, 정상적인 코드가 자꾸 실행이 안되니 화가나서 다음과 같은 코드를 사용합니다.
+    if (typeof exception.getStatus === 'function') {
       const statusCode = exception.getStatus();
-      return this.renderErrorPage(errMsg, statusCode, req, res);
+      
+      // BadRequest(400)는 유효성 에러로 플래시 처리
+      if (statusCode === 400) {
+        return this.handleValidationError(exception, req, res);
+      }
+      
+      // 기타 HttpException은 해당 상태 코드로 에러 페이지 렌더링
+      return this.renderErrorPage(exception.message, statusCode, req, res);
     }
+    
+    // 알 수 없는 예외는 500으로 처리
+    return this.renderErrorPage('Internal Server Error', 500, req, res);
+  }
 
-    // ---------------------------------------------------------------------
-    // 유효성 에러 처리
-    // ---------------------------------------------------------------------
-
-    // 세션이 활성화된 경우 플래시 데이터 사용
+  private handleValidationError(
+    exception: any,
+    req: NestMvcReq,
+    res: Response
+  ) {
+    // 세션이 활성화된 경우에만 플래시 메시지 설정
     if (req?.session) {
       req.flash.error(exception.message).flashInput();
     }
 
-    // 우선적으로 요청 본문의 _redirect_to 값이 있을 경우 해당 url 로 이동
-    // 값이 없다면 요청을 보낸 url로 리다이렉트
+    // 리다이렉트 URL 결정 (우선순위: _redirect_to > referer > 홈)
     const redirectUrl = req.body?._redirect_to || req.headers.referer || "/";
     return res.redirect(303, redirectUrl);
   }
@@ -57,15 +64,14 @@ export abstract class NestMvcBaseExceptionHandler {
     res: Response
   ) {
     try {
-      return res.send(
-        await req.view.render("pages/errors/index", {
-          error: errMsg,
-          status: statusCode,
-        })
-      );
+      const html = await req.view.render("pages/errors/index", {
+        error: errMsg,
+        status: statusCode,
+      });
+      return res.status(statusCode).send(html);
     } catch (renderError) {
       // 에러 페이지 렌더링 실패 시 기본 텍스트 응답
-      return res.send(`Error ${statusCode}: ${errMsg}`);
+      return res.status(statusCode).send(`Error ${statusCode}: ${errMsg}`);
     }
   }
 }
