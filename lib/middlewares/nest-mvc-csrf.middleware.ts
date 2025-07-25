@@ -23,7 +23,7 @@ export class NestMvcCsrfMiddleware implements NestMiddleware {
     this.options = this.optionsService.csrfOptions;
   }
 
-  use(req: NestMvcReq, res: Response, next: (error?: any) => void) {
+  async use(req: NestMvcReq, res: Response, next: (error?: any) => void) {
     // CSRF 기능 비활성화시 통과
     if (!this.options.enabled) {
       return next();
@@ -63,7 +63,16 @@ export class NestMvcCsrfMiddleware implements NestMiddleware {
       !token ||
       !this.csrfService.verifyToken(req.session.csrfSecret, token)
     ) {
-      return next(new ForbiddenException("Invalid CSRF token"));
+      // 일반 페이지 요청은 에러 페이지 렌더링
+      try {
+        const errorHtml = await req.view.render("pages/errors/index", {
+          error: "Invalid CSRF token",
+          status: 403,
+        });
+        return res.status(403).send(errorHtml);
+      } catch (renderError) {
+        return res.status(403).send("Error 403: Invalid CSRF token");
+      }
     }
 
     next();
