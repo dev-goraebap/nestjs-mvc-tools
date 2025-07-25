@@ -93,7 +93,7 @@ export type NestMvcOptions = {
   /**
    * @description en: Paths to exclude from middleware processing (e.g., API routes)
    * @description ko: 미들웨어 처리에서 제외할 경로들 (예: API 라우트)
-   * @default ["/api", "/favicon.ico"]
+   * @default ["/api", "/favicon.ico", "/.well-known/appspecific/com.chrome.devtools.json"]
    */
   excludePaths?: string[];
   
