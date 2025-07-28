@@ -215,43 +215,6 @@ NestMvcModule.forRoot({
 });
 ```
 
-### Asynchronous Configuration
-
-If you need to fetch configuration values like configService or require more detailed management, you can configure asynchronous settings using option factories.
-The code below is an example of implementing NestMvcOptionsFactory to provide asynchronous configuration to NestMvcModule.
-
-```typescript
-@Injectable()
-export class NestMvcConfig implements NestMvcOptionsFactory {
-  create(): NestMvcOptions {
-    return {
-      excludePaths: ["/api", "/favicon.ico"],
-      debug: process.env.NODE_ENV === 'development', // Enable debug logs only in development environment
-      view: {
-        rootDir: join(process.cwd(), "resources", "views"),
-        disks: [],
-        cache: true,
-      },
-      asset: {
-        mode: "development",
-        staticAssetPrefix: "/public",
-        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-        devServerUrl: "http://localhost:5173",
-      },
-      csrf: {
-        enabled: true, // Recommended to enable in production
-        ignoredMethods: ["GET", "HEAD", "OPTIONS"],
-        saltLength: 8,
-        secretLength: 18,
-      },
-    };
-  }
-}
-
-NestMvcModule.forRootAsync({
-  useClass: NestMvcConfig,
-});
-```
 
 ## Important: Session Dependencies
 

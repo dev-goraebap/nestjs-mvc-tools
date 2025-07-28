@@ -213,43 +213,6 @@ NestMvcModule.forRoot({
 });
 ```
 
-### 비동기 설정
-
-configService와 같은 설정값을 가져오거나, 더욱 세부적인 관리가 필요하다면 옵션 팩토리를 활용하여 비동기 설정을 구성할 수 있습니다.
-아래 코드는 NestMvcOptionsFactory를 구현하여 NestMvcModule에 비동기 설정을 제공하는 예시입니다.
-
-```typescript
-@Injectable()
-export class NestMvcConfig implements NestMvcOptionsFactory {
-  create(): NestMvcOptions {
-    return {
-      excludePaths: ["/api", "/favicon.ico"],
-      debug: process.env.NODE_ENV === 'development', // 개발 환경에서만 디버그 로그 활성화
-      view: {
-        rootDir: join(process.cwd(), "resources", "views"),
-        disks: [],
-        cache: true,
-      },
-      asset: {
-        mode: "development",
-        staticAssetPrefix: "/public",
-        buildOutDir: join(process.cwd(), "resources", "public", "builds"),
-        devServerUrl: "http://localhost:5173",
-      },
-      csrf: {
-        enabled: true, // 프로덕션에서는 활성화 권장
-        ignoredMethods: ["GET", "HEAD", "OPTIONS"],
-        saltLength: 8,
-        secretLength: 18,
-      },
-    };
-  }
-}
-
-NestMvcModule.forRootAsync({
-  useClass: NestMvcConfig,
-});
-```
 
 ## 중요: 세션 의존성
 
