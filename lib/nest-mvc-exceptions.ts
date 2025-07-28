@@ -21,7 +21,7 @@ export abstract class NestMvcBaseExceptionHandler {
     exception: any,
     req: NestMvcReq,
     res: Response,
-    logger?: Logger
+    logger?: any
   ) {
     // HttpException 체크 (getStatus 메서드 존재 여부로 판별)
     // 
@@ -32,7 +32,7 @@ export abstract class NestMvcBaseExceptionHandler {
     // 4. 패키지 호이스팅 문제로 인한 다른 모듈 경로의 HttpException 사용
     //
     // 일단 버전차이는 아닌데, 정상적인 코드가 자꾸 실행이 안되니 화가나서 다음과 같은 코드를 사용합니다.
-    logger?.warn(`Exception occurred: ${exception.message || exception}`, NestMvcBaseExceptionHandler.name);
+    logger?.warn(`Exception occurred: ${exception.message || exception}`);
     
     if (typeof exception.getStatus === 'function') {
       const statusCode = exception.getStatus();
@@ -54,9 +54,9 @@ export abstract class NestMvcBaseExceptionHandler {
     exception: any,
     req: NestMvcReq,
     res: Response,
-    logger?: Logger
+    logger?: any
   ) {
-    logger?.warn(`Validation error: ${exception.message}`, NestMvcBaseExceptionHandler.name);
+    logger?.warn(`Validation error: ${exception.message}`);
     // 세션이 활성화된 경우에만 플래시 메시지 설정
     if (req?.session) {
       req.flash.error(exception.message).flashInput();
@@ -74,7 +74,7 @@ export abstract class NestMvcBaseExceptionHandler {
     res: Response,
     logger?: Logger
   ) {
-    logger?.warn(`Rendering error page: ${errMsg} (${statusCode})`, NestMvcBaseExceptionHandler.name);
+    logger?.warn(`Rendering error page: ${errMsg} (${statusCode})`);
     try {
       const html = await req.view.render("pages/errors/index", {
         error: errMsg,
@@ -83,7 +83,7 @@ export abstract class NestMvcBaseExceptionHandler {
       return res.status(statusCode).send(html);
     } catch (renderError) {
       // 에러 페이지 렌더링 실패 시 기본 텍스트 응답
-      logger?.error(`Failed to render error page: ${renderError}`, NestMvcBaseExceptionHandler.name);
+      logger?.error(`Failed to render error page: ${renderError}`);
       return res.status(statusCode).send(`Error ${statusCode}: ${errMsg}`);
     }
   }
