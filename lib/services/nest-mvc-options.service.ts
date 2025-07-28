@@ -8,19 +8,24 @@ import {
   ViteAssetsPipelineOptions,
 } from "../nest-mvc.options";
 
+/**
+ * Service for managing NestJS MVC configuration options.
+ * Provides access to various module settings and configurations.
+ */
 @Injectable()
 export class NestMvcOptionsService {
   // --------------------------------------------------------
-  // 속성그룹
+  // Properties
   // --------------------------------------------------------
 
   readonly excludePaths: string[];
+  readonly debug: boolean;
   readonly viewOptions: EdgeJsViewOptions;
   readonly assetOptions: ViteAssetsPipelineOptions;
   readonly csrfOptions: CsrfTokenOptions;
 
   // --------------------------------------------------------
-  // 기능그룹
+  // Methods
   // --------------------------------------------------------
 
   constructor(
@@ -32,6 +37,7 @@ export class NestMvcOptionsService {
       "/favicon.ico",
       "/.well-known/appspecific/com.chrome.devtools.json",
     ];
+    this.debug = this.options.debug ?? false;
     this.viewOptions = this.initViewOptions(this.options.view ?? {});
     this.assetOptions = this.initAssetPipelineOptions(this.options.asset ?? {});
     this.csrfOptions = this.initCsrfTokenOptions(this.options.csrf ?? {});

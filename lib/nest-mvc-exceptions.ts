@@ -1,21 +1,27 @@
+import { Logger } from "@nestjs/common";
 import { Response } from "express";
+
 import { NestMvcReq } from "./nest-mvc.type";
 
 /**
- * NestJS MVC 예외 처리용 베이스 추상 클래스
- *
- * - handleMvcException 메서드는 내부적으로 위의 유틸 함수를 호출하여 중복을 제거합니다.
- * - ExceptionFilter를 직접 구현할 때 이 클래스를 상속받아 사용
+ * Base abstract class for NestJS MVC exception handling.
+ * Provides common exception handling logic for MVC applications.
+ * Use this class as a base when implementing custom ExceptionFilters.
  */
 export abstract class NestMvcBaseExceptionHandler {
   /**
-   * 예외 처리 공통 로직을 실행합니다.
-   * 필요시 자식 클래스에서 이 메서드를 호출하세요.
+   * Executes common exception handling logic.
+   * Call this method from child classes when needed.
+   * @param exception - The exception to handle
+   * @param req - Extended request object with MVC functionality
+   * @param res - Express response object
+   * @param logger - Optional logger for error output
    */
   protected async handleMvcException(
     exception: any,
     req: NestMvcReq,
-    res: Response
+    res: Response,
+    logger?: Logger
   ) {
     // HttpException 체크 (getStatus 메서드 존재 여부로 판별)
     // 
@@ -26,27 +32,31 @@ export abstract class NestMvcBaseExceptionHandler {
     // 4. 패키지 호이스팅 문제로 인한 다른 모듈 경로의 HttpException 사용
     //
     // 일단 버전차이는 아닌데, 정상적인 코드가 자꾸 실행이 안되니 화가나서 다음과 같은 코드를 사용합니다.
+    logger?.warn(`Exception occurred: ${exception.message || exception}`, NestMvcBaseExceptionHandler.name);
+    
     if (typeof exception.getStatus === 'function') {
       const statusCode = exception.getStatus();
       
       // BadRequest(400)는 유효성 에러로 플래시 처리
       if (statusCode === 400) {
-        return this.handleValidationError(exception, req, res);
+        return this.handleValidationError(exception, req, res, logger);
       }
       
       // 기타 HttpException은 해당 상태 코드로 에러 페이지 렌더링
-      return this.renderErrorPage(exception.message, statusCode, req, res);
+      return this.renderErrorPage(exception.message, statusCode, req, res, logger);
     }
     
     // 알 수 없는 예외는 500으로 처리
-    return this.renderErrorPage('Internal Server Error', 500, req, res);
+    return this.renderErrorPage('Internal Server Error', 500, req, res, logger);
   }
 
   private handleValidationError(
     exception: any,
     req: NestMvcReq,
-    res: Response
+    res: Response,
+    logger?: Logger
   ) {
+    logger?.warn(`Validation error: ${exception.message}`, NestMvcBaseExceptionHandler.name);
     // 세션이 활성화된 경우에만 플래시 메시지 설정
     if (req?.session) {
       req.flash.error(exception.message).flashInput();
@@ -61,8 +71,10 @@ export abstract class NestMvcBaseExceptionHandler {
     errMsg: string,
     statusCode: number,
     req: NestMvcReq,
-    res: Response
+    res: Response,
+    logger?: Logger
   ) {
+    logger?.warn(`Rendering error page: ${errMsg} (${statusCode})`, NestMvcBaseExceptionHandler.name);
     try {
       const html = await req.view.render("pages/errors/index", {
         error: errMsg,
@@ -71,6 +83,7 @@ export abstract class NestMvcBaseExceptionHandler {
       return res.status(statusCode).send(html);
     } catch (renderError) {
       // 에러 페이지 렌더링 실패 시 기본 텍스트 응답
+      logger?.error(`Failed to render error page: ${renderError}`, NestMvcBaseExceptionHandler.name);
       return res.status(statusCode).send(`Error ${statusCode}: ${errMsg}`);
     }
   }
