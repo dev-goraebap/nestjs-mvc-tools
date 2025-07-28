@@ -24,6 +24,7 @@ import { ShareInterceptor } from "./share.interceptor";
       csrf: {
         enabled: true,
       },
+      debug: true
     }),
   ],
   controllers: [
