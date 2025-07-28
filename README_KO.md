@@ -192,6 +192,7 @@ resources/
 // 설정을 포함하지 않으면 기본으로 제공하는 값
 NestMvcModule.forRoot({
   excludePaths: ["/api", "/favicon.ico"], // 미들웨어 처리 제외 경로
+  debug: false, // 디버그 로그 출력 여부 (기본값: false)
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // 추가 템플릿 디스크 경로
@@ -223,6 +224,7 @@ export class NestMvcConfig implements NestMvcOptionsFactory {
   create(): NestMvcOptions {
     return {
       excludePaths: ["/api", "/favicon.ico"],
+      debug: process.env.NODE_ENV === 'development', // 개발 환경에서만 디버그 로그 활성화
       view: {
         rootDir: join(process.cwd(), "resources", "views"),
         disks: [],

@@ -194,6 +194,7 @@ resources/
 // Default values provided if configuration is not included
 NestMvcModule.forRoot({
   excludePaths: ["/api", "/favicon.ico"], // Paths excluded from middleware processing
+  debug: false, // Whether to output debug logs (default: false)
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // Additional template disk paths
@@ -225,6 +226,7 @@ export class NestMvcConfig implements NestMvcOptionsFactory {
   create(): NestMvcOptions {
     return {
       excludePaths: ["/api", "/favicon.ico"],
+      debug: process.env.NODE_ENV === 'development', // Enable debug logs only in development environment
       view: {
         rootDir: join(process.cwd(), "resources", "views"),
         disks: [],
