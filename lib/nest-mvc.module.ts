@@ -4,13 +4,12 @@ import {
   Module,
   NestModule,
   Provider,
-  Type,
 } from "@nestjs/common";
 
 import { NestMvcCsrfMiddleware } from "./middlewares/nest-mvc-csrf.middleware";
 import { NestMvcFlashMiddleware } from "./middlewares/nest-mvc-flash.middleware";
 import { NestMvcViewMiddleware } from "./middlewares/nest-mvc-view.middleware";
-import { NestMvcOptions, NestMvcOptionsFactory } from "./nest-mvc.options";
+import { NestMvcOptions } from "./nest-mvc.options";
 import { EdgeJsService } from "./services/edge-js.service";
 import { NestMvcCsrfService } from "./services/nest-mvc-csrf.service";
 import { NestMvcLoggerService } from "./services/nest-mvc-logger.service";
@@ -33,10 +32,6 @@ export class NestMvcModule implements NestModule {
       .forRoutes("*");
   }
 
-  // --------------------------------------------------------
-  // Multiple ways to provide dynamic modules
-  // --------------------------------------------------------
-
   /**
    * Registers the module synchronously with static configuration.
    * @param options - Static configuration options for the module
@@ -48,51 +43,12 @@ export class NestMvcModule implements NestModule {
       provide: "NEST_MVC_OPTIONS",
       useValue: options,
     };
-    return this.createDynamicModule([nestMvcOptionsProvider]);
-  }
-
-  /**
-   * Registers the module asynchronously with factory-based configuration.
-   * @param options - Asynchronous configuration options with factory class
-   * @returns Dynamic module configuration
-   */
-  static forRootAsync(options: {
-    useClass: Type<NestMvcOptionsFactory>;
-  }): DynamicModule {
-    // Create options provider considering dependency injection chaining
-    const nestMvcOptionsProvider: Provider = {
-      provide: "NEST_MVC_OPTIONS",
-      useFactory: async (factory: NestMvcOptionsFactory) => {
-        return await factory.create();
-      },
-      inject: [options.useClass],
-    };
-
-    // Register factory class specified in useClass as provider
-    const factoryProvider: Provider = {
-      provide: "NEST_MVC_OPTIONS_FACTORY",
-      useClass: options.useClass,
-    };
-
-    return this.createDynamicModule([
-      nestMvcOptionsProvider,
-      factoryProvider,
-    ]);
-  }
-
-  // --------------------------------------------------------
-  // Common functionality
-  // --------------------------------------------------------
-
-  private static createDynamicModule(
-    additionalProviders: Provider[] = []
-  ): DynamicModule {
     return {
       global: true,
       module: NestMvcModule,
       providers: [
-        // Additional providers
-        ...additionalProviders,
+        // Additional options provider
+        nestMvcOptionsProvider,
         // Service that provides options so each internal class can use only the options it needs
         NestMvcOptionsService,
         // Service that provides EdgeJs library for use in NestJS

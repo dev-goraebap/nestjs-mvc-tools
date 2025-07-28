@@ -122,19 +122,3 @@ export type NestMvcOptions = {
    */
   csrf?: Partial<CsrfTokenOptions>;
 };
-
-// --------------------------------------------------------
-// 통합 옵션 클래스 주입방식 제공
-// --------------------------------------------------------
-
-/**
- * @description en: Factory interface for dynamic NestMvcOptions creation
- * @description ko: 동적 NestMvcOptions 생성을 위한 팩토리 인터페이스
- */
-export interface NestMvcOptionsFactory {
-  /**
-   * @description en: Create NestMvcOptions synchronously or asynchronously
-   * @description ko: NestMvcOptions를 동기적 또는 비동기적으로 생성
-   */
-  create(): Promise<NestMvcOptions> | NestMvcOptions;
-}
