@@ -6,6 +6,7 @@ import { join } from "path";
 import { BaseTestController } from "./controllers/base-test.controller";
 import { CsrfTestController } from "./controllers/csrf-test.controller";
 import { EdgeJsTemplateStateTestController } from "./controllers/edge-js-template-state-test.controller";
+import { FlashTestController } from "./controllers/flash-test.controller";
 import { PageExceptionTestController } from "./controllers/page-exception-test.controller";
 import { AppExceptionFilter } from "./exception.filter";
 import { ShareInterceptor } from "./share.interceptor";
@@ -31,7 +32,8 @@ import { ShareInterceptor } from "./share.interceptor";
     BaseTestController,
     EdgeJsTemplateStateTestController,
     PageExceptionTestController,
-    CsrfTestController
+    CsrfTestController,
+    FlashTestController
   ],
   providers: [
     { provide: APP_FILTER, useClass: AppExceptionFilter },

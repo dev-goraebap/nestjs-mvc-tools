@@ -1,0 +1,19 @@
+@layout.app()
+{{ inspect(flash)}}
+@if(flash?.success)
+  <div class="alert alert-success">{{flash.success}}</div>
+@end
+@if(flash?.error)
+  <div class="alert alert-error">{{flash.error}}</div>
+@end
+<div class="">
+  <form action="/flash-test/01" method="post">
+    <input type="text">
+    <select name="state" id="">
+      <option value="success">success</option>
+      <option value="failure">failure</option>
+    </select>
+    <button>test flash</button>
+  </form>
+</div>
+@end

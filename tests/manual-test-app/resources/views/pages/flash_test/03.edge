@@ -1,0 +1,15 @@
+@let(post = flash?.input?.post)
+
+@layout.app()
+{{ inspect(flash)}}
+@if(flash?.error)
+  <div class="alert alert-error">{{flash.error}}</div>
+@end
+<div class="">
+  <form action="/flash-test/03" method="post">
+    <input type="text" name="post[title]" value="{{post?.title ?? ''}}">
+    <textarea name="post[content]">{{post?.content ?? ''}}</textarea>
+    <button>test flash</button>
+  </form>
+</div>
+@end
