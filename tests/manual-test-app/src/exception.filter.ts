@@ -27,7 +27,7 @@ export class AppExceptionFilter
     // ---------------------------------------------------------
 
     if (!req.originalUrl.startsWith("/api")) {
-      return this.handleMvcException(exception, req, res);
+      return this.handleMvcException(exception, req, res, this.logger);
     }
 
     // ---------------------------------------------------------
