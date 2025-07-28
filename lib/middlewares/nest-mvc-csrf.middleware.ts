@@ -1,24 +1,24 @@
 import {
   ForbiddenException,
   Injectable,
-  Logger,
-  NestMiddleware,
+  NestMiddleware
 } from "@nestjs/common";
 import { Request, Response } from "express";
 
 import { CsrfTokenOptions } from "../nest-mvc.options";
 import { NestMvcReq } from "../nest-mvc.type";
 import { NestMvcCsrfService } from "../services/nest-mvc-csrf.service";
+import { NestMvcLoggerService } from "../services/nest-mvc-logger.service";
 import { NestMvcOptionsService } from "../services/nest-mvc-options.service";
 
 @Injectable()
 export class NestMvcCsrfMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(NestMvcCsrfMiddleware.name);
   private readonly options: CsrfTokenOptions;
 
   constructor(
     private readonly csrfService: NestMvcCsrfService,
-    private readonly optionsService: NestMvcOptionsService
+    private readonly optionsService: NestMvcOptionsService,
+    private readonly logger: NestMvcLoggerService,
   ) {
     this.options = this.optionsService.csrfOptions;
   }

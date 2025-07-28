@@ -1,17 +1,18 @@
-import { Injectable, Logger, NestMiddleware } from "@nestjs/common";
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Response } from "express";
 
 import { NestMvcReq } from "../nest-mvc.type";
 import { EdgeJsService } from "../services/edge-js.service";
+import { NestMvcLoggerService } from "../services/nest-mvc-logger.service";
 import { NestMvcOptionsService } from "../services/nest-mvc-options.service";
 
 @Injectable()
 export class NestMvcViewMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(NestMvcViewMiddleware.name);
 
   constructor(
     private readonly edgeJsService: EdgeJsService,
-    private readonly optionsService: NestMvcOptionsService
+    private readonly optionsService: NestMvcOptionsService,
+    private readonly logger: NestMvcLoggerService,
   ) {}
 
   use(req: NestMvcReq, res: Response, next: (error?: any) => void) {

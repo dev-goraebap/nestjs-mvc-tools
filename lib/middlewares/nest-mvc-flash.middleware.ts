@@ -1,15 +1,18 @@
-import { Injectable, Logger, NestMiddleware } from "@nestjs/common";
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Response } from "express";
 
 import { NestMvcFlash } from "../nest-mvc-flash";
 import { NestMvcReq } from "../nest-mvc.type";
+import { NestMvcLoggerService } from "../services/nest-mvc-logger.service";
 import { NestMvcOptionsService } from "../services/nest-mvc-options.service";
 
 @Injectable()
 export class NestMvcFlashMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(NestMvcFlashMiddleware.name);
 
-  constructor(private readonly optionsService: NestMvcOptionsService) {}
+  constructor(
+    private readonly optionsService: NestMvcOptionsService,
+    private readonly logger: NestMvcLoggerService,
+  ) {}
 
   use(req: NestMvcReq, res: Response, next: (error?: any) => void) {
     // 제외 경로 체크
