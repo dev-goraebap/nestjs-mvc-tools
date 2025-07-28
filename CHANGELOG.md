@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.3] - 2025-07-28
+
+### Removed
+- `forRootAsync` method and `NestMvcOptionsFactory` interface support
+- Asynchronous configuration documentation from README files
+- Complex factory pattern configuration examples
+
+### Changed
+- Simplified module registration to use only synchronous `forRoot` method
+- Updated documentation to focus on straightforward configuration approach
+
+*Note: Removed asynchronous configuration support as it added unnecessary complexity for most use cases. Sometimes developer ego gets the better of us.*
+
 ## [0.9.2] - 2025-07-28
 
 ### Added
