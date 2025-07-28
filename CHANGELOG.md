@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.2] - 2025-07-28
+
+### Added
+- `NestMvcLoggerService` for conditional debug logging
+- Comprehensive JSDoc documentation to all classes and methods
+- Debug and error logging capabilities with optional logger support across all services
+- Major codebase translation to English comments for international compatibility
+- `debug` property in configuration options to control debug log output
+- Optional logger parameter support in exception handling classes
+
+### Changed
+- Renamed `getDynamicModulePlainObj` method to `createDynamicModule` for clarity
+- Integrated logging system across Edge.js, CSRF, and Vite asset helper services
+- Enhanced type definitions with detailed property documentation
+- Consistent logging context using `ClassName.name` across all services
+- Transitioned Korean section headers and inline comments to English
+- Added conditional debug logging examples based on development/production environments
+
+### Improved
+- Detailed property-level documentation for extended Express Request types
+- Replaced console.log/warn with structured logger in error handling
+- Enhanced debug visibility for service initialization, operations, and error scenarios
+- Overall documentation quality and consistency across major codebase
+
 ## [0.9.1] - 2025-07-26
 
 ### Changed
