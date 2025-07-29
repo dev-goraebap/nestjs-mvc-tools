@@ -17,14 +17,16 @@
     "test:manual": "cd tests/manual-test-app && npm install && npm run start:dev"
   },
   "files": [
-    "dist",
-    "cli/copy-resources"
+    "dist"
   ],
   "keywords": [
     "nestjs",
     "mvc",
     "edgejs",
     "vite",
+    "nestjs-edge",
+    "nest-edge",
+    "hotwired",
     "cli"
   ],
   "author": "dev.goraebap <dev.goraebap@gmail.com>",
