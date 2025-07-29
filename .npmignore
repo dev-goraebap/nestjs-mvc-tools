@@ -37,6 +37,9 @@ node_modules/
 .git/
 .gitignore
 
+# But include .gitignore in copy-resources
+!dist/cli/copy-resources/.gitignore
+
 # Development configs
 tsconfig.json
 .prettierrc*
