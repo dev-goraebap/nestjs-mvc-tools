@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.4] - 2025-07-29
+
+### Fixed
+- Fixed issue where `.gitignore` file in copy-resources was not included in npm package
+- Updated `.npmignore` to explicitly include `.gitignore` file from copy-resources directory
+
 ## [0.9.3] - 2025-07-28
 
 ### Removed
