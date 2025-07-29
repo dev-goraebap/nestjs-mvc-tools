@@ -1,8 +1,11 @@
 # NestJS MVC Tools
 
 **NestJS MVC Tools**는 NestJS에서 전통적인 웹 개발 방식을 좀 더 편하게 시작할 수 있도록 도움을 드리는 작은 도구입니다.
+처음에는 NestJS에서 Edge.js 템플릿 엔진을 간편하게 사용하기 위한 단순한 유틸리티로 시작했지만, MVC 패턴 중 View 계층에 필요한 다양한 기능들이 하나씩 추가되면서 지금의 모습이 되었습니다.
 
-AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진에 Ruby on Rails의 [Hotwired](https://hotwired.dev/)를 결합하여 최신 웹 애플리케이션을 구축할 수 있습니다. 거기에 더해 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인을 통해 TailwindCSS 등의 프론트엔드 라이브러리를 사용할 수 있습니다.
+AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진과 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인이 구성되어있습니다. 프론트엔드 디렉토리 자동 구성에는 기본적으로 [Tailwindcss](https://tailwindcss.com/)에 관련된 라이브러리들과 [Hotwired](https://hotwired.dev/) 시리즈가 포함되어있지만, 이는 필수는 아닙니다. 원하지 않는다면 제거할 수 있습니다.
+
+Hotwired는 Ruby on Rails 진영에서 개발된 라이브러리로, 많은 개발자에게 생소할 수 있습니다. 하지만 기존의 서버 사이드 개발 방식을 유지하면서도 SPA와 같은 매끄러운 사용자 경험을 구현하고 싶다면 고려해볼 만한 도구입니다. 다만 커뮤니티에서는 긍정적 평가와 부정적 의견이 공존하므로, 어디까지나 본인의 선택입니다.
 
 예제는 프로젝트의 [tests/manual-test-app](./tests/manual-test-app)에서 확인할 수 있습니다.
 

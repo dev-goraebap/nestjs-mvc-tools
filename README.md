@@ -2,9 +2,13 @@
 
 [View Korean version 👾](https://github.com/dev-goraebap/nestjs-mvc-tools/blob/HEAD/README_KO.md)
 
-**NestJS MVC Tools** is a small utility that helps you get started with traditional web development patterns in NestJS more easily.
+**NestJS MVC Tools** is a small utility designed to help you get started with traditional web development approaches in NestJS more easily.
 
-By combining AdonisJS's [Edge.js](https://edgejs.dev/docs/introduction) template engine with Ruby on Rails' [Hotwired](https://hotwired.dev/), you can build modern web applications. Additionally, through an asset pipeline using [Vite](https://vite.dev/), you can use frontend libraries like TailwindCSS.
+What began as a simple utility for conveniently using the Edge.js template engine in NestJS has evolved into its current form as various features needed for the View layer of the MVC pattern were gradually added.
+
+It comes configured with AdonisJS's [Edge.js](https://edgejs.dev/docs/introduction) template engine and an asset pipeline using [Vite](https://vite.dev/). The frontend directory setup includes [TailwindCSS](https://tailwindcss.com/) related libraries and the [Hotwired](https://hotwired.dev/) suite by default, but these are not mandatory. You can remove them if you don't need them.
+
+Hotwired is a library developed by the Ruby on Rails community and may be unfamiliar to many developers. However, if you want to maintain your existing server-side development approach while achieving a smooth SPA-like user experience, it's worth considering. That said, the community has both positive and negative perspectives on it, so the choice is ultimately yours.
 
 You can find examples in the project's [tests/manual-test-app](./tests/manual-test-app).
 
