@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.5] - 2025-07-29
+
+### Fixed
+- Fixed issue where `.gitignore` file was not created in resources directory during init
+- CLI now directly creates `.gitignore` file with proper content (`node_modules`, `public/builds`) during `nestjs-mvc-tools init`
+
 ## [0.9.4] - 2025-07-29
 
 ### Fixed

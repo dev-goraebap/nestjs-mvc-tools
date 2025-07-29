@@ -2,6 +2,12 @@
 
 이 프로젝트의 모든 주목할 만한 변경 사항이 이 파일에 문서화됩니다.
 
+## [0.9.5] - 2025-07-29
+
+### 수정됨
+- init 시 resources 디렉토리에 `.gitignore` 파일이 생성되지 않던 문제 해결
+- CLI가 `nestjs-mvc-tools init` 실행 시 적절한 내용(`node_modules`, `public/builds`)으로 `.gitignore` 파일을 직접 생성하도록 변경
+
 ## [0.9.4] - 2025-07-29
 
 ### 수정됨
