@@ -61,6 +61,13 @@ program
       fs.copySync(templateDir, destinationPath);
       log.success('Template files copied successfully!');
 
+      // Create .gitignore file
+      const gitignoreContent = `node_modules
+public/builds`;
+      const gitignorePath = path.join(destinationPath, '.gitignore');
+      fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
+      log.step('.gitignore file created successfully');
+
       log.step(`Installing dependencies in resources directory...`);
       execSync('npm install', { cwd: destinationPath, stdio: 'inherit' });
       log.success('Dependencies installed successfully!');
