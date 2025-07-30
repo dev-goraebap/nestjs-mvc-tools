@@ -59,7 +59,7 @@ export type CsrfTokenOptions = {
   /**
    * @description en: Enable CSRF protection
    * @description ko: CSRF 보호 기능 활성화
-   * @default false
+   * @default true
    */
   enabled: boolean;
 

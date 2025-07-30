@@ -70,7 +70,7 @@ export class NestMvcOptionsService {
     options: Partial<CsrfTokenOptions>
   ): CsrfTokenOptions {
     return {
-      enabled: options?.enabled ?? false,
+      enabled: options?.enabled ?? true,
       ignoredMethods: options?.ignoredMethods ?? ["GET", "HEAD", "OPTIONS"],
       saltLength: options?.saltLength ?? 8,
       secretLength: options?.secretLength ?? 18,
