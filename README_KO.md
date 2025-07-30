@@ -106,7 +106,6 @@ bootstrap();
 // app.module.ts
 import { Module } from "@nestjs/common";
 import { NestMvcModule } from "nestjs-mvc-tools";
-import { join } from "path";
 
 @Module({
   imports: [
