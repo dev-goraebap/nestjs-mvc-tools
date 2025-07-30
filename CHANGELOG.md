@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.6] - 2025-07-30
+
+### Added
+- CLI template selection options: `--template` or `-t` option with 4 available templates
+  - `minimal`: Basic setup with Vite only
+  - `tailwind`: TailwindCSS + Vite setup
+  - `hotwired`: Hotwired (Turbo + Stimulus) + Vite setup
+  - `full`: Complete setup with TailwindCSS + Hotwired + Vite (default)
+- ExceptionFilter setup guide added to README_KO.md
+  - 404 error page handling methods
+  - Automatic flash message handling for SSR form errors
+  - API and page branching logic
+
+### Changed
+- CLI template folder structure redesign: `template-*` → moved under `templates/` directory
+- Default template changed to `full` (maintains existing behavior with all libraries included)
+- Major improvements to CLI commands section in README_KO.md
+  - Detailed usage and differences for each template
+  - Added template selection options to quick start section
+- Updated build system `copy-resources` script to use `templates` path
+
+### Improved
+- Developer experience: Selective library installation based on project requirements
+- Documentation: Complete code examples and setup methods for ExceptionFilter implementation
+- CLI usability: Intuitive template names and clear option descriptions
+
 ## [0.9.5] - 2025-07-29
 
 ### Fixed

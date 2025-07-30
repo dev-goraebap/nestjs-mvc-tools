@@ -2,6 +2,32 @@
 
 이 프로젝트의 모든 주목할 만한 변경 사항이 이 파일에 문서화됩니다.
 
+## [0.9.6] - 2025-07-30
+
+### 추가됨
+- CLI 템플릿 선택 옵션 추가: `--template` 또는 `-t` 옵션으로 4가지 템플릿 선택 가능
+  - `minimal`: Vite만 포함한 기본 구성
+  - `tailwind`: TailwindCSS + Vite 구성
+  - `hotwired`: Hotwired (Turbo + Stimulus) + Vite 구성
+  - `full`: TailwindCSS + Hotwired + Vite 완전 구성 (기본값)
+- ExceptionFilter 설정 가이드를 README_KO.md에 추가
+  - 404 에러 페이지 처리 방법
+  - SSR 양식 오류의 플래시 메시지 자동 처리
+  - API와 페이지 분기 처리 로직
+
+### 변경됨
+- CLI 템플릿 폴더 구조 재설계: `template-*` → `templates/` 하위로 이동
+- 기본 템플릿을 `full`로 변경 (기존 전체 라이브러리 포함 동작 유지)
+- README_KO.md의 CLI 명령어 섹션 대대적 개선
+  - 템플릿별 사용법과 차이점 상세 설명
+  - 빠른 시작 섹션에 템플릿 선택 옵션 추가
+- 빌드 시스템의 `copy-resources` 스크립트를 `templates` 경로로 수정
+
+### 개선됨
+- 개발자 경험: 프로젝트 요구사항에 맞게 필요한 라이브러리만 선택 설치 가능
+- 문서화: ExceptionFilter 구현을 위한 완전한 코드 예제와 설정 방법 제공
+- CLI 사용성: 직관적인 템플릿 이름과 명확한 옵션 설명
+
 ## [0.9.5] - 2025-07-29
 
 ### 수정됨
