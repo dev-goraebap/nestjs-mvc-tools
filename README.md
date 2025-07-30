@@ -245,7 +245,7 @@ NestMvcModule.forRoot({
     devServerUrl: "http://localhost:5173",
   },
   csrf: {
-    enabled: false, // CSRF protection disabled (default)
+    enabled: true, // CSRF protection enabled (default)
     ignoredMethods: ["GET", "HEAD", "OPTIONS"],
     saltLength: 8,
     secretLength: 18,
