@@ -88,7 +88,7 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // Add this
+  // Static asset serving configuration
   app.useStaticAssets(join(process.cwd(), "resources", "public"), {
     prefix: "/public",
   });
@@ -96,6 +96,11 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+
+This configuration serves the following purposes:
+- **Production Built Vite Assets**: Serves CSS, JavaScript files and other built assets via `/public` path
+- **Other Static Assets**: Makes images, fonts, favicon and other static files accessible on the web
+- **Development Environment Compatibility**: Ensures consistent asset access paths across development/production environments
 
 ### 3. NestMvcModule Registration
 
@@ -107,15 +112,7 @@ import { join } from "path";
 
 @Module({
   imports: [
-    NestMvcModule.forRoot({
-      view: {
-        rootDir: join(__dirname, "..", "resources", "views"),
-        disks: [], // Additional disk paths if needed
-      },
-      csrf: {
-        enabled: true, // Enable CSRF protection
-      },
-    }),
+    NestMvcModule.forRoot(),
   ],
 })
 export class AppModule {}
@@ -172,6 +169,24 @@ You can configure it like this using the concurrently library:
 ```
 
 Then run with just `npm run start:dev`
+
+### 6. Production Build
+
+For production deployment, you need to build both the NestJS application and the frontend assets in the resources directory.
+
+```json
+// package.json
+"scripts": {
+  "build": "nest build && cd resources && npm run build"
+}
+```
+
+```bash
+# Run production build
+npm run build
+```
+
+> **Important**: Building only NestJS won't build frontend assets. You must also run the Vite build in the `resources` directory to properly serve static assets.
 
 ## CLI Commands
 
@@ -252,6 +267,35 @@ NestMvcModule.forRoot({
   },
 });
 ```
+
+> **Note**: The `asset.staticAssetPrefix` value must match the `prefix` value in the `useStaticAssets` configuration in `main.ts`.
+> 
+> ```typescript
+> // These two settings must match
+> app.useStaticAssets(join(process.cwd(), "resources", "public"), {
+>   prefix: "/public", // ← This value and
+> });
+> 
+> NestMvcModule.forRoot({
+>   asset: {
+>     staticAssetPrefix: "/public", // ← This value must be the same
+>   },
+> });
+> ```
+> 
+> If you want to change the path, modify both locations identically:
+> ```typescript
+> // Example: Change to /assets path
+> app.useStaticAssets(join(process.cwd(), "resources", "public"), {
+>   prefix: "/assets",
+> });
+> 
+> NestMvcModule.forRoot({
+>   asset: {
+>     staticAssetPrefix: "/assets",
+>   },
+> });
+> ```
 
 ## Important: Session Dependencies
 

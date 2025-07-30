@@ -86,7 +86,7 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // 추가
+  // 정적 에셋 제공 설정
   app.useStaticAssets(join(process.cwd(), "resources", "public"), {
     prefix: "/public",
   });
@@ -94,6 +94,11 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+
+이 설정은 다음과 같은 목적으로 사용됩니다:
+- **프로덕션 빌드된 Vite 에셋**: CSS, JavaScript 파일 등 빌드된 에셋을 `/public` 경로로 제공
+- **기타 정적 에셋**: 이미지, 폰트, 파비콘 등의 정적 파일을 웹에서 접근 가능하게 함
+- **개발 환경 호환성**: 개발/프로덕션 환경에서 동일한 경로로 에셋 접근 보장
 
 ### 3. NestMvcModule 모듈 등록
 
@@ -105,15 +110,7 @@ import { join } from "path";
 
 @Module({
   imports: [
-    NestMvcModule.forRoot({
-      view: {
-        rootDir: join(__dirname, "..", "resources", "views"),
-        disks: [], // 추가 디스크 경로가 필요한 경우
-      },
-      csrf: {
-        enabled: true, // CSRF 보호 활성화
-      },
-    }),
+    NestMvcModule.forRoot(),
   ],
 })
 export class AppModule {}
@@ -170,6 +167,24 @@ concurrently 라이브러리를 사용하면 다음과 같이 구성할 수 있�
 ```
 
 그리고 `npm run start:dev` 하나로 실행 가능
+
+### 6. 프로덕션 빌드
+
+프로덕션 배포를 위해서는 NestJS 애플리케이션과 resources 디렉토리의 프론트엔드 에셋을 모두 빌드해야 합니다.
+
+```json
+// package.json
+"scripts": {
+  "build": "nest build && cd resources && npm run build"
+}
+```
+
+```bash
+# 프로덕션 빌드 실행
+npm run build
+```
+
+> **중요**: NestJS 빌드만으로는 프론트엔드 에셋이 빌드되지 않습니다. `resources` 디렉토리의 Vite 빌드도 함께 실행해야 정적 에셋이 올바르게 제공됩니다.
 
 ## CLI 명령어
 
@@ -250,6 +265,35 @@ NestMvcModule.forRoot({
   },
 });
 ```
+
+> **주의**: `asset.staticAssetPrefix` 값은 반드시 `main.ts`의 `useStaticAssets` 설정의 `prefix` 값과 일치해야 합니다.
+> 
+> ```typescript
+> // 두 설정이 일치해야 함
+> app.useStaticAssets(join(process.cwd(), "resources", "public"), {
+>   prefix: "/public", // ← 이 값과
+> });
+> 
+> NestMvcModule.forRoot({
+>   asset: {
+>     staticAssetPrefix: "/public", // ← 이 값이 같아야 함
+>   },
+> });
+> ```
+> 
+> 만약 경로를 변경하려면 두 곳 모두 동일하게 변경해주세요:
+> ```typescript
+> // 예: /assets 경로로 변경
+> app.useStaticAssets(join(process.cwd(), "resources", "public"), {
+>   prefix: "/assets",
+> });
+> 
+> NestMvcModule.forRoot({
+>   asset: {
+>     staticAssetPrefix: "/assets",
+>   },
+> });
+> ```
 
 
 ## 중요: 세션 의존성
