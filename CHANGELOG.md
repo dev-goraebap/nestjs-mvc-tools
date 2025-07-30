@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.7] - 2025-07-30
+
+### Changed
+- **Cache default value**: Changed template caching default from `true` to `false`
+  - Improved development experience by allowing immediate template changes visibility
+  - Updated across service, type definitions, documentation, and test files
+  - Added JSDoc guidance for development vs production environment usage
+- **CSRF protection default value**: Changed CSRF protection default from `false` to `true`
+  - Enhanced security by enabling CSRF protection by default
+  - Updated across service, type definitions, and documentation examples
+
+### Added
+- **Production build documentation**: Added comprehensive build guidance for deployment
+  - Specified requirement to build both NestJS and resources directory
+  - Provided build script examples and deployment guidance
+- **Static assets configuration enhancement**: Clarified purpose and necessity of `useStaticAssets` configuration
+  - Explained Vite build assets, static file serving, and development/production environment compatibility
+  - Added cross-reference with NestMvcModule asset settings
+- **Configuration synchronization guide**: Added important notes about setting consistency
+  - Emphasized need for `staticAssetPrefix` and `useStaticAssets` `prefix` value alignment
+  - Provided examples for changing both settings together
+
+### Improved
+- **Developer experience**: Enhanced development efficiency with immediate template change reflection
+- **Security**: Strengthened application security with default CSRF protection activation
+- **Documentation**: Provided clear guidance on build processes and configuration synchronization
+
 ## [0.9.6] - 2025-07-30
 
 ### Added
