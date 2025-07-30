@@ -2,35 +2,34 @@
 
 [View Korean version 👾](https://github.com/dev-goraebap/nestjs-mvc-tools/blob/HEAD/README_KO.md)
 
-**NestJS MVC Tools** is a small utility designed to help you get started with traditional web development approaches in NestJS more easily.
+**NestJS MVC Tools** is a small utility that helps you get started with traditional web development patterns in NestJS more easily.
+It began as a simple utility for easily using the Edge.js template engine in NestJS, but has evolved into its current form as various features needed for the View layer in the MVC pattern were added one by one.
 
-What began as a simple utility for conveniently using the Edge.js template engine in NestJS has evolved into its current form as various features needed for the View layer of the MVC pattern were gradually added.
+It includes AdonisJS's [Edge.js](https://edgejs.dev/docs/introduction) template engine and an asset pipeline using [Vite](https://vite.dev/). When automatically configuring the frontend directory, you can select [Tailwindcss](https://tailwindcss.com/) and [Hotwired](https://hotwired.dev/) libraries as template options, allowing you to include only the libraries needed for your project requirements.
 
-It comes configured with AdonisJS's [Edge.js](https://edgejs.dev/docs/introduction) template engine and an asset pipeline using [Vite](https://vite.dev/). The frontend directory setup includes [TailwindCSS](https://tailwindcss.com/) related libraries and the [Hotwired](https://hotwired.dev/) suite by default, but these are not mandatory. You can remove them if you don't need them.
+Hotwired is a library developed by the Ruby on Rails community and may be unfamiliar to many developers. However, if you want to implement a smooth user experience like SPAs while maintaining traditional server-side development approaches, it's worth considering. Note that the community has both positive and negative opinions about it, so the choice is ultimately yours.
 
-Hotwired is a library developed by the Ruby on Rails community and may be unfamiliar to many developers. However, if you want to maintain your existing server-side development approach while achieving a smooth SPA-like user experience, it's worth considering. That said, the community has both positive and negative perspectives on it, so the choice is ultimately yours.
-
-You can find examples in the project's [tests/manual-test-app](./tests/manual-test-app).
+Examples can be found in the project's [tests/manual-test-app](./tests/manual-test-app).
 
 ## Developer's Note
 
-While I love NestJS's powerful DI system, sometimes I envy full-stack environments like AdonisJS, Laravel, or Ruby on Rails. I searched for libraries in the NestJS ecosystem for frontend configuration but couldn't find anything suitable, so I ended up creating one to my taste.
+While I love NestJS's powerful DI system, sometimes I envy full-stack environments like AdonisJS, Laravel, and Ruby on Rails. I looked for libraries to configure the frontend in the NestJS ecosystem but couldn't find anything suitable, so I ended up creating this to my own taste.
 
-This library is merely an assembly of excellent works created by other talented developers, packaged to fit NestJS. I'm not confident about maintaining it consistently, so if anyone shares similar thoughts, I hope they'll release a better library. ~~(So I can use it comfortably)~~
+This library is merely an assembly of excellent works created by other talented developers, packaged for NestJS. Since I'm not confident about maintaining it consistently, I hope someone with similar thoughts will release a better library. ~~(So I can use it comfortably)~~
 
 ## Key Features
 
 ### Edge.js Template Engine Modularization
 
-AdonisJS's Edge.js template engine is modularized and provided for use in NestJS. Why use Edge.js, you ask? It's simply easy and powerful... that's all!
+Provides AdonisJS's Edge.js template engine in a modularized form for use in NestJS. Why use Edge.js specifically? It's simply easy and powerful... that's all!
 
-### Automatic Frontend Directory Configuration
+### Automatic Frontend Directory Setup
 
-Through the built-in CLI, frontend resource folders are automatically created and configured, helping you quickly start projects and set up development environments.
+Uses a built-in CLI to automatically generate and configure frontend resource folders, helping you quickly start projects and set up development environments.
 
-### Vite-based Asset Pipeline Construction
+### Vite-based Asset Pipeline
 
-Using Vite to support frontend development servers and provide optimized assets in production environments through the asset pipeline.
+Leverages Vite to support frontend development servers and provides optimized assets for production environments through an asset pipeline.
 
 ### CSRF Protection
 
@@ -42,11 +41,15 @@ Provides session-based temporary message and data functionality to effectively c
 
 ### MVC Exception Handling
 
-Provides a simple exception handling abstract class based on MVC (Model-View-Controller) that integrates with the template engine, allowing developers to handle application errors according to different situations.
+Provides MVC (Model-View-Controller) based exception handling that integrates with the template engine. This feature enables:
+
+- **404 Error Page Handling**: Converts NestJS's default 404 errors to template-based error pages when accessing non-existent pages
+- **SSR Form Error Handling**: Automatically handles flash messages and input value retention when BadRequestException occurs
+- **API/Page Route Separation**: Distinguishes between API routes (`/api`) and regular page routes to provide appropriate response formats (JSON/HTML)
 
 ### Modern Web Compatibility
 
-Supports compatibility with modern web technologies like Hotwired/Turbo, providing user experiences similar to SPAs (Single Page Applications) while maintaining the advantages of server-side rendering.
+Supports compatibility with modern web technologies like Hotwired/Turbo, providing SPA (Single Page Application)-like user experiences while maintaining the advantages of server-side rendering.
 
 ## Installation
 
@@ -56,16 +59,22 @@ npm install nestjs-mvc-tools
 
 ## Quick Start
 
-We'll help you with basic setup for using MVC patterns in NestJS.
+We'll help you set up basic configuration for using MVC patterns in NestJS.
 
 ### 1. Project Initialization
 
 ```bash
-# Set up MVC templates and resources
+# Set up MVC templates and resources (default: full - Hotwired + TailwindCSS)
 npx nestjs-mvc-tools init
+
+# Or select desired template
+npx nestjs-mvc-tools init --template=minimal   # Vite only
+npx nestjs-mvc-tools init --template=tailwind  # TailwindCSS only
+npx nestjs-mvc-tools init --template=hotwired  # Hotwired only
+npx nestjs-mvc-tools init --template=full      # Full (default)
 ```
 
-Creates a resources directory at the project root and downloads necessary dependencies for the internal vite development environment.
+Creates a resources directory in the project root and downloads necessary dependencies based on the selected template.
 
 ### 2. Static File Path Configuration
 
@@ -137,12 +146,12 @@ export class AppController {
 ```html
 // resources/views/pages/hello_world/index.edge 
 
-@layout.app({ title: 'Helloworld'})
+@layout.app({ title: 'Helloworld' })
 <h1 data-controller="hello" class="text-3xl">{{ message ?? 'hello world' }}</h1>
 @end
 ```
 
-### 5. Running the Project
+### 5. Run Project
 
 ```bash
 # 1. Run vite development server
@@ -152,7 +161,7 @@ cd resources && npm run dev
 npm run start:dev
 ```
 
-Using the concurrently library, you can configure it as follows:
+You can configure it like this using the concurrently library:
 
 ```json
 // package.json
@@ -162,27 +171,46 @@ Using the concurrently library, you can configure it as follows:
 }
 ```
 
-And run with just `npm run start:dev`
+Then run with just `npm run start:dev`
 
 ## CLI Commands
 
 ### `nestjs-mvc-tools init`
 
-Creates basic MVC templates and resource structure in the project.
+Creates MVC templates and resource structure in your project. You can select only the libraries you need through template options.
 
 ```bash
+# Basic usage (full template - Hotwired + TailwindCSS)
 nestjs-mvc-tools init
+
+# Template selection
+nestjs-mvc-tools init --template=minimal   # Vite only
+nestjs-mvc-tools init --template=tailwind  # TailwindCSS only  
+nestjs-mvc-tools init --template=hotwired  # Hotwired only
+nestjs-mvc-tools init --template=full      # Full (default)
+
+# Using short options
+nestjs-mvc-tools init -t minimal
 ```
+
+**Available Templates:**
+- `minimal`: Basic configuration with Vite only
+- `tailwind`: TailwindCSS + Vite configuration  
+- `hotwired`: Hotwired (Turbo + Stimulus) + Vite configuration
+- `full`: Complete configuration with TailwindCSS + Hotwired + Vite (default)
 
 **Generated Structure:**
 
+Different structures are generated based on the selected template.
+
 ```
 resources/
-├── package.json        # Vite development environment
-├── vite.config.js      # Vite configuration
+├── package.json        # Template-specific dependencies
+├── vite.config.js      # Vite configuration (template-specific plugins)
 ├── src/
-│   ├── app.js         # Frontend entry
-│   └── tailwind.css   # Styles
+│   ├── app.js         # Frontend entry (template-specific imports)
+│   ├── style.css      # Styles (minimal, hotwired)
+│   └── controllers/   # Stimulus controllers (hotwired, full only)
 ├── views/
 │   ├── components/    # Reusable components
 │   └── pages/         # Page templates
@@ -190,12 +218,18 @@ resources/
     └── builds/        # Built assets
 ```
 
+**Template Differences:**
+- `minimal`: Basic CSS, Vite only
+- `tailwind`: TailwindCSS import, Tailwind plugin included
+- `hotwired`: Hotwired import, Stimulus controller folder included
+- `full`: All features including TailwindCSS + Hotwired
+
 ## Configuration
 
 ### Basic Configuration
 
 ```typescript
-// Default values provided if configuration is not included
+// Default values provided when configuration is not included
 NestMvcModule.forRoot({
   excludePaths: ["/api", "/favicon.ico"], // Paths to exclude from middleware processing
   debug: false, // Whether to output debug logs (default: false)
@@ -211,7 +245,7 @@ NestMvcModule.forRoot({
     devServerUrl: "http://localhost:5173",
   },
   csrf: {
-    enabled: false, // Disable CSRF protection (default)
+    enabled: false, // CSRF protection disabled (default)
     ignoredMethods: ["GET", "HEAD", "OPTIONS"],
     saltLength: 8,
     secretLength: 18,
@@ -221,16 +255,16 @@ NestMvcModule.forRoot({
 
 ## Important: Session Dependencies
 
-**CSRF protection** and **flash message** functionality internally depend on sessions. While basic rendering functionality won't cause errors even without active sessions, warning messages will continuously appear and these features won't work properly.
+**CSRF Protection** and **Flash Messages** functionality internally depend on sessions. While basic rendering functionality won't error without active sessions, warning messages will continuously appear and these features won't work properly.
 
-Therefore, sessions must be active to use these features reliably.
+Therefore, sessions must be activated to use these features reliably.
 
 ```bash
 npm install express-session
 npm install @types/express-session # If types are needed
 ```
 
-**main.ts configuration:**
+**main.ts Configuration:**
 
 ```typescript
 import * as session from "express-session";
@@ -261,14 +295,14 @@ async function bootstrap() {
 
 CSRF (Cross-Site Request Forgery) protection prevents attacks where malicious websites send authenticated requests through a user's browser.
 
-### Enabling CSRF Protection
+### Enable CSRF Protection
 
 ```typescript
 // app.module.ts
 NestMvcModule.forRoot({
   csrf: {
     enabled: true, // Enable CSRF protection
-    ignoredMethods: ["GET", "HEAD", "OPTIONS"], // HTTP methods to not validate
+    ignoredMethods: ["GET", "HEAD", "OPTIONS"], // HTTP methods to skip validation
     saltLength: 8, // Salt length for token generation
     secretLength: 18, // Secret length for token generation
   },
@@ -295,9 +329,9 @@ The `csrfToken` variable is available in all view templates:
 
 CSRF tokens can be delivered in the following ways:
 
-1. **Form data**: `_csrf` field
-2. **Query parameter**: `?_csrf=token`
-3. **HTTP headers**: 
+1. **Form Data**: `_csrf` field
+2. **Query Parameter**: `?_csrf=token`  
+3. **HTTP Headers**: 
    - `x-csrf-token`
    - `csrf-token`
    - `xsrf-token`
@@ -314,7 +348,7 @@ When using Hotwired/Turbo, setting up meta tags automatically includes CSRF toke
 
 ## Flash Messages
 
-Flash messages provide one-time notifications to users. They're mainly used to display success/failure messages after form submissions or validation errors.
+Flash messages provide one-time notifications to users. They're primarily used to display success/failure messages after form submissions or validation errors.
 
 ### Basic Usage
 
@@ -329,7 +363,7 @@ async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
     req.flash.success('User created successfully.');
     return res.redirect('/users');
   } catch (error) {
-    // Set error message and maintain input values
+    // Set error message and retain input values
     req.flash.error('Failed to create user.').flashInput();
     return res.redirect('/users/new');
   }
@@ -340,13 +374,13 @@ async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
 
 ```typescript
 // Success message
-req.flash.success('Task completed.');
+req.flash.success('Task completed successfully.');
 
 // Error message
 req.flash.error('An error occurred.');
 
 // Info message
-req.flash.info('This is for your information.');
+req.flash.info('This is informational.');
 
 // Warning message  
 req.flash.warning('Attention required.');
@@ -355,15 +389,15 @@ req.flash.warning('Attention required.');
 req.flash.flash('custom_key', 'Custom message');
 ```
 
-### Maintaining Form Input Values
+### Retaining Form Input Values
 
-You can maintain user-entered data when validation fails:
+You can retain user input data when validation fails:
 
 ```typescript
 @Post('/users')
 async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
   if (!req.body.name) {
-    // Maintain input values along with error message
+    // Retain input values along with error message
     req.flash.error('Please enter a name.').flashInput();
     return res.redirect('/users/new');
   }
@@ -399,7 +433,7 @@ async createUser(@Req() req: NestMvcReq, @Res() res: Response) {
 
 ### Integration with MVC Exception Handling
 
-Throwing a `BadRequestException` automatically handles flash messages and input value maintenance:
+Throwing `BadRequestException` automatically handles flash messages and input value retention:
 
 ```typescript
 @Post('/users')
@@ -413,9 +447,85 @@ async createUser(@Body() createUserDto: CreateUserDto) {
 }
 ```
 
+## ExceptionFilter Setup (Recommended)
+
+To fully utilize MVC exception handling features, you should set up an ExceptionFilter. This setup enables 404 error page handling, automatic flash message processing for SSR form errors, and API/page route separation.
+
+### Create ExceptionFilter Class
+
+```typescript
+// src/exception.filter.ts
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  Logger,
+} from "@nestjs/common";
+import { Response } from "express";
+import { NestMvcBaseExceptionHandler, NestMvcReq } from "nestjs-mvc-tools";
+
+@Catch()
+export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements ExceptionFilter {
+  private readonly logger = new Logger(AppExceptionFilter.name);
+
+  catch(exception: Error | HttpException, host: ArgumentsHost) {
+    const req: NestMvcReq = host.switchToHttp().getRequest();
+    const res: Response = host.switchToHttp().getResponse();
+
+    this.logger.warn(exception.message);
+
+    // All non-API routes use page-related exception handling
+    if (!req.originalUrl.startsWith("/api")) {
+      return this.handleMvcException(exception, req, res, this.logger);
+    }
+
+    // API exception handling (JSON response)
+    if (exception instanceof HttpException) {
+      return res.json({
+        status: exception.getStatus(),
+        message: exception.message,
+      });
+    } else {
+      return res.json({
+        status: 500,
+        message: exception.message,
+      });
+    }
+  }
+}
+```
+
+### Register ExceptionFilter in Module
+
+```typescript
+// app.module.ts
+import { Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
+import { AppExceptionFilter } from "./exception.filter";
+
+@Module({
+  // ... other configurations
+  providers: [
+    { provide: APP_FILTER, useClass: AppExceptionFilter },
+    // ... other providers
+  ],
+})
+export class AppModule {}
+```
+
+### Key Features
+
+- **Automatic Route Separation**: Routes starting with `/api` get JSON responses, others get HTML template responses
+- **404 Error Handling**: Renders `views/pages/errors/index.edge` template when accessing non-existent pages
+- **Flash Message Integration**: Automatically sets error messages as flash messages and retains input values when `BadRequestException` occurs
+- **Logging**: Records all exceptions in logs
+
+> **Developer Experience Improvement Planned**: Currently, you need to manually write and register the ExceptionFilter, but future versions will automate this process to provide a better developer experience.
+
 ## Path Exclusion Configuration
 
-Features provided by the library such as view, csrf, flash, etc. work at the middleware level.
+The view, csrf, flash, and other features provided by the library operate at the middleware level.
 You can exclude specific paths from middleware processing:
 
 ```typescript
@@ -427,19 +537,19 @@ NestMvcModule.forRoot({
 
 By default, `/api` and `/favicon.ico` paths are excluded.
 
-## Project Default Libraries and Key Considerations
+## Project Core Libraries and Key Considerations
 
-This project's frontend environment installs @hotwired series and @tailwindcss libraries by default. These two libraries are not essential, so you can remove them if desired. However, Hotwired has high utility in this project, so its use is recommended.
+This project allows you to select and install only the libraries you need through template options. You can selectively include @hotwired series and @tailwindcss libraries based on project requirements, with the default being the `full` template that includes both libraries.
 
 ### Vite HMR Support Issues
 
 Currently, the project doesn't properly support Vite's HMR (Hot Module Replacement). This means code changes aren't immediately reflected on the website, and you need to manually refresh to see changes.
 
-This occurs because Vite primarily handles static asset management while the Edge.js template engine runs on the NestJS server side. In other words, the frontend and backend environments are separated, making it difficult to fully utilize Vite's HMR functionality.
+This occurs because Vite primarily handles static asset management while the Edge.js template engine runs on the NestJS server side. The frontend and backend environments are separated, making it difficult to fully utilize Vite's HMR functionality.
 
-AdonisJS is designed based on an ESM (ECMAScript Modules) environment, so the frontend configuration itself works closely like a single project. In contrast, NestJS has been widely used in CommonJS environments. While ESM configuration isn't impossible in NestJS, we judged it would be difficult to respond to unexpected problems like conflicts with existing libraries. Therefore, we chose a structure that extends without touching NestJS's existing environment configuration. Due to this approach, it's common to independently build and deploy frontend and backend, which creates constraints in HMR integration.
+AdonisJS is designed around an ESM (ECMAScript Modules) environment where the frontend configuration works as tightly integrated as a single project. In contrast, NestJS has been widely used in CommonJS environments. While ESM configuration in NestJS isn't impossible, we decided it would be difficult to respond to unexpected issues like conflicts with existing libraries. Therefore, we chose a structure that extends NestJS's existing environment configuration without modifying it. Due to this approach, it's common to build and deploy frontend and backend independently, creating constraints in HMR integration.
 
-Currently, we're working to find an appropriate compromise between development convenience and management efficiency.
+We're currently working to find an appropriate compromise between development convenience and management efficiency.
 
 ## Library Testing Issues
 
@@ -447,15 +557,15 @@ This library uses the Edge.js template engine, which is designed for use in ESM 
 
 ### Jest E2E Testing Limitations
 
-Initially, we attempted E2E testing using Jest in the `tests/tmp` directory, but had to abandon it due to the following issues:
+Initially, we attempted E2E testing using Jest in the `tests/tmp` directory, but abandoned it due to the following issues:
 
-- **Module system conflicts**: Compatibility issues when loading Edge.js (an ESM library) in Jest's CommonJS environment
-- **Complex configuration**: Complex setup required for Jest's ESM support and potential conflicts with other libraries
-- **Unstable test environment**: Tests intermittently failing depending on module loading order or configuration
+- **Module System Conflicts**: Compatibility issues when loading ESM library Edge.js in Jest's CommonJS environment
+- **Complex Configuration**: Complex setup required for Jest's ESM support and potential conflicts with other libraries
+- **Unstable Test Environment**: Tests failing intermittently depending on module loading order or configuration
 
-### Alternative: Manual Testing Environment
+### Alternative: Manual Test Environment
 
-Due to these limitations, we currently test functionality manually by running actual NestJS applications in `tests/manual-test-app`:
+Due to these limitations, we currently test functionality manually by running an actual NestJS application in `tests/manual-test-app`:
 
 ```bash
 # Run test app

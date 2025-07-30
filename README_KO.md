@@ -3,7 +3,7 @@
 **NestJS MVC Tools**는 NestJS에서 전통적인 웹 개발 방식을 좀 더 편하게 시작할 수 있도록 도움을 드리는 작은 도구입니다.
 처음에는 NestJS에서 Edge.js 템플릿 엔진을 간편하게 사용하기 위한 단순한 유틸리티로 시작했지만, MVC 패턴 중 View 계층에 필요한 다양한 기능들이 하나씩 추가되면서 지금의 모습이 되었습니다.
 
-AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진과 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인이 구성되어있습니다. 프론트엔드 디렉토리 자동 구성에는 기본적으로 [Tailwindcss](https://tailwindcss.com/)에 관련된 라이브러리들과 [Hotwired](https://hotwired.dev/) 시리즈가 포함되어있지만, 이는 필수는 아닙니다. 원하지 않는다면 제거할 수 있습니다.
+AdonisJS의 [Edge.js](https://edgejs.dev/docs/introduction) 템플릿 엔진과 [Vite](https://vite.dev/)를 사용한 에셋 파이프라인이 구성되어있습니다. 프론트엔드 디렉토리 자동 구성 시 [Tailwindcss](https://tailwindcss.com/)와 [Hotwired](https://hotwired.dev/) 라이브러리를 템플릿 옵션으로 선택할 수 있어, 프로젝트 요구사항에 맞게 필요한 라이브러리만 포함할 수 있습니다.
 
 Hotwired는 Ruby on Rails 진영에서 개발된 라이브러리로, 많은 개발자에게 생소할 수 있습니다. 하지만 기존의 서버 사이드 개발 방식을 유지하면서도 SPA와 같은 매끄러운 사용자 경험을 구현하고 싶다면 고려해볼 만한 도구입니다. 다만 커뮤니티에서는 긍정적 평가와 부정적 의견이 공존하므로, 어디까지나 본인의 선택입니다.
 
@@ -39,7 +39,11 @@ Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파�
 
 ### MVC 예외 처리
 
-템플릿 엔진과 연동되는 MVC(Model-View-Controller) 기반의 간단한 예외 처리 추상 클래스를 제공하여, 개발자가 애플리케이션의 오류를 상황에 따라 처리할 수 있도록 합니다.
+템플릿 엔진과 연동되는 MVC(Model-View-Controller) 기반의 예외 처리 기능을 제공합니다. 이 기능을 통해 다음과 같은 처리가 가능합니다:
+
+- **404 에러 페이지 처리**: 존재하지 않는 페이지 접근 시 NestJS의 기본 404 에러를 템플릿 기반 에러 페이지로 변환
+- **SSR 양식 오류 처리**: BadRequestException 발생 시 자동으로 플래시 메시지와 입력값 유지 처리
+- **API/페이지 분기 처리**: API 경로(`/api`)와 일반 페이지 경로를 구분하여 적절한 응답 형태(JSON/HTML) 제공
 
 ### 모던 웹 호환성
 
@@ -58,11 +62,17 @@ NestJS에서 MVC 패턴을 사용하기 위한 기본 설정을 도와드립니�
 ### 1. 프로젝트 초기화
 
 ```bash
-# MVC 템플릿 및 리소스 설정
+# MVC 템플릿 및 리소스 설정 (기본값: full - Hotwired + TailwindCSS)
 npx nestjs-mvc-tools init
+
+# 또는 원하는 템플릿 선택
+npx nestjs-mvc-tools init --template=minimal   # Vite만
+npx nestjs-mvc-tools init --template=tailwind  # TailwindCSS만
+npx nestjs-mvc-tools init --template=hotwired  # Hotwired만
+npx nestjs-mvc-tools init --template=full      # 전체 (기본값)
 ```
 
-프로젝트 root 경로에 resources 디렉토리를 생성하고 내부 vite 개발환경의 필요한 의존성을 다운로드합니다.
+프로젝트 root 경로에 resources 디렉토리를 생성하고 선택한 템플릿에 따라 필요한 의존성을 다운로드합니다.
 
 ### 2. 정적 파일 경로 설정
 
@@ -134,7 +144,7 @@ export class AppController {
 ```html
 // resources/views/pages/hello_world/index.edge 
 
-@layout.app({ title: 'Helloworld'})
+@layout.app({ title: 'Helloworld' })
 <h1 data-controller="hello" class="text-3xl">{{ message ?? 'hello world' }}</h1>
 @end
 ```
@@ -165,27 +175,52 @@ concurrently 라이브러리를 사용하면 다음과 같이 구성할 수 있�
 
 ### `nestjs-mvc-tools init`
 
-프로젝트에 기본적인 MVC 템플릿과 리소스 구조를 생성합니다.
+프로젝트에 MVC 템플릿과 리소스 구조를 생성합니다. 템플릿 옵션을 통해 필요한 라이브러리만 선택할 수 있습니다.
 
 ```bash
+# 기본 사용 (full 템플릿 - Hotwired + TailwindCSS)
 nestjs-mvc-tools init
+
+# 템플릿별 선택
+nestjs-mvc-tools init --template=minimal   # Vite만
+nestjs-mvc-tools init --template=tailwind  # TailwindCSS만  
+nestjs-mvc-tools init --template=hotwired  # Hotwired만
+nestjs-mvc-tools init --template=full      # 전체 (기본값)
+
+# 짧은 옵션 사용
+nestjs-mvc-tools init -t minimal
 ```
+
+**사용 가능한 템플릿:**
+- `minimal`: Vite만 포함한 기본 구성
+- `tailwind`: TailwindCSS + Vite 구성  
+- `hotwired`: Hotwired (Turbo + Stimulus) + Vite 구성
+- `full`: TailwindCSS + Hotwired + Vite 완전 구성 (기본값)
 
 **생성되는 구조:**
 
+선택한 템플릿에 따라 다른 구조가 생성됩니다.
+
 ```
 resources/
-├── package.json        # Vite 개발 환경
-├── vite.config.js      # Vite 설정
+├── package.json        # 템플릿별 의존성
+├── vite.config.js      # Vite 설정 (템플릿별 플러그인)
 ├── src/
-│   ├── app.js         # 프론트엔드 엔트리
-│   └── tailwind.css   # 스타일
+│   ├── app.js         # 프론트엔드 엔트리 (템플릿별 import)
+│   ├── style.css      # 스타일 (minimal, hotwired)
+│   └── controllers/   # Stimulus 컨트롤러 (hotwired, full만)
 ├── views/
 │   ├── components/    # 재사용 컴포넌트
 │   └── pages/         # 페이지 템플릿
 └── public/
     └── builds/        # 빌드된 에셋
 ```
+
+**템플릿별 차이점:**
+- `minimal`: 기본 CSS, Vite만 포함
+- `tailwind`: TailwindCSS import, Tailwind 플러그인 포함
+- `hotwired`: Hotwired import, Stimulus 컨트롤러 폴더 포함
+- `full`: TailwindCSS + Hotwired 모든 기능 포함
 
 ## 설정
 
@@ -411,6 +446,82 @@ async createUser(@Body() createUserDto: CreateUserDto) {
 }
 ```
 
+## ExceptionFilter 설정 (권장)
+
+MVC 예외 처리 기능을 완전히 활용하려면 ExceptionFilter를 설정해야 합니다. 이 설정을 통해 404 에러 페이지 처리, SSR 양식 오류의 플래시 메시지 자동 처리, API와 페이지의 분기 처리가 가능합니다.
+
+### ExceptionFilter 클래스 작성
+
+```typescript
+// src/exception.filter.ts
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  Logger,
+} from "@nestjs/common";
+import { Response } from "express";
+import { NestMvcBaseExceptionHandler, NestMvcReq } from "nestjs-mvc-tools";
+
+@Catch()
+export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements ExceptionFilter {
+  private readonly logger = new Logger(AppExceptionFilter.name);
+
+  catch(exception: Error | HttpException, host: ArgumentsHost) {
+    const req: NestMvcReq = host.switchToHttp().getRequest();
+    const res: Response = host.switchToHttp().getResponse();
+
+    this.logger.warn(exception.message);
+
+    // API가 아닌 모든 경로는 페이지 관련 예외 처리
+    if (!req.originalUrl.startsWith("/api")) {
+      return this.handleMvcException(exception, req, res, this.logger);
+    }
+
+    // API 예외 처리 (JSON 응답)
+    if (exception instanceof HttpException) {
+      return res.json({
+        status: exception.getStatus(),
+        message: exception.message,
+      });
+    } else {
+      return res.json({
+        status: 500,
+        message: exception.message,
+      });
+    }
+  }
+}
+```
+
+### 모듈에 ExceptionFilter 등록
+
+```typescript
+// app.module.ts
+import { Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
+import { AppExceptionFilter } from "./exception.filter";
+
+@Module({
+  // ... 다른 설정들
+  providers: [
+    { provide: APP_FILTER, useClass: AppExceptionFilter },
+    // ... 다른 프로바이더들
+  ],
+})
+export class AppModule {}
+```
+
+### 주요 기능
+
+- **자동 분기 처리**: `/api`로 시작하는 경로는 JSON 응답, 그 외는 HTML 템플릿 응답
+- **404 에러 처리**: 존재하지 않는 페이지 접근 시 `views/pages/errors/index.edge` 템플릿 렌더링
+- **플래시 메시지 연동**: `BadRequestException` 발생 시 자동으로 에러 메시지를 플래시로 설정하고 입력값 유지
+- **로깅**: 모든 예외를 로그로 기록
+
+> **개발자 경험 개선 예정**: 현재는 수동으로 ExceptionFilter를 작성하고 등록해야 하지만, 향후 버전에서는 이 과정을 자동화하여 더 나은 개발자 경험을 제공할 예정입니다.
+
 ## 경로 제외 설정
 
 라이브러리에서 제공하는 view, csrf, flash 등의 기능들은 미들웨어 레벨에서 작동합니다.
@@ -427,7 +538,7 @@ NestMvcModule.forRoot({
 
 ## 프로젝트 기본 라이브러리 및 주요 고려 사항
 
-이 프로젝트의 프론트환경에서는 @hotwired 시리즈와 @tailwindcss 라이브러리를 기본적으로 설치합니다. 이 두 라이브러리는 필수는 아니므로 원한다면 제거할 수 있습니다. 하지만 Hotwired는 이 프로젝트에서 활용도가 높으므로 사용을 권장합니다.
+이 프로젝트는 템플릿 옵션을 통해 필요한 라이브러리만 선택하여 설치할 수 있습니다. @hotwired 시리즈와 @tailwindcss 라이브러리를 프로젝트 요구사항에 따라 선택적으로 포함할 수 있으며, 기본값은 두 라이브러리가 모두 포함된 `full` 템플릿입니다.
 
 ### Vite HMR 지원 이슈
 
