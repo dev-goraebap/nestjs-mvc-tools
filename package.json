@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc && npm run copy-resources",
-    "copy-resources": "node -e \"require('fs-extra').copySync('cli/copy-resources', 'dist/cli/copy-resources')\"",
+    "copy-resources": "node -e \"require('fs-extra').copySync('cli/templates', 'dist/cli/templates')\"",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "test": "jest",

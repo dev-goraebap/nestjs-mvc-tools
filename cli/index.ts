@@ -38,12 +38,25 @@ program
 program
   .command('init')
   .description('Initialize NestJS MVC Tools in your project')
-  .action(() => {
+  .option('-t, --template <type>', 'template to use (minimal|tailwind|hotwired|full)', 'full')
+  .action((options) => {
     log.title('NestJS MVC Tools Initializer');
     
-    const templateDir = path.resolve(__dirname, './copy-resources');
+    // 템플릿 유효성 검사
+    const validTemplates = ['minimal', 'tailwind', 'hotwired', 'full'];
+    const selectedTemplate = options.template;
+    
+    if (!validTemplates.includes(selectedTemplate)) {
+      log.error(`Invalid template: ${selectedTemplate}`);
+      log.info(`Available templates: ${validTemplates.join(', ')}`);
+      process.exit(1);
+    }
+    
+    const templateDir = path.resolve(__dirname, `./templates/${selectedTemplate}`);
     const userProjectRoot = process.cwd();
     const destinationPath = path.join(userProjectRoot, 'resources');
+
+    log.info(`Using template: ${colors.bright}${selectedTemplate}${colors.reset}`);
 
     // resources 폴더가 이미 존재하는지 확인
     if (fs.existsSync(destinationPath)) {

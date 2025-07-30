@@ -1,0 +1,26 @@
+@layout.app({ title: 'Nest MVC Error' })
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 1024px;
+      height: 100vh;
+      margin: 0px auto;
+    }
+    .container .status {
+      font-size: 3rem;
+      margin: 0px;
+    }
+    .container .message {
+      margin: 0px;
+    }
+  </style>
+  <div class="container">
+    <h1 class="status">{{status}}</h1>
+    <p class="message">{{error}}</p>
+    <br />
+    <a href="/">Back to Home</a>
+  </div>
+@end

@@ -1,0 +1,14 @@
+{
+  "src/app.js": {
+    "file": "app-D9XbzOV5.js",
+    "name": "app",
+    "src": "src/app.js",
+    "isEntry": true
+  },
+  "src/style.css": {
+    "file": "style-l0sNRNKZ.js",
+    "name": "style",
+    "src": "src/style.css",
+    "isEntry": true
+  }
+}
