@@ -37,7 +37,7 @@ export class NestMvcModule implements NestModule {
    * @param options - Static configuration options for the module
    * @returns Dynamic module configuration
    */
-  static forRoot(options: NestMvcOptions): DynamicModule {
+  static forRoot(options?: NestMvcOptions): DynamicModule {
     // Create raw options provider
     const nestMvcOptionsProvider: Provider = {
       provide: "NEST_MVC_OPTIONS",
