@@ -236,7 +236,7 @@ NestMvcModule.forRoot({
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // Additional template disk paths
-    cache: true,
+    cache: false,
   },
   asset: {
     mode: "development",

@@ -234,7 +234,7 @@ NestMvcModule.forRoot({
   view: {
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // 추가 템플릿 디스크 경로
-    cache: true,
+    cache: false,
   },
   asset: {
     mode: "development",
