@@ -49,7 +49,7 @@ export class NestMvcOptionsService {
     return {
       rootDir: options?.rootDir ?? join(process.cwd(), "resources", "views"),
       disks: options?.disks ?? [],
-      cache: options?.cache ?? true,
+      cache: options?.cache ?? false,
     };
   }
 

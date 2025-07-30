@@ -18,9 +18,9 @@ export type EdgeJsViewOptions = {
   disks: string[];
 
   /**
-   * @description en: Enable template caching for performance
-   * @description ko: 성능 향상을 위한 템플릿 캐싱 활성화
-   * @default true
+   * @description en: Enable template caching for performance. Set to false in development to see changes immediately, true in production for better performance.
+   * @description ko: 성능 향상을 위한 템플릿 캐싱 활성화. 개발환경에서는 변경사항 확인을 위해 false로, 프로덕션에서는 성능을 위해 true로 설정하세요.
+   * @default false
    */
   cache: boolean;
 };
