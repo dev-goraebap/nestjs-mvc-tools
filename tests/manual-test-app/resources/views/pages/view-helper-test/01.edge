@@ -1,0 +1,8 @@
+@layout.app()
+<div class="container mx-auto p-6">
+  {{inspect(isCurrentRoute)}}
+
+  {{isCurrentRoute('/view-helper-test/01')}}
+  {{isCurrentRoute('/view-helper-test/01', true)}}
+</div>
+@end

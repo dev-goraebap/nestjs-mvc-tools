@@ -8,8 +8,10 @@ import { CsrfTestController } from "./controllers/csrf-test.controller";
 import { EdgeJsTemplateStateTestController } from "./controllers/edge-js-template-state-test.controller";
 import { FlashTestController } from "./controllers/flash-test.controller";
 import { PageExceptionTestController } from "./controllers/page-exception-test.controller";
+import { ViewHelperTestController } from "./controllers/view-helper-test.controller";
 import { AppExceptionFilter } from "./exception.filter";
 import { ShareInterceptor } from "./share.interceptor";
+import { isCurrentRouteHelper } from "./view.helpers";
 
 @Module({
   imports: [
@@ -17,7 +19,10 @@ import { ShareInterceptor } from "./share.interceptor";
       view: {
         rootDir: join(__dirname, "..", "resources", "views"),
         disks: ["test-disk"],
-        cache: true,
+        cache: false,
+        helpers: [
+          isCurrentRouteHelper,
+        ]
       },
       asset: {
         buildOutDir: join(__dirname, "..", "resources", "public", "builds"),
@@ -33,7 +38,8 @@ import { ShareInterceptor } from "./share.interceptor";
     EdgeJsTemplateStateTestController,
     PageExceptionTestController,
     CsrfTestController,
-    FlashTestController
+    FlashTestController,
+    ViewHelperTestController
   ],
   providers: [
     { provide: APP_FILTER, useClass: AppExceptionFilter },
