@@ -8,16 +8,19 @@ import { NestMvcOptionsService } from "../services/nest-mvc-options.service";
 
 @Injectable()
 export class NestMvcViewMiddleware implements NestMiddleware {
-
   constructor(
     private readonly edgeJsService: EdgeJsService,
     private readonly optionsService: NestMvcOptionsService,
-    private readonly logger: NestMvcLoggerService,
+    private readonly logger: NestMvcLoggerService
   ) {}
 
   use(req: NestMvcReq, res: Response, next: (error?: any) => void) {
     // 제외 경로 체크
-    if (this.optionsService.excludePaths.some(path => req.originalUrl.startsWith(path))) {
+    if (
+      this.optionsService.excludePaths.some((path) =>
+        req.originalUrl.startsWith(path)
+      )
+    ) {
       return next();
     }
 
@@ -27,6 +30,20 @@ export class NestMvcViewMiddleware implements NestMiddleware {
     const edge = this.edgeJsService.getEdgeInstance();
     req.view = edge.createRenderer();
     this.logger.debug("Create EdgeJs Renderer");
+
+    // 헬퍼 등록이 안되어있으면 건너뜀
+    if (this.optionsService.viewOptions.helpers.length === 0) {
+      return next();
+    }
+    
+    // 뷰에서 사용할 헬퍼 함수들을 수집
+    const helpers: Record<string, any> = {};
+    this.optionsService.viewOptions.helpers.forEach((helperFactory) => {
+      const { key, fn } = helperFactory(req);
+      helpers[key] = fn; // 헬퍼 함수를 키-값 쌍으로 저장
+    });
+    req.view.share(helpers);
+
     return next();
   }
 }

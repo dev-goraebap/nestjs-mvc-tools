@@ -2,6 +2,23 @@
 // 개별 옵션
 // --------------------------------------------------------
 
+import { Request } from "express";
+
+/**
+ * 뷰 템플릿에서 사용할 커스텀 헬퍼 함수의 정의
+ * 현재 요청 컨텍스트에서 사용되며 글로벌이 아님
+ */
+export type ViewHelperDefinition = {
+  key: string;
+  fn: (...args: any[]) => any;
+};
+
+/**
+ * 요청별로 헬퍼 함수를 생성하는 팩토리 함수
+ * 각 HTTP 요청마다 실행되어 해당 요청 컨텍스트의 헬퍼를 등록
+ */
+export type ViewHelperFactory = (req: Request) => ViewHelperDefinition;
+
 export type EdgeJsViewOptions = {
   /**
    * @description en: Template root directory path.
@@ -27,6 +44,13 @@ export type EdgeJsViewOptions = {
    * @default false
    */
   cache: boolean;
+
+  /**
+   * @description en: Custom helper functions that will be executed on each request and shared with templates
+   * @description ko: 각 요청마다 실행되어 템플릿과 공유될 커스텀 헬퍼 함수들
+   * @default []
+   */
+  helpers: ViewHelperFactory[];
 };
 
 export type ViteAssetsPipelineOptions = {
