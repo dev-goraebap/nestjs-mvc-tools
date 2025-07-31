@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.8] - 2025-07-31
+
+### Added
+- **Custom View Helpers**: New per-request helper system for templates
+  - Added `ViewHelperFactory` and `ViewHelperDefinition` types for creating request-scoped helpers
+  - Added `helpers` option to view configuration for registering custom helper functions
+
+### Enhanced
+- **Documentation**: Comprehensive Custom View Helpers section added to both English and Korean README
+  - Template usage patterns and best practices
+  - Performance considerations and optimization guidelines
+- **Configuration**: Updated view configuration documentation to include helpers option
+- **Examples**: Enhanced controller and template examples demonstrating helper usage
+
 ## [0.9.7] - 2025-07-30
 
 ### Changed
