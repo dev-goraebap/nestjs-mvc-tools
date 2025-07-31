@@ -251,6 +251,7 @@ NestMvcModule.forRoot({
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // Additional template disk paths
     cache: false,
+    helpers: [], // Custom view helper functions executed per request
   },
   asset: {
     mode: "development",
@@ -565,6 +566,74 @@ export class AppModule {}
 - **Logging**: Records all exceptions in logs
 
 > **Developer Experience Improvement Planned**: Currently, you need to manually write and register the ExceptionFilter, but future versions will automate this process to provide a better developer experience.
+
+## Custom View Helpers
+
+Custom view helpers allow you to add request-specific functionality to your templates. Unlike global helpers, these are executed for each HTTP request, giving you access to request data like URL parameters, headers, user information, and more.
+
+### Creating Custom Helpers
+
+Create helper functions using the `ViewHelperFactory` type:
+
+```typescript
+// src/view.helpers.ts
+import { Request } from 'express';
+import { ViewHelperFactory } from 'nestjs-mvc-tools';
+
+/**
+ * Helper to check if current route matches a given path
+ * Usage in template: {{ isCurrentRoute('/home') }}
+ */
+export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
+  return {
+    key: 'isCurrentRoute',
+    fn: (routePath: string) => {
+      return req.originalUrl === routePath || req.path === routePath;
+    }
+  };
+};
+```
+
+### Registering Helpers
+
+Register your helpers in the module configuration:
+
+```typescript
+// app.module.ts
+import { isCurrentRouteHelper } from './view.helpers';
+
+@Module({
+  imports: [
+    NestMvcModule.forRoot({
+      view: {
+        helpers: [
+          isCurrentRouteHelper
+        ]
+      },
+      // ... other configurations
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### Using Helpers in Templates
+
+Once registered, helpers are available in all templates:
+
+```html
+<!-- Navigation with active state -->
+<nav>
+  <a href="/" class="{{ isCurrentRoute('/') ? 'active' : '' }}">Home</a>
+  <a href="/about" class="{{ isCurrentRoute('/about') ? 'active' : '' }}">About</a>
+</nav>
+```
+
+#### Performance Considerations
+- Helpers are executed on every request to routes that render templates
+- Keep helper logic lightweight for better performance
+- Consider caching expensive operations within helper functions
+- Use conditional helper registration if you have many helpers but only need some on specific routes
 
 ## Path Exclusion Configuration
 

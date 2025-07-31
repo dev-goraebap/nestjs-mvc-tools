@@ -249,6 +249,7 @@ NestMvcModule.forRoot({
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // 추가 템플릿 디스크 경로
     cache: false,
+    helpers: [], // 요청별로 실행되는 커스텀 뷰 헬퍼 함수들
   },
   asset: {
     mode: "development",
@@ -564,6 +565,74 @@ export class AppModule {}
 - **로깅**: 모든 예외를 로그로 기록
 
 > **개발자 경험 개선 예정**: 현재는 수동으로 ExceptionFilter를 작성하고 등록해야 하지만, 향후 버전에서는 이 과정을 자동화하여 더 나은 개발자 경험을 제공할 예정입니다.
+
+## 커스텀 뷰 헬퍼
+
+커스텀 뷰 헬퍼를 사용하면 템플릿에 요청별 기능을 추가할 수 있습니다. 전역 헬퍼와 달리, 이 헬퍼들은 각 HTTP 요청마다 실행되어 URL 파라미터, 헤더, 사용자 정보 등 요청 데이터에 접근할 수 있습니다.
+
+### 커스텀 헬퍼 생성
+
+`ViewHelperFactory` 타입을 사용하여 헬퍼 함수를 만듭니다:
+
+```typescript
+// src/view.helpers.ts
+import { Request } from 'express';
+import { ViewHelperFactory } from 'nestjs-mvc-tools';
+
+/**
+ * 현재 라우트가 주어진 경로와 일치하는지 확인하는 헬퍼
+ * 템플릿에서 사용법: {{ isCurrentRoute('/home') }}
+ */
+export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
+  return {
+    key: 'isCurrentRoute',
+    fn: (routePath: string) => {
+      return req.originalUrl === routePath || req.path === routePath;
+    }
+  };
+};
+```
+
+### 헬퍼 등록
+
+모듈 설정에서 헬퍼를 등록합니다:
+
+```typescript
+// app.module.ts
+import { isCurrentRouteHelper } from './view.helpers';
+
+@Module({
+  imports: [
+    NestMvcModule.forRoot({
+      view: {
+        helpers: [
+          isCurrentRouteHelper
+        ]
+      },
+      // ... 다른 설정들
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### 템플릿에서 헬퍼 사용
+
+등록된 헬퍼는 모든 템플릿에서 사용할 수 있습니다:
+
+```html
+<!-- 활성 상태를 가진 네비게이션 -->
+<nav>
+  <a href="/" class="{{ isCurrentRoute('/') ? 'active' : '' }}">홈</a>
+  <a href="/about" class="{{ isCurrentRoute('/about') ? 'active' : '' }}">소개</a>
+</nav>
+```
+
+#### 성능 고려사항
+- 헬퍼는 템플릿을 렌더링하는 모든 요청에서 실행됩니다
+- 더 나은 성능을 위해 헬퍼 로직을 가볍게 유지하세요
+- 헬퍼 함수 내에서 비용이 많이 드는 작업은 캐싱을 고려하세요
+- 많은 헬퍼가 있지만 특정 라우트에서만 일부가 필요한 경우 조건부 헬퍼 등록을 사용하세요
 
 ## 경로 제외 설정
 
