@@ -45,10 +45,6 @@ Vite를 활용하여 프론트엔드 개발 서버를 지원하고, 에셋 파�
 - **SSR 양식 오류 처리**: BadRequestException 발생 시 자동으로 플래시 메시지와 입력값 유지 처리
 - **API/페이지 분기 처리**: API 경로(`/api`)와 일반 페이지 경로를 구분하여 적절한 응답 형태(JSON/HTML) 제공
 
-### 모던 웹 호환성
-
-Hotwired/Turbo와 같은 최신 웹 기술들과의 호환성을 지원하여, SPA(Single Page Application)와 유사한 사용자 경험을 제공하면서도 서버 사이드 렌더링의 장점을 유지할 수 있습니다.
-
 ## 설치
 
 ```bash
@@ -155,7 +151,7 @@ cd resources && npm run dev
 npm run start:dev
 ```
 
-concurrently 라이브러리를 사용하면 다음과 같이 구성할 수 있습니다.
+[concurrently](https://www.npmjs.com/package/concurrently) 라이브러리를 사용하면 다음과 같이 구성할 수 있습니다.
 
 ```json
 // package.json

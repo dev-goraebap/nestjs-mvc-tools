@@ -47,10 +47,6 @@ Provides MVC (Model-View-Controller) based exception handling that integrates wi
 - **SSR Form Error Handling**: Automatically handles flash messages and input value retention when BadRequestException occurs
 - **API/Page Route Separation**: Distinguishes between API routes (`/api`) and regular page routes to provide appropriate response formats (JSON/HTML)
 
-### Modern Web Compatibility
-
-Supports compatibility with modern web technologies like Hotwired/Turbo, providing SPA (Single Page Application)-like user experiences while maintaining the advantages of server-side rendering.
-
 ## Installation
 
 ```bash
@@ -157,7 +153,7 @@ cd resources && npm run dev
 npm run start:dev
 ```
 
-You can configure it like this using the concurrently library:
+You can configure it like this using the [concurrently](https://www.npmjs.com/package/concurrently) library:
 
 ```json
 // package.json
