@@ -7,11 +7,23 @@ It began as a simple utility for easily using the Edge.js template engine in Nes
 
 It includes AdonisJS's [Edge.js](https://edgejs.dev/docs/introduction) template engine and an asset pipeline using [Vite](https://vite.dev/). When automatically configuring the frontend directory, you can select [Tailwindcss](https://tailwindcss.com/) and [Hotwired](https://hotwired.dev/) libraries as template options, allowing you to include only the libraries needed for your project requirements.
 
-Hotwired is a library developed by the Ruby on Rails community and may be unfamiliar to many developers. However, if you want to implement a smooth user experience like SPAs while maintaining traditional server-side development approaches, it's worth considering. Note that the community has both positive and negative opinions about it, so the choice is ultimately yours.
-
 Examples can be found in the project's [tests/manual-test-app](./tests/manual-test-app).
 
 ## Developer's Note
+
+The development approach of separating frontend and backend has become mainstream, but there are often cases where the trade-offs regarding project scale and workforce are not sufficiently considered. I have had such experiences myself, which is why I tried to find answers in traditional fullstack development approaches.
+
+However, even when using fancy template engines or lightweight JavaScript libraries (such as Alpine.js), if you don't fundamentally change your mindset, you'll eventually face the same problems. When dynamic features that cannot be solved by server rendering alone (such as review registration, asynchronous data processing, etc.) are needed, creating and manipulating the DOM with JavaScript becomes unavoidable.
+
+At this point, you start missing frontend libraries like React or Vue again. However, including these libraries in a monolithic structure while keeping it lightweight can actually become a bigger burden. The desire to start light eventually makes you want to separate the project again.
+
+Managing Server-Side Rendering (SSR) and Client-Side Rendering (CSR) together is not an easy task. The Laravel community created [Inertia.js](https://inertiajs.com/) to solve these problems. The fact that most current client-side frameworks are focusing on hydration technology to resolve the boundaries between SSR and CSR is in the same context.
+
+Nevertheless, if you prefer the traditional template engine approach, a slightly different approach might help.
+
+[Hotwired](https://hotwired.dev/), created by the Ruby on Rails community, can help solve this dilemma. Using the [HTMX](https://htmx.org/) library is also a good alternative. While these two libraries aim for different purposes, the core concept of returning HTML from the server is the same.
+
+Regarding the HTML-first mindset, both positive and negative opinions coexist in the community, so the choice is yours. Considering this, my library also optionally provides Hotwired options, and adding HTMX to the default options is entirely possible.
 
 While I love NestJS's powerful DI system, sometimes I envy full-stack environments like AdonisJS, Laravel, and Ruby on Rails. I looked for libraries to configure the frontend in the NestJS ecosystem but couldn't find anything suitable, so I ended up creating this to my own taste.
 
