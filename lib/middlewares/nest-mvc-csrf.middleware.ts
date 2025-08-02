@@ -44,9 +44,8 @@ export class NestMvcCsrfMiddleware implements NestMiddleware {
     // early return: 세션이 없으면 바로 반환
     if (!req?.session) {
       this.logger.warn(`
-      EN: Session not active. Please configure sessions to use CSRF functionality.
-      KO: 세션이 활성화되지 않았습니다. CSRF 기능을 사용하기 위해 세션을 설정해주세요.
-      https://github.com/dev-goraebap/nestjs-mvc-tools?tab=readme-ov-file#important-session-dependencies
+      Session not active. Please configure sessions to use CSRF functionality.
+      https://github.com/dev-goraebap/nestjs-mvc-tools/blob/develop/docs/CONFIGURATION.md#important-session-dependencies
       `);
       return next();
     }

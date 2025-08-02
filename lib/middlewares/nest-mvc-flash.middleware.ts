@@ -37,9 +37,8 @@ export class NestMvcFlashMiddleware implements NestMiddleware {
     // 세션이 활성화되어있지 않으면 경고 로그 출력
     if (!req?.session) {
       this.logger.warn(`
-      EN: Session not active. Please configure sessions to use Flash functionality.
-      KO: 세션이 활성화되지 않았습니다. Flash 기능을 사용하기 위해 세션을 설정해주세요.
-      https://github.com/dev-goraebap/nestjs-mvc-tools?tab=readme-ov-file#important-session-dependencies
+      Session not active. Please configure sessions to use Flash functionality.
+      https://github.com/dev-goraebap/nestjs-mvc-tools/blob/develop/docs/CONFIGURATION.md#important-session-dependencies
       `);
     }
 
