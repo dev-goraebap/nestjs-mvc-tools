@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.9] - 2025-08-02
+
+### Changed
+- **Template Structure Reorganization**:
+  - Renamed `full` template directory to `hotwired-tailwind` for clearer naming
+  - Changed default template from `hotwired-tailwind` to `minimal` 
+  - Updated CLI to support new template naming convention
+
+### Added  
+- **Enhanced CLI User Experience**:
+  - Added `list-templates` command to display available templates with descriptions
+  - Improved template information structure with descriptions and use cases
+  - Enhanced error messages and help text for better developer experience
+  - Template-specific success messages
+
+### Improved
+- **Documentation Organization**:
+  - Split lengthy README files into focused, topic-specific guides
+  - Created separate documentation files for CLI, Configuration, and Troubleshooting
+  - Both Korean and English versions reorganized for better navigation
+  - Updated cross-references and linking between documentation files
+
 ## [0.9.8] - 2025-07-31
 
 ### Added
