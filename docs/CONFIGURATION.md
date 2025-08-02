@@ -135,10 +135,7 @@ CSRF tokens can be delivered in the following ways:
 
 1. **Form Data**: `_csrf` field
 2. **Query Parameter**: `?_csrf=token`  
-3. **HTTP Headers**: 
-   - `x-csrf-token`
-   - `csrf-token`
-   - `xsrf-token`
+3. **HTTP Headers**: `x-csrf-token`
 
 ### Integration with Hotwired/Turbo
 

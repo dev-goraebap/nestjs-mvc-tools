@@ -135,10 +135,7 @@ CSRF 토큰은 다음과 같은 방식으로 전달할 수 있습니다:
 
 1. **폼 데이터**: `_csrf` 필드
 2. **쿼리 파라미터**: `?_csrf=token`
-3. **HTTP 헤더**: 
-   - `x-csrf-token`
-   - `csrf-token`
-   - `xsrf-token`
+3. **HTTP 헤더**:  `x-csrf-token`
 
 ### Hotwired/Turbo와의 통합
 
