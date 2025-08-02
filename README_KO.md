@@ -62,14 +62,14 @@ NestJS에서 MVC 패턴을 사용하기 위한 기본 설정을 도와드립니�
 ### 1. 프로젝트 초기화
 
 ```bash
-# MVC 템플릿 및 리소스 설정 (기본값: full - Hotwired + TailwindCSS)
+# MVC 템플릿 및 리소스 설정 (기본값: minimal - Vite만)
 npx nestjs-mvc-tools init
 
 # 또는 원하는 템플릿 선택
-npx nestjs-mvc-tools init --template=minimal   # Vite만
-npx nestjs-mvc-tools init --template=tailwind  # TailwindCSS만
-npx nestjs-mvc-tools init --template=hotwired  # Hotwired만
-npx nestjs-mvc-tools init --template=full      # 전체 (기본값)
+npx nestjs-mvc-tools init --template=minimal           # Vite만 (기본값)
+npx nestjs-mvc-tools init --template=tailwind          # TailwindCSS만
+npx nestjs-mvc-tools init --template=hotwired          # Hotwired만
+npx nestjs-mvc-tools init --template=hotwired-tailwind # Hotwired + TailwindCSS
 ```
 
 프로젝트 root 경로에 resources 디렉토리를 생성하고 선택한 템플릿에 따라 필요한 의존성을 다운로드합니다.
@@ -192,24 +192,24 @@ npm run build
 프로젝트에 MVC 템플릿과 리소스 구조를 생성합니다. 템플릿 옵션을 통해 필요한 라이브러리만 선택할 수 있습니다.
 
 ```bash
-# 기본 사용 (full 템플릿 - Hotwired + TailwindCSS)
+# 기본 사용 (minimal 템플릿 - Vite만)
 nestjs-mvc-tools init
 
 # 템플릿별 선택
-nestjs-mvc-tools init --template=minimal   # Vite만
-nestjs-mvc-tools init --template=tailwind  # TailwindCSS만  
-nestjs-mvc-tools init --template=hotwired  # Hotwired만
-nestjs-mvc-tools init --template=full      # 전체 (기본값)
+nestjs-mvc-tools init --template=minimal           # Vite만 (기본값)
+nestjs-mvc-tools init --template=tailwind          # TailwindCSS만  
+nestjs-mvc-tools init --template=hotwired          # Hotwired만
+nestjs-mvc-tools init --template=hotwired-tailwind # Hotwired + TailwindCSS
 
 # 짧은 옵션 사용
 nestjs-mvc-tools init -t minimal
 ```
 
 **사용 가능한 템플릿:**
-- `minimal`: Vite만 포함한 기본 구성
+- `minimal`: Vite만 포함한 기본 구성 (기본값)
 - `tailwind`: TailwindCSS + Vite 구성  
 - `hotwired`: Hotwired (Turbo + Stimulus) + Vite 구성
-- `full`: TailwindCSS + Hotwired + Vite 완전 구성 (기본값)
+- `hotwired-tailwind`: TailwindCSS + Hotwired + Vite 완전 구성
 
 **생성되는 구조:**
 
@@ -222,7 +222,7 @@ resources/
 ├── src/
 │   ├── app.js         # 프론트엔드 엔트리 (템플릿별 import)
 │   ├── style.css      # 스타일 (minimal, hotwired)
-│   └── controllers/   # Stimulus 컨트롤러 (hotwired, full만)
+│   └── controllers/   # Stimulus 컨트롤러 (hotwired, hotwired-tailwind만)
 ├── views/
 │   ├── components/    # 재사용 컴포넌트
 │   └── pages/         # 페이지 템플릿
@@ -234,7 +234,7 @@ resources/
 - `minimal`: 기본 CSS, Vite만 포함
 - `tailwind`: TailwindCSS import, Tailwind 플러그인 포함
 - `hotwired`: Hotwired import, Stimulus 컨트롤러 폴더 포함
-- `full`: TailwindCSS + Hotwired 모든 기능 포함
+- `hotwired-tailwind`: TailwindCSS + Hotwired 모든 기능 포함
 
 ## 설정
 
@@ -650,7 +650,7 @@ NestMvcModule.forRoot({
 
 ## 프로젝트 기본 라이브러리 및 주요 고려 사항
 
-이 프로젝트는 템플릿 옵션을 통해 필요한 라이브러리만 선택하여 설치할 수 있습니다. @hotwired 시리즈와 @tailwindcss 라이브러리를 프로젝트 요구사항에 따라 선택적으로 포함할 수 있으며, 기본값은 두 라이브러리가 모두 포함된 `full` 템플릿입니다.
+이 프로젝트는 템플릿 옵션을 통해 필요한 라이브러리만 선택하여 설치할 수 있습니다. @hotwired 시리즈와 @tailwindcss 라이브러리를 프로젝트 요구사항에 따라 선택적으로 포함할 수 있으며, 기본값은 가장 기본적인 `minimal` 템플릿입니다.
 
 ### Vite HMR 지원 이슈
 

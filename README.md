@@ -64,14 +64,14 @@ We'll help you set up basic configuration for using MVC patterns in NestJS.
 ### 1. Project Initialization
 
 ```bash
-# Set up MVC templates and resources (default: full - Hotwired + TailwindCSS)
+# Set up MVC templates and resources (default: minimal - Vite only)
 npx nestjs-mvc-tools init
 
 # Or select desired template
-npx nestjs-mvc-tools init --template=minimal   # Vite only
-npx nestjs-mvc-tools init --template=tailwind  # TailwindCSS only
-npx nestjs-mvc-tools init --template=hotwired  # Hotwired only
-npx nestjs-mvc-tools init --template=full      # Full (default)
+npx nestjs-mvc-tools init --template=minimal           # Vite only (default)
+npx nestjs-mvc-tools init --template=tailwind          # TailwindCSS only
+npx nestjs-mvc-tools init --template=hotwired          # Hotwired only
+npx nestjs-mvc-tools init --template=hotwired-tailwind # Hotwired + TailwindCSS
 ```
 
 Creates a resources directory in the project root and downloads necessary dependencies based on the selected template.
@@ -194,24 +194,24 @@ npm run build
 Creates MVC templates and resource structure in your project. You can select only the libraries you need through template options.
 
 ```bash
-# Basic usage (full template - Hotwired + TailwindCSS)
+# Basic usage (minimal template - Vite only)
 nestjs-mvc-tools init
 
 # Template selection
-nestjs-mvc-tools init --template=minimal   # Vite only
-nestjs-mvc-tools init --template=tailwind  # TailwindCSS only  
-nestjs-mvc-tools init --template=hotwired  # Hotwired only
-nestjs-mvc-tools init --template=full      # Full (default)
+nestjs-mvc-tools init --template=minimal           # Vite only (default)
+nestjs-mvc-tools init --template=tailwind          # TailwindCSS only  
+nestjs-mvc-tools init --template=hotwired          # Hotwired only
+nestjs-mvc-tools init --template=hotwired-tailwind # Hotwired + TailwindCSS
 
 # Using short options
 nestjs-mvc-tools init -t minimal
 ```
 
 **Available Templates:**
-- `minimal`: Basic configuration with Vite only
+- `minimal`: Basic configuration with Vite only (default)
 - `tailwind`: TailwindCSS + Vite configuration  
 - `hotwired`: Hotwired (Turbo + Stimulus) + Vite configuration
-- `full`: Complete configuration with TailwindCSS + Hotwired + Vite (default)
+- `hotwired-tailwind`: Complete configuration with TailwindCSS + Hotwired + Vite
 
 **Generated Structure:**
 
@@ -224,7 +224,7 @@ resources/
 ├── src/
 │   ├── app.js         # Frontend entry (template-specific imports)
 │   ├── style.css      # Styles (minimal, hotwired)
-│   └── controllers/   # Stimulus controllers (hotwired, full only)
+│   └── controllers/   # Stimulus controllers (hotwired, hotwired-tailwind only)
 ├── views/
 │   ├── components/    # Reusable components
 │   └── pages/         # Page templates
@@ -236,7 +236,7 @@ resources/
 - `minimal`: Basic CSS, Vite only
 - `tailwind`: TailwindCSS import, Tailwind plugin included
 - `hotwired`: Hotwired import, Stimulus controller folder included
-- `full`: All features including TailwindCSS + Hotwired
+- `hotwired-tailwind`: All features including TailwindCSS + Hotwired
 
 ## Configuration
 
@@ -651,7 +651,7 @@ By default, `/api` and `/favicon.ico` paths are excluded.
 
 ## Project Core Libraries and Key Considerations
 
-This project allows you to select and install only the libraries you need through template options. You can selectively include @hotwired series and @tailwindcss libraries based on project requirements, with the default being the `full` template that includes both libraries.
+This project allows you to select and install only the libraries you need through template options. You can selectively include @hotwired series and @tailwindcss libraries based on project requirements, with the default being the most basic `minimal` template.
 
 ### Vite HMR Support Issues
 
