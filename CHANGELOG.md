@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.10] - 2025-08-04
+
+### Fixed
+- **CSRF Middleware Stability**: Added optional chaining (`?.`) to prevent undefined errors when extracting CSRF tokens
+  - Fixed `Cannot read properties of undefined (reading '_csrf')` error that occurred when `req.body` was not parsed
+
 ## [0.9.9] - 2025-08-02
 
 ### Changed
