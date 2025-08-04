@@ -83,7 +83,7 @@ export class NestMvcCsrfMiddleware implements NestMiddleware {
   // 다양한 위치에서 토큰 추출
   private extractTokenFromRequest(req: Request): string | null {
     return (
-      req.headers["x-csrf-token"] || req.body._csrf || req.query._csrf || null
+      req.headers["x-csrf-token"] || req.body?._csrf || req.query?._csrf || null
     );
   }
 }
