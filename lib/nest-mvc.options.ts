@@ -3,21 +3,19 @@
 // --------------------------------------------------------
 
 import { Request } from "express";
-
-/**
- * 뷰 템플릿에서 사용할 커스텀 헬퍼 함수의 정의
- * 현재 요청 컨텍스트에서 사용되며 글로벌이 아님
- */
-export type ViewHelperDefinition = {
-  key: string;
-  fn: (...args: any[]) => any;
-};
+import { Type } from "@nestjs/common";
 
 /**
  * 요청별로 헬퍼 함수를 생성하는 팩토리 함수
- * 각 HTTP 요청마다 실행되어 해당 요청 컨텍스트의 헬퍼를 등록
+ * 각 HTTP 요청마다 실행되어 해당 요청 컨텍스트의 헬퍼 함수를 반환
  */
-export type ViewHelperFactory = (req: Request) => ViewHelperDefinition;
+export type ViewHelperFactory = (req: Request) => (...args: any[]) => any;
+
+/**
+ * 주입된 서비스들을 사용하여 글로벌 변수/함수를 생성하는 팩토리 함수
+ * EdgeJs 초기화 시점에 실행되어 글로벌 헬퍼를 등록
+ */
+export type GlobalsFactory = (...injectedServices: any[]) => Record<string, any>;
 
 export type EdgeJsViewOptions = {
   /**
@@ -48,9 +46,30 @@ export type EdgeJsViewOptions = {
   /**
    * @description en: Custom helper functions that will be executed on each request and shared with templates
    * @description ko: 각 요청마다 실행되어 템플릿과 공유될 커스텀 헬퍼 함수들
+   * @default {}
+   */
+  helpers: Record<string, ViewHelperFactory>;
+
+  /**
+   * @description en: Global helper functions and variables available in all templates
+   * @description ko: 모든 템플릿에서 사용 가능한 글로벌 헬퍼 함수 및 변수들
+   * @default {}
+   */
+  globals: Record<string, any>;
+
+  /**
+   * @description en: Factory function to create globals using injected services
+   * @description ko: 주입된 서비스들을 사용하여 글로벌을 생성하는 팩토리 함수
+   * @default undefined
+   */
+  globalsFactory?: GlobalsFactory;
+
+  /**
+   * @description en: Array of services to inject into globalsFactory function
+   * @description ko: globalsFactory 함수에 주입할 서비스들의 배열
    * @default []
    */
-  helpers: ViewHelperFactory[];
+  globalsInjects?: Type<any>[];
 };
 
 export type ViteAssetsPipelineOptions = {

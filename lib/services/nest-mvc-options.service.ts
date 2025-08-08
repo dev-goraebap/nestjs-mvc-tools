@@ -50,7 +50,10 @@ export class NestMvcOptionsService {
       rootDir: options?.rootDir ?? join(process.cwd(), "resources", "views"),
       disks: options?.disks ?? [],
       cache: options?.cache ?? false,
-      helpers: options?.helpers ?? []
+      helpers: options?.helpers ?? {},
+      globals: options?.globals ?? {},
+      globalsFactory: options?.globalsFactory,
+      globalsInjects: options?.globalsInjects ?? []
     };
   }
 

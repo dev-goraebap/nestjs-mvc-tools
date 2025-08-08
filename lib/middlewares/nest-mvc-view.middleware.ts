@@ -32,15 +32,16 @@ export class NestMvcViewMiddleware implements NestMiddleware {
     this.logger.debug("Create EdgeJs Renderer");
 
     // 헬퍼 등록이 안되어있으면 건너뜀
-    if (this.optionsService.viewOptions.helpers.length === 0) {
+    const helperEntries = Object.entries(this.optionsService.viewOptions.helpers);
+    if (helperEntries.length === 0) {
       return next();
     }
     
     // 뷰에서 사용할 헬퍼 함수들을 수집
     const helpers: Record<string, any> = {};
-    this.optionsService.viewOptions.helpers.forEach((helperFactory) => {
-      const { key, fn } = helperFactory(req);
-      helpers[key] = fn; // 헬퍼 함수를 키-값 쌍으로 저장
+    helperEntries.forEach(([key, helperFactory]) => {
+      const helperFn = helperFactory(req);
+      helpers[key] = helperFn; // 헬퍼 함수를 키-값 쌍으로 저장
     });
     req.view.share(helpers);
 

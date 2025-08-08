@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, Optional } from "@nestjs/common";
 import { Edge } from "edge.js";
 import { join } from "path";
 
@@ -6,6 +6,8 @@ import { EdgeJsViewOptions } from "../nest-mvc.options";
 import { NestMvcLoggerService } from "./nest-mvc-logger.service";
 import { NestMvcOptionsService } from "./nest-mvc-options.service";
 import { ViteAssetPathHelperFactoryService } from "./vite-asset-path-helper-factory.service";
+
+export const GLOBALS_FACTORY_PROVIDER_TOKEN = 'GLOBALS_FACTORY_PROVIDER';
 
 /**
  * Service for managing Edge.js template engine integration with NestJS.
@@ -27,7 +29,8 @@ export class EdgeJsService {
   constructor(
     private readonly optionsService: NestMvcOptionsService,
     private readonly logger: NestMvcLoggerService,
-    private readonly viteAssetPathHelperFactory: ViteAssetPathHelperFactoryService
+    private readonly viteAssetPathHelperFactory: ViteAssetPathHelperFactoryService,
+    @Optional() @Inject(GLOBALS_FACTORY_PROVIDER_TOKEN) private readonly globalsFactoryResult?: Record<string, any>
   ) {
     this.options = this.optionsService.viewOptions;
     this.logger.debug('EdgeJsService constructor called', EdgeJsService.name);
@@ -65,6 +68,22 @@ export class EdgeJsService {
       const viteAssetPathHelperFn = this.viteAssetPathHelperFactory.create();
       this.edgeInstance.global("viteAssetPath", viteAssetPathHelperFn);
       this.logger.debug('Registered viteAssetPath helper function', EdgeJsService.name);
+
+      // Register static global helpers
+      if (this.options.globals) {
+        for (const [key, value] of Object.entries(this.options.globals)) {
+          this.edgeInstance.global(key, value);
+          this.logger.debug(`Registered static global helper: ${key}`, EdgeJsService.name);
+        }
+      }
+
+      // Register factory-based global helpers
+      if (this.globalsFactoryResult) {
+        for (const [key, value] of Object.entries(this.globalsFactoryResult)) {
+          this.edgeInstance.global(key, value);
+          this.logger.debug(`Registered factory global helper: ${key}`, EdgeJsService.name);
+        }
+      }
       
       this.logger.debug('EdgeJs service initialization completed successfully', EdgeJsService.name);
     } catch (err: unknown) {

@@ -10,7 +10,7 @@ import { NestMvcCsrfMiddleware } from "./middlewares/nest-mvc-csrf.middleware";
 import { NestMvcFlashMiddleware } from "./middlewares/nest-mvc-flash.middleware";
 import { NestMvcViewMiddleware } from "./middlewares/nest-mvc-view.middleware";
 import { NestMvcOptions } from "./nest-mvc.options";
-import { EdgeJsService } from "./services/edge-js.service";
+import { EdgeJsService, GLOBALS_FACTORY_PROVIDER_TOKEN } from "./services/edge-js.service";
 import { NestMvcCsrfService } from "./services/nest-mvc-csrf.service";
 import { NestMvcLoggerService } from "./services/nest-mvc-logger.service";
 import { NestMvcOptionsService } from "./services/nest-mvc-options.service";
@@ -43,23 +43,37 @@ export class NestMvcModule implements NestModule {
       provide: "NEST_MVC_OPTIONS",
       useValue: options,
     };
+
+    const providers: Provider[] = [
+      // Additional options provider
+      nestMvcOptionsProvider,
+      // Service that provides options so each internal class can use only the options it needs
+      NestMvcOptionsService,
+      // Service that provides EdgeJs library for use in NestJS
+      EdgeJsService,
+      // Service that provides helper functions for easy Vite asset path management
+      ViteAssetPathHelperFactoryService,
+      // Service that provides CSRF token generation and validation
+      NestMvcCsrfService,
+      // NestMvc dedicated logger
+      NestMvcLoggerService,
+    ];
+
+    // Create globals factory provider if globalsFactory and globalsInjects are provided
+    const viewOptions = options?.view;
+    if (viewOptions?.globalsFactory && viewOptions?.globalsInjects) {
+      const globalsFactoryProvider: Provider = {
+        provide: GLOBALS_FACTORY_PROVIDER_TOKEN,
+        useFactory: viewOptions.globalsFactory,
+        inject: viewOptions.globalsInjects,
+      };
+      providers.push(globalsFactoryProvider);
+    }
+
     return {
       global: true,
       module: NestMvcModule,
-      providers: [
-        // Additional options provider
-        nestMvcOptionsProvider,
-        // Service that provides options so each internal class can use only the options it needs
-        NestMvcOptionsService,
-        // Service that provides EdgeJs library for use in NestJS
-        EdgeJsService,
-        // Service that provides helper functions for easy Vite asset path management
-        ViteAssetPathHelperFactoryService,
-        // Service that provides CSRF token generation and validation
-        NestMvcCsrfService,
-        // NestMvc dedicated logger
-        NestMvcLoggerService,
-      ],
+      providers,
     };
   }
 }
