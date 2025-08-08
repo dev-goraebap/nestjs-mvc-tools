@@ -11,7 +11,10 @@ NestMvcModule.forRoot({
     rootDir: join(process.cwd(), "resources", "views"),
     disks: [], // Additional template disk paths
     cache: false,
-    helpers: [], // Custom view helper functions executed per request
+    helpers: {}, // Custom view helper functions executed per request (object format)
+    globals: {}, // Global variables/functions available in all templates
+    globalsFactory: undefined, // Factory function to create globals using DI
+    globalsInjects: [], // Array of services to inject into globalsFactory
   },
   asset: {
     mode: "development",
@@ -324,7 +327,133 @@ export class AppModule {}
 
 > **Developer Experience Improvement Planned**: Currently, you need to manually write and register the ExceptionFilter, but future versions will automate this process to provide a better developer experience.
 
-## Custom View Helpers
+## Global Variables and Functions
+
+### Static Global Configuration
+
+You can configure static variables or functions that are available in all templates:
+
+```typescript
+NestMvcModule.forRoot({
+  view: {
+    globals: {
+      // Constant values
+      APP_NAME: 'My Application',
+      VERSION: '1.0.0',
+      
+      // Utility functions
+      formatDate: (date: Date) => {
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: '2-digit', 
+          day: '2-digit'
+        });
+      },
+      
+      formatCurrency: (amount: number) => {
+        return `$${amount.toLocaleString()}`;
+      },
+      
+      // Object format
+      config: {
+        maxUploadSize: 10 * 1024 * 1024,
+        supportEmail: 'support@example.com'
+      }
+    }
+  }
+});
+```
+
+### DI-based Global Factory
+
+For global variables or functions that require service dependencies, use `globalsFactory` and `globalsInjects`:
+
+```typescript
+import { ConfigService } from '@nestjs/config';
+
+NestMvcModule.forRoot({
+  view: {
+    globalsInjects: [ConfigService], // Services to inject
+    globalsFactory: (configService: ConfigService) => {
+      return {
+        // Environment-based configuration
+        API_URL: configService.get('API_URL'),
+        IS_PRODUCTION: configService.get('NODE_ENV') === 'production',
+        
+        // Functions utilizing services
+        getImageUrl: (imagePath: string) => {
+          const cdnUrl = configService.get('CDN_URL');
+          return `${cdnUrl}/${imagePath}`;
+        },
+        
+        // Conditional configuration
+        features: {
+          darkMode: configService.get('FEATURE_DARK_MODE', 'false') === 'true',
+          premium: configService.get('FEATURE_PREMIUM', 'false') === 'true'
+        }
+      };
+    }
+  }
+});
+```
+
+### Multiple Service Injection
+
+You can inject multiple services simultaneously:
+
+```typescript
+import { ConfigService } from '@nestjs/config';
+import { UserService } from './user/user.service';
+import { CacheService } from './cache/cache.service';
+
+NestMvcModule.forRoot({
+  view: {
+    globalsInjects: [ConfigService, UserService, CacheService],
+    globalsFactory: (configService: ConfigService, userService: UserService, cacheService: CacheService) => {
+      return {
+        siteName: configService.get('SITE_NAME'),
+        totalUsers: () => userService.getTotalCount(),
+        cacheStats: () => cacheService.getStats(),
+        
+        // Complex logic
+        getUserGreeting: (userId: string) => {
+          const user = userService.findById(userId);
+          const timeOfDay = new Date().getHours() < 12 ? 'Good morning' : 'Good afternoon';
+          return `${timeOfDay}, ${user?.name}!`;
+        }
+      };
+    }
+  }
+});
+```
+
+### Using Globals in Templates
+
+```html
+<!-- Static globals usage -->
+<h1>{{ APP_NAME }} v{{ VERSION }}</h1>
+<p>Today: {{ formatDate(new Date()) }}</p>
+<p>Price: {{ formatCurrency(29900) }}</p>
+<p>Support Email: {{ config.supportEmail }}</p>
+
+<!-- Factory globals usage -->
+<p>API Server: {{ API_URL }}</p>
+<img src="{{ getImageUrl('profile/avatar.jpg') }}" />
+
+@if(IS_PRODUCTION)
+  <p>Production Environment</p>
+@else  
+  <p>Development Environment</p>
+@endif
+
+@if(features.darkMode)
+  <button id="theme-toggle">Toggle Dark Mode</button>
+@endif
+
+<p>Total Users: {{ totalUsers() }}</p>
+```
+
+## Custom View Helpers (Per-Request)
 
 Custom view helpers allow you to add request-specific functionality to your templates. Unlike global helpers, these are executed for each HTTP request, giving you access to request data like URL parameters, headers, user information, and more.
 
@@ -342,30 +471,45 @@ import { ViewHelperFactory } from 'nestjs-mvc-tools';
  * Usage in template: {{ isCurrentRoute('/home') }}
  */
 export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
-  return {
-    key: 'isCurrentRoute',
-    fn: (routePath: string) => {
-      return req.originalUrl === routePath || req.path === routePath;
+  return (routePath: string, exact: boolean = false) => {
+    if (!exact) {
+      return req.originalUrl.startsWith(routePath) || req.path.startsWith(routePath);
     }
+    return req.originalUrl === routePath || req.path === routePath;
+  };
+};
+
+/**
+ * Helper to get query parameters
+ * Usage in template: {{ query('page', 1) }}
+ */
+export const queryHelper: ViewHelperFactory = (req: Request) => {
+  return (name: string, defaultValue?: any) => {
+    return req.query[name] || defaultValue || '';
   };
 };
 ```
 
 ### Registering Helpers
 
-Register your helpers in the module configuration:
+Register your helpers in the module configuration using object format:
 
 ```typescript
 // app.module.ts
-import { isCurrentRouteHelper } from './view.helpers';
+import { isCurrentRouteHelper, queryHelper } from './view.helpers';
 
 @Module({
   imports: [
     NestMvcModule.forRoot({
       view: {
-        helpers: [
-          isCurrentRouteHelper
-        ]
+        helpers: {
+          isCurrentRoute: isCurrentRouteHelper,
+          query: queryHelper,
+          // Inline definition is also possible
+          formatTime: (req: Request) => (date: Date) => {
+            return date.toLocaleTimeString('en-US');
+          }
+        }
       },
       // ... other configurations
     }),
@@ -383,15 +527,44 @@ Once registered, helpers are available in all templates:
 <nav>
   <a href="/" class="{{ isCurrentRoute('/') ? 'active' : '' }}">Home</a>
   <a href="/about" class="{{ isCurrentRoute('/about') ? 'active' : '' }}">About</a>
+  <a href="/products" class="{{ isCurrentRoute('/products', false) ? 'active' : '' }}">Products</a>
 </nav>
+
+<!-- Pagination with query parameters -->
+<div class="pagination">
+  <span>Current Page: {{ query('page', 1) }}</span>
+  <span>Search Term: {{ query('search', '') }}</span>
+</div>
+
+<!-- Time display -->
+<p>Current Time: {{ formatTime(new Date()) }}</p>
 ```
+
+### Differences Between Globals and Helpers
+
+| Aspect | Globals (globals/globalsFactory) | Helpers |
+|--------|----------------------------------|---------|
+| **Execution Time** | Once at application startup | Every request |
+| **Data Access** | Static data, DI services | Request data (URL, headers, sessions, etc.) |
+| **Performance** | Fast (cached) | Relatively slower |
+| **Use Case** | Global configuration, utility functions | Request-specific dynamic data processing |
 
 ### Performance Considerations
 
+**For Globals:**
+- Executed only once at application startup, so minimal performance impact
+- If heavy calculations are needed in `globalsFactory`, it's efficient to process them there
+
+**For Helpers:**
 - Helpers are executed on every request to routes that render templates
 - Keep helper logic lightweight for better performance
 - Consider caching expensive operations within helper functions
 - Use conditional helper registration if you have many helpers but only need some on specific routes
+
+**Recommendations:**
+- Use `globals` or `globalsFactory` for static data or environment configuration
+- Use `helpers` for user-specific or request-specific data that varies
+- Process complex calculations in `globalsFactory` when possible and provide results as globals
 
 ## Path Exclusion Configuration
 
