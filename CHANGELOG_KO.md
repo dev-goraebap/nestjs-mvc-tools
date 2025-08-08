@@ -2,6 +2,47 @@
 
 이 프로젝트의 모든 주목할 만한 변경 사항이 이 파일에 문서화됩니다.
 
+## [0.9.11] - 2025-08-08
+
+### 추가됨
+- **주입 기반 글로벌 팩토리**: `globalsFactory`에서 명시적 의존성 주입을 위한 새로운 `globalsInjects` 옵션
+  - `ModuleRef` 방식을 직접 서비스 주입으로 대체하여 타입 안전성 향상
+  - 더 나은 DI 통합을 위한 팩토리 프로바이더 패턴 추가
+  - `ConfigService` 같은 서비스를 완전한 타입 안전성과 함께 주입 지원
+
+### 변경됨
+- **헬퍼 API 개선**: 헬퍼 형식을 배열에서 객체 기반 방식으로 변경
+  - `helpers`가 이제 배열 대신 `Record<string, ViewHelperFactory>` 형식을 기대함
+  - 객체 키가 자동으로 헬퍼 이름이 됨 (수동 `key` 지정 불필요)
+  - 간소화된 헬퍼 함수 정의 - `{key, fn}` 객체를 반환할 필요 없음
+
+### 호환성을 깨는 변경사항
+- **헬퍼 형식**: 기존 `helpers: [helperFunction1, helperFunction2]`를 `helpers: {helperName: helperFunction}`로 변경해야 함
+- **ViewHelperFactory 시그니처**: 헬퍼 팩토리가 `{key: string, fn: function}` 객체 대신 함수를 직접 반환
+- **GlobalsFactory 시그니처**: `(moduleRef: ModuleRef) => Record<string, any>`에서 `(...injectedServices: any[]) => Record<string, any>`로 변경
+- **제거된 타입**: `ViewHelperDefinition` 타입이 더 이상 필요하지 않아 제거됨
+
+### 마이그레이션 가이드
+```typescript
+// 이전 (v0.9.10)
+helpers: [
+  (req) => ({ key: 'helperName', fn: (arg) => { /* 로직 */ } })
+]
+globalsFactory: (moduleRef) => {
+  const service = moduleRef.get(SomeService);
+  return { /* 글로벌 */ };
+}
+
+// 이후 (v0.9.11)
+helpers: {
+  helperName: (req) => (arg) => { /* 로직 */ }
+}
+globalsInjects: [SomeService]
+globalsFactory: (someService) => {
+  return { /* 글로벌 */ };
+}
+```
+
 ## [0.9.10] - 2025-08-04
 
 ### 수정됨

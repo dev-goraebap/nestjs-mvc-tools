@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.11] - 2025-08-08
+
+### Added
+- **Injects-based Globals Factory**: New `globalsInjects` option for explicit dependency injection in `globalsFactory`
+  - Improved type safety by replacing `ModuleRef` approach with direct service injection
+  - Added factory provider pattern for better DI integration
+  - Supports injecting services like `ConfigService` with full type safety
+
+### Changed
+- **Helpers API Improvement**: Changed helpers format from array to object-based approach
+  - `helpers` now expects `Record<string, ViewHelperFactory>` instead of array
+  - Object keys become helper names automatically (no more manual `key` specification)
+  - Simplified helper function definition - no need to return `{key, fn}` object
+
+### Breaking Changes
+- **Helpers Format**: Existing `helpers: [helperFunction1, helperFunction2]` must be changed to `helpers: {helperName: helperFunction}`
+- **ViewHelperFactory Signature**: Helper factories now return function directly instead of `{key: string, fn: function}` object
+- **GlobalsFactory Signature**: Changed from `(moduleRef: ModuleRef) => Record<string, any>` to `(...injectedServices: any[]) => Record<string, any>`
+- **Removed Types**: `ViewHelperDefinition` type removed as it's no longer needed
+
+### Migration Guide
+```typescript
+// Before (v0.9.10)
+helpers: [
+  (req) => ({ key: 'helperName', fn: (arg) => { /* logic */ } })
+]
+globalsFactory: (moduleRef) => {
+  const service = moduleRef.get(SomeService);
+  return { /* globals */ };
+}
+
+// After (v0.9.11)
+helpers: {
+  helperName: (req) => (arg) => { /* logic */ }
+}
+globalsInjects: [SomeService]
+globalsFactory: (someService) => {
+  return { /* globals */ };
+}
+```
+
 ## [0.9.10] - 2025-08-04
 
 ### Fixed
