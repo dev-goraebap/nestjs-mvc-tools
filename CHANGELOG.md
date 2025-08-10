@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.12] - 2025-08-11
+
+### Changed
+- `EdgeJsService`: Made injectable for external services
+  - Enables service layer access to Edge templates for use cases such as email templating
+
 ## [0.9.11] - 2025-08-08
 
 ### Added
