@@ -32,3 +32,42 @@ cd tests/manual-test-app
 npm install
 npm run start:dev
 ```
+
+## Response Object Usage Precautions
+
+When declaring `@Res() res: Response` as a parameter in controllers and using `return req.view.render()`, infinite loading issues may occur.
+
+### Problem Example
+
+```typescript
+@Get('login')
+async loginForm(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (req.session?.isAuthenticated) {
+    return res.redirect('/admin');
+  }
+  const template = await req.view.render('pages/admin/login');
+  return template; // ❌ Wrong approach - causes infinite loading
+}
+```
+
+### Root Cause
+
+- `req.view.render()` simply returns a `Promise<string>`
+- When using the `@Res()` decorator, NestJS assumes the developer will handle the response directly
+- Therefore, you must explicitly send the response using methods like `res.send()`, `res.json()`, etc.
+- If this is omitted, the response is not sent, causing infinite loading in the browser
+
+### Solution
+
+Always handle responses explicitly when using `@Res()`:
+
+```typescript
+@Get('login')
+async loginForm(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (req.session?.isAuthenticated) {
+    return res.redirect('/admin');
+  }
+  const template = await req.view.render('pages/admin/login');
+  return res.send(template); // ✅ Must use res.send()
+}
+```

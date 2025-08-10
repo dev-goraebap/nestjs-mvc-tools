@@ -32,3 +32,42 @@ cd tests/manual-test-app
 npm install
 npm run start:dev
 ```
+
+## Response 객체 사용 시 주의사항
+
+컨트롤러에서 `@Res() res: Response`를 매개변수로 선언하고 `return req.view.render()`를 사용할 때 페이지가 무한 로딩되는 문제가 발생할 수 있습니다.
+
+### 문제 상황 예시
+
+```typescript
+@Get('login')
+async loginForm(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (req.session?.isAuthenticated) {
+    return res.redirect('/admin');
+  }
+  const template = await req.view.render('pages/admin/login');
+  return template; // ❌ 잘못된 방법 - 무한 로딩 발생
+}
+```
+
+### 원인
+
+- `req.view.render()`는 단순히 `Promise<string>`을 반환합니다
+- `@Res()` 데코레이터를 사용하면 NestJS는 개발자가 직접 응답을 처리할 것으로 간주합니다
+- 따라서 `res.send()`, `res.json()` 등의 메서드를 사용해 명시적으로 응답을 전송해야 합니다
+- 이를 누락하면 응답이 전송되지 않아 브라우저에서 무한 로딩이 발생합니다
+
+### 해결 방법
+
+`@Res()` 사용 시 반드시 명시적으로 응답 처리:
+
+```typescript
+@Get('login')
+async loginForm(@Req() req: NestMvcReq, @Res() res: Response) {
+  if (req.session?.isAuthenticated) {
+    return res.redirect('/admin');
+  }
+  const template = await req.view.render('pages/admin/login');
+  return res.send(template); // ✅ 반드시 res.send() 사용
+}
+```
