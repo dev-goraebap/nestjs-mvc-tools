@@ -74,6 +74,7 @@ export class NestMvcModule implements NestModule {
       global: true,
       module: NestMvcModule,
       providers,
+      exports: [EdgeJsService]
     };
   }
 }
