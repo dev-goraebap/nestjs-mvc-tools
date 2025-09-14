@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2025-09-14
+
+### Changed
+- Released version 1.0.0 after one month of stable usage
+- All features working as expected without any significant issues
+
 ## [0.9.12] - 2025-08-11
 
 ### Changed
